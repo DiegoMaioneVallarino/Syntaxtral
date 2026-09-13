@@ -1,0 +1,349 @@
+.explorePage {
+
+    width: 100%;
+    min-height: 100%;
+
+    padding: 42px 45px 70px;
+
+    box-sizing: border-box;
+
+    color: #eeeeee;
+
+}
+
+
+.exploreHeader {
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 40px;
+
+    margin-bottom: 32px;
+
+}
+
+
+.exploreEyebrow {
+
+    color: #9b6bf0;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.8px;
+
+    text-transform: uppercase;
+
+}
+
+
+.exploreHeader h1 {
+
+    margin:
+        8px
+        0
+        10px;
+
+    color: #f4f1f7;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 58px;
+    font-style: italic;
+    font-weight: 500;
+
+    line-height: 1;
+
+    text-align: left;
+
+}
+
+
+.exploreHeader p {
+
+    max-width: 620px;
+
+    margin: 0;
+
+    color: #8f8b95;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 15px;
+    line-height: 1.5;
+
+    text-align: left;
+
+}
+
+
+.exploreSearch {
+
+    width: min(100%, 390px);
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 14px;
+
+    border: 1px solid #ffffff1a;
+    border-radius: 7px;
+
+    background-color: #101116;
+
+    box-sizing: border-box;
+
+}
+
+
+.exploreSearch:focus-within {
+
+    border-color: #7040ce;
+
+    box-shadow:
+        0 0 0 3px #7342db1c;
+
+}
+
+
+.exploreSearch > span {
+
+    color: #716c7a;
+
+    font-size: 21px;
+
+}
+
+
+.exploreSearch input {
+
+    flex: 1;
+    min-width: 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #ffffff;
+
+    font-size: 13px;
+
+}
+
+
+.exploreFilters {
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding-bottom: 18px;
+
+    overflow-x: auto;
+
+    border-bottom: 1px solid #ffffff12;
+
+}
+
+
+.exploreFilter,
+.exploreSortButton {
+
+    height: 36px;
+
+    flex-shrink: 0;
+
+    padding: 0 14px;
+
+    border: 1px solid #ffffff17;
+    border-radius: 6px;
+
+    background-color: #0e0f13;
+
+    color: #8f8b97;
+
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        color 160ms ease;
+
+}
+
+
+.exploreFilter:hover,
+.exploreSortButton:hover {
+
+    border-color: #67419e;
+
+    color: #ffffff;
+
+}
+
+
+.exploreFilterActive {
+
+    border-color: #7442df;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5520c7,
+            #7d3fee
+        );
+
+    color: #ffffff;
+
+}
+
+
+.exploreSortButton {
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-left: auto;
+
+}
+
+
+.exploreResultsHeader {
+
+    display: flex;
+    justify-content: space-between;
+
+    padding: 15px 2px;
+
+    color: #696572;
+
+    font-size: 11px;
+
+}
+
+
+.exploreGrid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 16px;
+
+}
+
+
+.exploreEmpty {
+
+    min-height: 350px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: #7c7786;
+
+}
+
+
+.exploreEmptySymbol {
+
+    color: #8b4ee9;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 56px;
+
+}
+
+
+.exploreEmpty h2 {
+
+    margin:
+        12px
+        0
+        5px;
+
+    color: #d7d2de;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-style: italic;
+    font-weight: 500;
+
+}
+
+
+.exploreEmpty p {
+
+    margin: 0;
+
+    font-size: 13px;
+
+}
+
+
+@media (max-width: 900px) {
+
+    .explorePage {
+
+        padding:
+            30px
+            24px
+            60px;
+
+    }
+
+    .exploreHeader {
+
+        align-items: flex-start;
+        flex-direction: column;
+
+    }
+
+    .exploreSearch {
+
+        width: 100%;
+
+    }
+
+    .exploreGrid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}

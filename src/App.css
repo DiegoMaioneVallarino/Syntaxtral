@@ -1,9 +1,11 @@
 html,
 body,
 #root {
+
     margin: 0;
 
 }
+
 
 .app {
 
@@ -12,17 +14,27 @@ body,
 
     display: flex;
     flex-direction: column;
+
     overflow: hidden;
 
 }
+
 
 .main {
 
     flex: 1;
 
-    display: grid;
+    width: 100%;
 
-    grid-template-columns: 320px 1fr;
+    overflow-x: hidden;
+    overflow-y: auto;
 
-    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 80% 0%,
+            #25104022,
+            transparent 35%
+        ),
+        #08090c;
+
 }

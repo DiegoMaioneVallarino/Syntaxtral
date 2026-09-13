@@ -1,4 +1,8 @@
 import "./Toolbar.css";
+import {
+    Link,
+    NavLink
+} from "react-router-dom";
 
 
 function SearchIcon() {
@@ -49,49 +53,76 @@ function Toolbar() {
 
             <div className="titleArea">
 
-                <div
-                    className="logo"
-                    role="img"
-                    aria-label="Syntaxtral"
-                />
+                    <Link
+                        to="/"
+                        className="logoLink"
+                        aria-label="Ir al inicio"
+                    >
 
-            </div>
+                        <div
+                            className="logo"
+                            role="img"
+                            aria-label="Syntaxtral"
+                        />
+
+                    </Link>
+
+</div>
 
 
-            <nav
-                className="toolbarNavigation"
-                aria-label="Navegación principal"
-            >
+           <nav
+    className="toolbarNavigation"
+    aria-label="Navegación principal"
+>
 
-                <button
-                    type="button"
-                    className="navigationButton navigationButtonActive"
-                >
-                    Explora
-                </button>
+    <NavLink
+        to="/explore"
+        className={({ isActive }) =>
+            isActive
+                ? "navigationButton navigationButtonActive"
+                : "navigationButton"
+        }
+    >
+        Explora
+    </NavLink>
 
-                <button
-                    type="button"
-                    className="navigationButton"
-                >
-                    Artículos
-                </button>
 
-                <button
-                    type="button"
-                    className="navigationButton"
-                >
-                    Comunidad
-                </button>
+    <NavLink
+        to="/articles"
+        className={({ isActive }) =>
+            isActive
+                ? "navigationButton navigationButtonActive"
+                : "navigationButton"
+        }
+    >
+        Artículos
+    </NavLink>
 
-                <button
-                    type="button"
-                    className="navigationButton"
-                >
-                    Create
-                </button>
 
-            </nav>
+    <NavLink
+        to="/community"
+        className={({ isActive }) =>
+            isActive
+                ? "navigationButton navigationButtonActive"
+                : "navigationButton"
+        }
+    >
+        Comunidad
+    </NavLink>
+
+
+    <NavLink
+        to="/create"
+        className={({ isActive }) =>
+            isActive
+                ? "navigationButton navigationButtonActive"
+                : "navigationButton"
+        }
+    >
+        Create
+    </NavLink>
+
+</nav>
 
 
             <div className="toolbarActions">

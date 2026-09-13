@@ -1,0 +1,704 @@
+.communityPage {
+
+    width: 100%;
+    min-height: 100%;
+
+    padding:
+        42px
+        45px
+        70px;
+
+    box-sizing: border-box;
+
+    color: #eeeeee;
+
+}
+
+
+/* -------------------------------- */
+/* HEADER                           */
+/* -------------------------------- */
+
+.communityHeader {
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 35px;
+
+    margin-bottom: 30px;
+
+}
+
+
+.communityEyebrow {
+
+    color: #9c68ef;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 1.7px;
+
+    text-transform: uppercase;
+
+}
+
+
+.communityHeader h1 {
+
+    margin:
+        8px
+        0
+        10px;
+
+    color: #f2eef6;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 58px;
+    font-style: italic;
+    font-weight: 500;
+
+    line-height: 1;
+
+    text-align: left;
+
+}
+
+
+.communityHeader p {
+
+    max-width: 630px;
+
+    margin: 0;
+
+    color: #918b99;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 15px;
+    line-height: 1.5;
+
+    text-align: left;
+
+}
+
+
+.communitySearch {
+
+    width: min(100%, 410px);
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        0
+        14px;
+
+    border: 1px solid #ffffff18;
+    border-radius: 6px;
+
+    background-color: #0f1015;
+
+    box-sizing: border-box;
+
+}
+
+
+.communitySearch:focus-within {
+
+    border-color: #7040cc;
+
+    box-shadow:
+        0 0 0 3px #743edb1c;
+
+}
+
+
+.communitySearch > span {
+
+    color: #716c79;
+
+    font-size: 21px;
+
+}
+
+
+.communitySearch input {
+
+    flex: 1;
+    min-width: 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #ffffff;
+
+    font-size: 12px;
+
+}
+
+
+/* -------------------------------- */
+/* INVESTIGADOR DESTACADO           */
+/* -------------------------------- */
+
+.featuredResearcher {
+
+    min-height: 220px;
+
+    display: grid;
+
+    grid-template-columns:
+        300px
+        minmax(350px, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 30px;
+
+    margin-bottom: 28px;
+
+    overflow: hidden;
+
+    border: 1px solid #ffffff17;
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            120deg,
+            #0d0e13,
+            #160c29
+        );
+
+}
+
+
+.featuredResearcherVisual {
+
+    align-self: stretch;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-right: 1px solid #ffffff12;
+
+    background:
+        radial-gradient(
+            circle at center,
+            #51219a66,
+            transparent 58%
+        );
+
+}
+
+
+.featuredResearcherGrid {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0.13;
+
+    background-image:
+        linear-gradient(
+            #8156cf33 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            #8156cf33 1px,
+            transparent 1px
+        );
+
+    background-size:
+        25px
+        25px;
+
+}
+
+
+.featuredResearcherShape {
+
+    width: 190px;
+    height: 120px;
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    transform:
+        translate(-50%, -50%)
+        rotate(-13deg);
+
+}
+
+
+.featuredResearcherShape div {
+
+    position: absolute;
+
+    inset: 0;
+
+    border: 2px solid #8e50ed;
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 18px #7541d969;
+
+}
+
+
+.featuredResearcherShape div:nth-child(2) {
+
+    transform: rotate(60deg);
+
+    border-color: #d48ef8;
+
+}
+
+
+.featuredResearcherShape div:nth-child(3) {
+
+    transform: rotate(120deg);
+
+    border-color: #dfb34f;
+
+}
+
+
+.featuredResearcherContent {
+
+    padding:
+        28px
+        0;
+
+}
+
+
+.featuredResearcherContent h2 {
+
+    margin:
+        9px
+        0
+        2px;
+
+    color: #f0edf5;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 500;
+
+    text-align: left;
+
+}
+
+
+.featuredUsername {
+
+    color: #7c7587;
+
+    font-size: 12px;
+
+}
+
+
+.featuredResearcherContent p {
+
+    max-width: 650px;
+
+    margin:
+        17px
+        0;
+
+    color: #a19ba8;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 14px;
+    line-height: 1.55;
+
+    text-align: left;
+
+}
+
+
+.featuredSpecialties {
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 7px;
+
+}
+
+
+.featuredSpecialties span {
+
+    padding: 5px 8px;
+
+    border: 1px solid #ffffff12;
+    border-radius: 4px;
+
+    background-color: #1a1522;
+
+    color: #aa97c2;
+
+    font-size: 10px;
+
+}
+
+
+.featuredResearcherActions {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 9px;
+
+    padding-right: 30px;
+
+}
+
+
+.featuredFollowButton,
+.viewProfileButton {
+
+    min-width: 110px;
+    height: 37px;
+
+    border-radius: 5px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.featuredFollowButton {
+
+    border: 1px solid #7541dd;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5420bf,
+            #7b40e5
+        );
+
+    color: #ffffff;
+
+}
+
+
+.featuredFollowButtonActive {
+
+    border-color: #ffffff1c;
+
+    background: #18151e;
+
+    color: #aaa4b0;
+
+}
+
+
+.viewProfileButton {
+
+    border: 1px solid #ffffff1a;
+
+    background-color: #101116;
+
+    color: #a8a2ae;
+
+}
+
+
+/* -------------------------------- */
+/* FILTROS                          */
+/* -------------------------------- */
+
+.communityFilters {
+
+    display: flex;
+
+    gap: 8px;
+
+    padding-bottom: 17px;
+
+    overflow-x: auto;
+
+    border-bottom: 1px solid #ffffff12;
+
+}
+
+
+.communityFilter {
+
+    height: 36px;
+
+    flex-shrink: 0;
+
+    padding:
+        0
+        14px;
+
+    border: 1px solid #ffffff17;
+    border-radius: 6px;
+
+    background-color: #0e0f13;
+
+    color: #918b98;
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+}
+
+
+.communityFilter:hover {
+
+    border-color: #68429e;
+
+    color: #ffffff;
+
+}
+
+
+.communityFilterActive {
+
+    border-color: #7843df;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5420bf,
+            #773be0
+        );
+
+    color: #ffffff;
+
+}
+
+
+/* -------------------------------- */
+/* RESULTADOS                       */
+/* -------------------------------- */
+
+.communityResults {
+
+    display: flex;
+    justify-content: space-between;
+
+    padding:
+        15px
+        2px;
+
+    color: #696471;
+
+    font-size: 10px;
+
+}
+
+
+.communityGrid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+
+    gap: 15px;
+
+}
+
+
+.communityEmpty {
+
+    min-height: 330px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: #77717e;
+
+}
+
+
+.communityEmpty > span {
+
+    color: #8950df;
+
+    font-family: Georgia;
+    font-size: 53px;
+
+}
+
+
+.communityEmpty h2 {
+
+    margin:
+        12px
+        0
+        5px;
+
+    color: #d7d2dc;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-style: italic;
+    font-weight: 500;
+
+}
+
+
+.communityEmpty p {
+
+    margin: 0;
+
+    font-size: 12px;
+
+}
+
+
+/* -------------------------------- */
+/* RESPONSIVE                       */
+/* -------------------------------- */
+
+@media (max-width: 1150px) {
+
+    .communityGrid {
+
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+
+    }
+
+    .featuredResearcher {
+
+        grid-template-columns:
+            240px
+            1fr;
+
+    }
+
+    .featuredResearcherActions {
+
+        grid-column: 2;
+
+        flex-direction: row;
+
+        padding:
+            0
+            25px
+            25px
+            0;
+
+    }
+
+}
+
+
+@media (max-width: 750px) {
+
+    .communityPage {
+
+        padding:
+            30px
+            22px
+            55px;
+
+    }
+
+    .communityHeader {
+
+        align-items: flex-start;
+        flex-direction: column;
+
+    }
+
+    .communitySearch {
+
+        width: 100%;
+
+    }
+
+    .featuredResearcher {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .featuredResearcherVisual {
+
+        min-height: 190px;
+
+        border-right: none;
+        border-bottom: 1px solid #ffffff12;
+
+    }
+
+    .featuredResearcherContent {
+
+        padding:
+            0
+            22px;
+
+    }
+
+    .featuredResearcherActions {
+
+        grid-column: 1;
+
+        padding:
+            0
+            22px
+            22px;
+
+    }
+
+    .communityGrid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}

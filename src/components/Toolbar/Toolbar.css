@@ -495,3 +495,31 @@
     }
 
 }
+
+.toolbarNavigation a {
+
+    display: flex;
+    align-items: center;
+
+    text-decoration: none;
+
+    box-sizing: border-box;
+
+}
+
+.logoLink {
+
+    display: block;
+
+    text-decoration: none;
+
+}
+
+.navigationButton {
+
+    display: flex;
+    align-items: center;
+
+    text-decoration: none;
+
+}

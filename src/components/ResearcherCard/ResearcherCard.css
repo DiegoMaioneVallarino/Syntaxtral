@@ -1,0 +1,449 @@
+.researcherCard {
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    border: 1px solid #ffffff17;
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #101116,
+            #090a0e
+        );
+
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+
+.researcherCard:hover {
+
+    transform: translateY(-3px);
+
+    border-color: #694297;
+
+    box-shadow:
+        0 14px 30px #00000055;
+
+}
+
+
+/* -------------------------------- */
+/* DECORACIÓN                       */
+/* -------------------------------- */
+
+.researcherCardDecoration {
+
+    height: 105px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 70% 40%,
+            #5d25b85c,
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #12101a,
+            #09090e
+        );
+
+}
+
+
+.researcherCardDecoration::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0.12;
+
+    background-image:
+        linear-gradient(
+            #9467e52c 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            #9467e52c 1px,
+            transparent 1px
+        );
+
+    background-size:
+        22px 22px;
+
+}
+
+
+.researcherCardDecoration > span {
+
+    position: absolute;
+
+    top: 12px;
+    left: 12px;
+    z-index: 2;
+
+    padding: 5px 8px;
+
+    border: 1px solid #ffffff12;
+    border-radius: 4px;
+
+    background-color: #16121fcc;
+
+    color: #ac8cdb;
+
+    font-size: 10px;
+
+}
+
+
+.researcherOrbit {
+
+    width: 145px;
+    height: 75px;
+
+    position: absolute;
+
+    top: 17px;
+    right: 18px;
+
+    transform: rotate(-13deg);
+
+}
+
+
+.researcherOrbit div {
+
+    position: absolute;
+
+    inset: 0;
+
+    border: 1px solid #8d55e3;
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 14px #8149d95c;
+
+}
+
+
+.researcherOrbit div:nth-child(1) {
+
+    transform: rotate(20deg);
+
+}
+
+
+.researcherOrbit div:nth-child(2) {
+
+    transform: rotate(75deg);
+
+    border-color: #d39aff;
+
+}
+
+
+.researcherOrbit div:nth-child(3) {
+
+    transform: rotate(125deg);
+
+    border-color: #e4b857;
+
+}
+
+
+/* -------------------------------- */
+/* PERFIL                           */
+/* -------------------------------- */
+
+.researcherCardProfile {
+
+    display: grid;
+
+    grid-template-columns:
+        48px
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding:
+        0
+        15px;
+
+    transform:
+        translateY(-17px);
+
+}
+
+
+.researcherAvatar {
+
+    width: 48px;
+    height: 48px;
+
+    display: grid;
+    place-items: center;
+
+    border: 2px solid #8a52e4;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 34% 27%,
+            #e7bb62,
+            #7135ce 36%,
+            #171028 75%
+        );
+
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    box-shadow:
+        0 0 16px #6e35c659;
+
+}
+
+
+.researcherIdentity {
+
+    min-width: 0;
+
+}
+
+
+.researcherIdentity h2 {
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: #f0ecf4;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    text-align: left;
+
+}
+
+
+.researcherIdentity span {
+
+    color: #77727f;
+
+    font-size: 11px;
+
+}
+
+
+.followButton {
+
+    height: 31px;
+
+    padding:
+        0
+        13px;
+
+    border: 1px solid #7242c6;
+    border-radius: 5px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #5420bd,
+            #7840df
+        );
+
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
+
+
+.followButtonActive {
+
+    border-color: #ffffff1d;
+
+    background-color: #17151d;
+    background-image: none;
+
+    color: #aaa4b2;
+
+}
+
+
+/* -------------------------------- */
+/* INFORMACIÓN                      */
+/* -------------------------------- */
+
+.researcherBiography {
+
+    min-height: 62px;
+
+    margin:
+        -5px
+        15px
+        13px;
+
+    color: #9993a1;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 13px;
+    line-height: 1.55;
+
+    text-align: left;
+
+}
+
+
+.researcherSpecialties {
+
+    min-height: 25px;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    margin:
+        0
+        15px
+        13px;
+
+}
+
+
+.researcherSpecialties span {
+
+    padding: 4px 7px;
+
+    border: 1px solid #ffffff10;
+    border-radius: 4px;
+
+    background-color: #18151f;
+
+    color: #a18fb8;
+
+    font-size: 9px;
+
+}
+
+
+.researcherLocation {
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+    margin:
+        0
+        15px
+        15px;
+
+    color: #706b77;
+
+    font-size: 10px;
+
+}
+
+
+/* -------------------------------- */
+/* ESTADÍSTICAS                     */
+/* -------------------------------- */
+
+.researcherStatistics {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    border-top: 1px solid #ffffff10;
+
+}
+
+
+.researcherStatistics div {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 3px;
+
+    padding:
+        13px
+        5px;
+
+    border-right: 1px solid #ffffff0d;
+
+}
+
+
+.researcherStatistics div:last-child {
+
+    border-right: none;
+
+}
+
+
+.researcherStatistics strong {
+
+    color: #e9e5ee;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 16px;
+
+}
+
+
+.researcherStatistics span {
+
+    color: #706b77;
+
+    font-size: 9px;
+
+}

@@ -1,0 +1,293 @@
+.modelCard {
+
+    min-width: 0;
+
+    border: 1px solid #ffffff18;
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #101116,
+            #090a0e
+        );
+
+    cursor: pointer;
+
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+
+.modelCard:hover {
+
+    transform: translateY(-3px);
+
+    border-color: #7040bf;
+
+    box-shadow:
+        0 12px 30px #00000055,
+        0 0 25px #7138cf17;
+
+}
+
+
+.modelCardPreview {
+
+    height: 245px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background-color: #090711;
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+
+.modelCardPreview::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            transparent 30%,
+            #05050999 100%
+        );
+
+    pointer-events: none;
+
+}
+
+
+.modelCardGrid {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0.12;
+
+    background-image:
+        linear-gradient(
+            #7554b633 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            #7554b633 1px,
+            transparent 1px
+        );
+
+    background-size:
+        24px 24px;
+
+}
+
+
+.modelCardCategory {
+
+    position: absolute;
+
+    top: 13px;
+    left: 13px;
+    z-index: 1;
+
+    padding: 6px 9px;
+
+    border: 1px solid #9d78e744;
+    border-radius: 5px;
+
+    background-color: #130d20cc;
+
+    color: #c6aaff;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    backdrop-filter: blur(8px);
+
+}
+
+
+.modelCardContent {
+
+    padding: 12px 14px 14px;
+
+}
+
+
+.modelCardTitleRow {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+}
+
+
+.modelCardTitleRow h2 {
+
+    min-width: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    color: #f3f0f7;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 600;
+
+    text-align: left;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+
+.modelCardMenu {
+
+    border: none;
+
+    background: transparent;
+
+    color: #88838f;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+}
+
+
+.modelCardMenu:hover {
+
+    color: #ffffff;
+
+}
+
+
+.modelCardMetadata {
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    margin-top: 12px;
+
+}
+
+
+.modelCardAuthor {
+
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    color: #aaa6b1;
+
+    font-size: 12px;
+
+    white-space: nowrap;
+
+}
+
+
+.modelCardAvatar {
+
+    width: 25px;
+    height: 25px;
+
+    display: grid;
+    place-items: center;
+
+    flex-shrink: 0;
+
+    border: 1px solid #8f61e0;
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #deaa49,
+            #6d35c9
+        );
+
+    color: #ffffff;
+
+    font-size: 8px;
+    font-weight: 700;
+
+}
+
+
+.modelCardTopics {
+
+    min-width: 0;
+
+    display: flex;
+
+    gap: 5px;
+
+    overflow: hidden;
+
+}
+
+
+.modelCardTopics span {
+
+    padding: 4px 7px;
+
+    border: 1px solid #ffffff10;
+    border-radius: 5px;
+
+    background-color: #191720;
+
+    color: #9e93ae;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+
+}
+
+
+.modelCardStatistics {
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-top: 13px;
+
+    color: #8f8a98;
+
+    font-size: 12px;
+
+}
