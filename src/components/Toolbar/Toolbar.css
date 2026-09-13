@@ -1,0 +1,497 @@
+.toolbar {
+
+    width: 100%;
+    height: 100px;
+
+    display: grid;
+
+    grid-template-columns:
+        320px
+        minmax(390px, 1fr)
+        minmax(430px, 650px);
+
+    align-items: center;
+
+    border-bottom: 1.5px solid #ffffff0f;
+
+    background:
+        linear-gradient(
+            180deg,
+            #101010 0%,
+            #0b0b0b 100%
+        );
+
+    box-sizing: border-box;
+
+}
+
+
+/* -------------------------------- */
+/* LOGO                             */
+/* -------------------------------- */
+
+.titleArea {
+
+    width: 320px;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-right: 1px solid #ffffff08;
+
+    box-sizing: border-box;
+
+}
+
+
+.logo {
+
+    width: 269px;
+    height: 59px;
+
+    background-image:
+        url("../../assets/images/tittle.png");
+
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+}
+
+
+/* -------------------------------- */
+/* NAVEGACIÓN                       */
+/* -------------------------------- */
+
+.toolbarNavigation {
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+}
+
+
+.navigationButton {
+
+    height: 100%;
+
+    position: relative;
+
+    padding: 0 18px;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #929292;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        color 180ms ease,
+        background-color 180ms ease;
+
+}
+
+
+.navigationButton:hover {
+
+    color: #ffffff;
+
+    background-color: #ffffff05;
+
+}
+
+
+.navigationButtonActive {
+
+    color: #ffffff;
+
+}
+
+
+.navigationButtonActive::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 18px;
+    right: 18px;
+    bottom: 0;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #7536ff,
+            #a66bff
+        );
+
+    box-shadow:
+        0 0 12px #7838ff99;
+
+}
+
+
+/* -------------------------------- */
+/* ACCIONES DERECHAS                */
+/* -------------------------------- */
+
+.toolbarActions {
+
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    gap: 14px;
+
+    padding-right: 25px;
+
+    box-sizing: border-box;
+
+}
+
+
+/* -------------------------------- */
+/* BUSCADOR                         */
+/* -------------------------------- */
+
+.searchArea {
+
+    width: min(100%, 390px);
+    height: 39px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 0 13px;
+
+    border: 1px solid #ffffff1f;
+    border-radius: 7px;
+
+    background-color: #111216;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+
+.searchArea:focus-within {
+
+    border-color: #7540d9;
+
+    box-shadow:
+        0 0 0 3px #7132e51c;
+
+}
+
+
+.searchIcon {
+
+    width: 17px;
+    height: 17px;
+
+    display: flex;
+
+    color: #777582;
+
+}
+
+
+.searchIcon svg {
+
+    width: 100%;
+    height: 100%;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+
+}
+
+
+.searchInput {
+
+    flex: 1;
+    min-width: 0;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+
+    color: #eeeeee;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 13px;
+
+}
+
+
+.searchInput::placeholder {
+
+    color: #66646d;
+
+}
+
+
+/* Elimina la X automática de algunos navegadores */
+
+.searchInput::-webkit-search-cancel-button {
+
+    appearance: none;
+
+}
+
+
+/* -------------------------------- */
+/* NOTIFICACIONES                   */
+/* -------------------------------- */
+
+.notificationButton {
+
+    width: 40px;
+    height: 40px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    position: relative;
+
+    border: 1px solid transparent;
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: #a6a3ad;
+
+    cursor: pointer;
+
+    transition:
+        color 180ms ease,
+        border-color 180ms ease,
+        background-color 180ms ease;
+
+}
+
+
+.notificationButton:hover {
+
+    color: #ffffff;
+
+    border-color: #ffffff15;
+
+    background-color: #ffffff08;
+
+}
+
+
+.notificationButton svg {
+
+    width: 21px;
+    height: 21px;
+
+    fill: none;
+
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+}
+
+
+.notificationDot {
+
+    width: 6px;
+    height: 6px;
+
+    position: absolute;
+
+    top: 8px;
+    right: 7px;
+
+    border: 2px solid #0c0c0c;
+    border-radius: 50%;
+
+    background-color: #8b4dff;
+
+    box-sizing: content-box;
+
+}
+
+
+/* -------------------------------- */
+/* PERFIL                           */
+/* -------------------------------- */
+
+.profileButton {
+
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    padding: 2px;
+
+    border: 1px solid #8353e8;
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #161028,
+            #271353
+        );
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 14px #7238df3d;
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+
+}
+
+
+.profileButton:hover {
+
+    transform: scale(1.06);
+
+    box-shadow:
+        0 0 20px #7f42ef70;
+
+}
+
+
+.profileAvatar {
+
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+    place-items: center;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 32% 25%,
+            #ffc85c 0%,
+            #7d43ee 30%,
+            #18102c 72%
+        );
+
+    color: #ffffff;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 11px;
+    font-weight: 700;
+
+}
+
+
+/* -------------------------------- */
+/* RESPONSIVE                       */
+/* -------------------------------- */
+
+@media (max-width: 1250px) {
+
+    .toolbar {
+
+        grid-template-columns:
+            270px
+            minmax(350px, 1fr)
+            360px;
+
+    }
+
+    .titleArea {
+
+        width: 270px;
+
+    }
+
+    .logo {
+
+        width: 220px;
+        height: 50px;
+
+    }
+
+    .searchArea {
+
+        width: 260px;
+
+    }
+
+}
+
+
+@media (max-width: 1000px) {
+
+    .toolbar {
+
+        grid-template-columns:
+            250px
+            1fr
+            auto;
+
+    }
+
+    .titleArea {
+
+        width: 250px;
+
+    }
+
+    .searchArea {
+
+        display: none;
+
+    }
+
+}
