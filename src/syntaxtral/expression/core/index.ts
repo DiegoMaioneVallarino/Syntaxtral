@@ -2,12 +2,15 @@ export type {
 
     AdditionNode,
     BaseExpressionNode,
+    ConstantNode,
     ExpressionNode,
     ExpressionNodeType,
     ExpressionPath,
+    FactorialNode,
     FractionNode,
     FunctionCallNode,
     GroupNode,
+    MathematicalConstant,
     MultiplicationNode,
     NegationNode,
     NumberNode,
@@ -21,6 +24,8 @@ export type {
 export {
 
     additionNode,
+    constantNode,
+    factorialNode,
     fractionNode,
     functionCallNode,
     groupNode,
@@ -79,3 +84,11 @@ export {
     exampleExpression
 
 } from "./examples";
+
+
+export {
+
+    findExpressionNodeById,
+    replaceExpressionNodeById
+
+} from "./editing";

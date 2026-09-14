@@ -1,16 +1,20 @@
 import type {
-    ExpressionNode
-} from "./types";
 
-import {
-    validateExpression
-} from "./validation";
+    ExpressionNode,
+    MathematicalConstant
+
+} from "./types";
 
 
 export class ExpressionSerializationError
     extends Error {
 
-    constructor(
+    public readonly nodeId:
+        string;
+
+
+    public constructor(
+        nodeId: string,
         message: string
     ) {
 
@@ -18,6 +22,71 @@ export class ExpressionSerializationError
 
         this.name =
             "ExpressionSerializationError";
+
+        this.nodeId =
+            nodeId;
+
+    }
+
+}
+
+
+function constantToPlainText(
+    constant:
+        MathematicalConstant
+): string {
+
+    switch (constant) {
+
+        case "pi":
+
+            return "π";
+
+
+        case "e":
+
+            return "e";
+
+
+        case "i":
+
+            return "i";
+
+
+        case "infinity":
+
+            return "∞";
+
+    }
+
+}
+
+
+function constantToMathJs(
+    constant:
+        MathematicalConstant
+): string {
+
+    switch (constant) {
+
+        case "pi":
+
+            return "pi";
+
+
+        case "e":
+
+            return "e";
+
+
+        case "i":
+
+            return "i";
+
+
+        case "infinity":
+
+            return "Infinity";
 
     }
 
@@ -28,10 +97,113 @@ export function expressionToPlainText(
     expression: ExpressionNode
 ): string {
 
-    return serializeNode(
-        expression,
-        true
-    );
+    switch (expression.type) {
+
+        case "number":
+
+            return expression.value;
+
+
+        case "symbol":
+
+            return expression.name;
+
+
+        case "constant":
+
+            return constantToPlainText(
+                expression.name
+            );
+
+
+        case "addition":
+
+            return expression.terms
+                .map(
+                    expressionToPlainText
+                )
+                .join(" + ");
+
+
+        case "multiplication":
+
+            return expression.factors
+                .map(
+                    expressionToPlainText
+                )
+                .join(" · ");
+
+
+        case "fraction":
+
+            return `(${
+                expressionToPlainText(
+                    expression.numerator
+                )
+            }) / (${
+                expressionToPlainText(
+                    expression.denominator
+                )
+            })`;
+
+
+        case "power":
+
+            return `(${
+                expressionToPlainText(
+                    expression.base
+                )
+            })^(${
+                expressionToPlainText(
+                    expression.exponent
+                )
+            })`;
+
+
+        case "factorial":
+
+            return `(${
+                expressionToPlainText(
+                    expression.operand
+                )
+            })!`;
+
+
+        case "negation":
+
+            return `−(${
+                expressionToPlainText(
+                    expression.operand
+                )
+            })`;
+
+
+        case "function-call":
+
+            return `${expression.name}(${
+                expression.arguments
+                    .map(
+                        expressionToPlainText
+                    )
+                    .join(", ")
+            })`;
+
+
+        case "group":
+
+            return `(${
+                expressionToPlainText(
+                    expression.expression
+                )
+            })`;
+
+
+        case "placeholder":
+
+            return expression.label ??
+                "□";
+
+    }
 
 }
 
@@ -40,31 +212,126 @@ export function expressionToMathJs(
     expression: ExpressionNode
 ): string {
 
-    const validation =
-        validateExpression(
-            expression
-        );
+    switch (expression.type) {
+
+        case "number":
+
+            return expression.value;
 
 
-    if (!validation.valid) {
+        case "symbol":
 
-        const messages =
-            validation.errors
-                .map(error => error.message)
-                .join(" ");
+            return expression.name;
 
 
-        throw new ExpressionSerializationError(
-            messages
-        );
+        case "constant":
+
+            return constantToMathJs(
+                expression.name
+            );
+
+
+        case "addition":
+
+            return expression.terms
+                .map(term => (
+                    `(${
+                        expressionToMathJs(
+                            term
+                        )
+                    })`
+                ))
+                .join(" + ");
+
+
+        case "multiplication":
+
+            return expression.factors
+                .map(factor => (
+                    `(${
+                        expressionToMathJs(
+                            factor
+                        )
+                    })`
+                ))
+                .join(" * ");
+
+
+        case "fraction":
+
+            return `(${
+                expressionToMathJs(
+                    expression.numerator
+                )
+            }) / (${
+                expressionToMathJs(
+                    expression.denominator
+                )
+            })`;
+
+
+        case "power":
+
+            return `(${
+                expressionToMathJs(
+                    expression.base
+                )
+            }) ^ (${
+                expressionToMathJs(
+                    expression.exponent
+                )
+            })`;
+
+
+        case "factorial":
+
+            return `factorial(${
+                expressionToMathJs(
+                    expression.operand
+                )
+            })`;
+
+
+        case "negation":
+
+            return `-(${
+                expressionToMathJs(
+                    expression.operand
+                )
+            })`;
+
+
+        case "function-call":
+
+            return `${expression.name}(${
+                expression.arguments
+                    .map(
+                        expressionToMathJs
+                    )
+                    .join(", ")
+            })`;
+
+
+        case "group":
+
+            return `(${
+                expressionToMathJs(
+                    expression.expression
+                )
+            })`;
+
+
+        case "placeholder":
+
+            throw new ExpressionSerializationError(
+
+                expression.id,
+
+                "No se puede convertir un placeholder incompleto a MathJS"
+
+            );
 
     }
-
-
-    return serializeNode(
-        expression,
-        false
-    );
 
 }
 
@@ -73,187 +340,27 @@ export function expressionToJSON(
     expression: ExpressionNode
 ): string {
 
-    return JSON.stringify(
-        expression,
-        null,
-        2
-    );
+    try {
 
-}
+        return JSON.stringify(
 
+            expression,
 
-function serializeNode(
-    node: ExpressionNode,
-    allowPlaceholders: boolean
-): string {
+            null,
 
-    switch (node.type) {
+            2
 
-        case "number":
+        );
 
-            return node.value;
+    } catch {
 
+        throw new ExpressionSerializationError(
 
-        case "symbol":
+            expression.id,
 
-            return node.name;
+            "No fue posible convertir la expresión a JSON"
 
-
-        case "addition":
-
-            return node.terms
-                .map(term => (
-                    serializeNode(
-                        term,
-                        allowPlaceholders
-                    )
-                ))
-                .join(" + ");
-
-
-        case "multiplication":
-
-            return node.factors
-                .map(factor => {
-
-                    const serialized =
-                        serializeNode(
-                            factor,
-                            allowPlaceholders
-                        );
-
-
-                    if (
-                        factor.type ===
-                        "addition"
-                    ) {
-
-                        return `(${serialized})`;
-
-                    }
-
-
-                    return serialized;
-
-                })
-                .join(" * ");
-
-
-        case "fraction": {
-
-            const numerator =
-                serializeNode(
-                    node.numerator,
-                    allowPlaceholders
-                );
-
-
-            const denominator =
-                serializeNode(
-                    node.denominator,
-                    allowPlaceholders
-                );
-
-
-            return (
-                `(${numerator})` +
-                ` / ` +
-                `(${denominator})`
-            );
-
-        }
-
-
-        case "power": {
-
-            const base =
-                serializeNode(
-                    node.base,
-                    allowPlaceholders
-                );
-
-
-            const exponent =
-                serializeNode(
-                    node.exponent,
-                    allowPlaceholders
-                );
-
-
-            return (
-                `(${base})` +
-                ` ^ ` +
-                `(${exponent})`
-            );
-
-        }
-
-
-        case "negation": {
-
-            const operand =
-                serializeNode(
-                    node.operand,
-                    allowPlaceholders
-                );
-
-
-            return `-(${operand})`;
-
-        }
-
-
-        case "function-call": {
-
-            const argumentsText =
-                node.arguments
-                    .map(argument => (
-                        serializeNode(
-                            argument,
-                            allowPlaceholders
-                        )
-                    ))
-                    .join(", ");
-
-
-            return (
-                `${node.name}` +
-                `(${argumentsText})`
-            );
-
-        }
-
-
-        case "group": {
-
-            const content =
-                serializeNode(
-                    node.expression,
-                    allowPlaceholders
-                );
-
-
-            return `(${content})`;
-
-        }
-
-
-        case "placeholder": {
-
-            if (allowPlaceholders) {
-
-                return node.label
-                    ? `□${node.label}`
-                    : "□";
-
-            }
-
-
-            throw new ExpressionSerializationError(
-                "No se puede evaluar una expresión incompleta."
-            );
-
-        }
+        );
 
     }
 

@@ -1,45 +1,42 @@
 import type {
+
     ExpressionNode,
-    ExpressionPath
+    MathematicalConstant
+
 } from "./types";
 
 
 export type ExpressionValidationError = {
 
-    path: ExpressionPath;
+    readonly nodeId:
+        string;
 
-    nodeId: string;
-
-    code:
-        | "invalid-number"
-        | "invalid-symbol"
-        | "empty-addition"
-        | "empty-multiplication"
-        | "empty-function"
-        | "empty-function-arguments"
-        | "placeholder";
-
-    message: string;
+    readonly message:
+        string;
 
 };
 
 
 export type ExpressionValidationResult = {
 
-    valid: boolean;
+    readonly valid:
+        boolean;
 
-    errors:
-        ExpressionValidationError[];
+    readonly errors:
+        readonly ExpressionValidationError[];
 
 };
 
 
-const numberPattern =
-    /^(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+const validConstants:
+    readonly MathematicalConstant[] = [
 
+        "pi",
+        "e",
+        "i",
+        "infinity"
 
-const symbolPattern =
-    /^[\p{L}_][\p{L}\p{N}_]*$/u;
+    ];
 
 
 export function validateExpression(
@@ -50,10 +47,253 @@ export function validateExpression(
         ExpressionValidationError[] = [];
 
 
+    function addError(
+        nodeId: string,
+        message: string
+    ): void {
+
+        errors.push({
+
+            nodeId,
+            message
+
+        });
+
+    }
+
+
+    function validateNode(
+        node: ExpressionNode
+    ): void {
+
+        if (
+            typeof node.id !== "string" ||
+            node.id.trim().length === 0
+        ) {
+
+            addError(
+                node.id,
+                "El nodo no tiene un identificador válido"
+            );
+
+        }
+
+
+        switch (node.type) {
+
+            case "number":
+
+                if (
+                    node.value.trim().length === 0
+                ) {
+
+                    addError(
+                        node.id,
+                        "El número está vacío"
+                    );
+
+                }
+
+
+                if (
+                    Number.isNaN(
+                        Number(node.value)
+                    )
+                ) {
+
+                    addError(
+                        node.id,
+                        `"${node.value}" no es un número válido`
+                    );
+
+                }
+
+                break;
+
+
+            case "symbol":
+
+                if (
+                    node.name.trim().length === 0
+                ) {
+
+                    addError(
+                        node.id,
+                        "El símbolo no puede estar vacío"
+                    );
+
+                }
+
+                break;
+
+
+            case "constant":
+
+                if (
+                    !validConstants.includes(
+                        node.name
+                    )
+                ) {
+
+                    addError(
+                        node.id,
+                        "Constante matemática inválida"
+                    );
+
+                }
+
+                break;
+
+
+            case "addition":
+
+                if (
+                    node.terms.length < 2
+                ) {
+
+                    addError(
+                        node.id,
+                        "Una suma necesita al menos dos términos"
+                    );
+
+                }
+
+
+                node.terms.forEach(
+                    validateNode
+                );
+
+                break;
+
+
+            case "multiplication":
+
+                if (
+                    node.factors.length < 2
+                ) {
+
+                    addError(
+                        node.id,
+                        "Una multiplicación necesita al menos dos factores"
+                    );
+
+                }
+
+
+                node.factors.forEach(
+                    validateNode
+                );
+
+                break;
+
+
+            case "fraction":
+
+                validateNode(
+                    node.numerator
+                );
+
+
+                validateNode(
+                    node.denominator
+                );
+
+                break;
+
+
+            case "power":
+
+                validateNode(
+                    node.base
+                );
+
+
+                validateNode(
+                    node.exponent
+                );
+
+                break;
+
+
+            case "factorial":
+
+                validateNode(
+                    node.operand
+                );
+
+                break;
+
+
+            case "negation":
+
+                validateNode(
+                    node.operand
+                );
+
+                break;
+
+
+            case "function-call":
+
+                if (
+                    node.name.trim().length === 0
+                ) {
+
+                    addError(
+                        node.id,
+                        "La función necesita un nombre"
+                    );
+
+                }
+
+
+                if (
+                    node.arguments.length === 0
+                ) {
+
+                    addError(
+                        node.id,
+                        "La función necesita al menos un argumento"
+                    );
+
+                }
+
+
+                node.arguments.forEach(
+                    validateNode
+                );
+
+                break;
+
+
+            case "group":
+
+                validateNode(
+                    node.expression
+                );
+
+                break;
+
+
+            case "placeholder":
+
+                /*
+                 * El placeholder representa una expresión
+                 * que el usuario todavía no ha completado.
+                 *
+                 * Es estructuralmente válido, aunque todavía
+                 * no sea evaluable matemáticamente.
+                 */
+
+                break;
+
+        }
+
+    }
+
+
     validateNode(
-        expression,
-        [],
-        errors
+        expression
     );
 
 
@@ -65,391 +305,5 @@ export function validateExpression(
         errors
 
     };
-
-}
-
-
-function validateNode(
-    node: ExpressionNode,
-    path: ExpressionPath,
-    errors: ExpressionValidationError[]
-): void {
-
-    switch (node.type) {
-
-        case "number": {
-
-            if (
-                !numberPattern.test(
-                    node.value
-                )
-            ) {
-
-                errors.push({
-
-                    path,
-
-                    nodeId:
-                        node.id,
-
-                    code:
-                        "invalid-number",
-
-                    message:
-                        `"${node.value}" no es un número válido.`
-
-                });
-
-            }
-
-            return;
-
-        }
-
-
-        case "symbol": {
-
-            if (
-                !symbolPattern.test(
-                    node.name
-                )
-            ) {
-
-                errors.push({
-
-                    path,
-
-                    nodeId:
-                        node.id,
-
-                    code:
-                        "invalid-symbol",
-
-                    message:
-                        `"${node.name}" no es un símbolo válido.`
-
-                });
-
-            }
-
-            return;
-
-        }
-
-
-        case "addition": {
-
-            if (
-                node.terms.length === 0
-            ) {
-
-                errors.push({
-
-                    path,
-
-                    nodeId:
-                        node.id,
-
-                    code:
-                        "empty-addition",
-
-                    message:
-                        "La suma no contiene términos."
-
-                });
-
-            }
-
-
-            node.terms.forEach((
-                term,
-                index
-            ) => {
-
-                validateNode(
-
-                    term,
-
-                    [
-                        ...path,
-                        "terms",
-                        index
-                    ],
-
-                    errors
-
-                );
-
-            });
-
-
-            return;
-
-        }
-
-
-        case "multiplication": {
-
-            if (
-                node.factors.length === 0
-            ) {
-
-                errors.push({
-
-                    path,
-
-                    nodeId:
-                        node.id,
-
-                    code:
-                        "empty-multiplication",
-
-                    message:
-                        "El producto no contiene factores."
-
-                });
-
-            }
-
-
-            node.factors.forEach((
-                factor,
-                index
-            ) => {
-
-                validateNode(
-
-                    factor,
-
-                    [
-                        ...path,
-                        "factors",
-                        index
-                    ],
-
-                    errors
-
-                );
-
-            });
-
-
-            return;
-
-        }
-
-
-        case "fraction": {
-
-            validateNode(
-
-                node.numerator,
-
-                [
-                    ...path,
-                    "numerator"
-                ],
-
-                errors
-
-            );
-
-
-            validateNode(
-
-                node.denominator,
-
-                [
-                    ...path,
-                    "denominator"
-                ],
-
-                errors
-
-            );
-
-
-            return;
-
-        }
-
-
-        case "power": {
-
-            validateNode(
-
-                node.base,
-
-                [
-                    ...path,
-                    "base"
-                ],
-
-                errors
-
-            );
-
-
-            validateNode(
-
-                node.exponent,
-
-                [
-                    ...path,
-                    "exponent"
-                ],
-
-                errors
-
-            );
-
-
-            return;
-
-        }
-
-
-        case "negation": {
-
-            validateNode(
-
-                node.operand,
-
-                [
-                    ...path,
-                    "operand"
-                ],
-
-                errors
-
-            );
-
-
-            return;
-
-        }
-
-
-        case "function-call": {
-
-            if (
-                !symbolPattern.test(
-                    node.name
-                )
-            ) {
-
-                errors.push({
-
-                    path,
-
-                    nodeId:
-                        node.id,
-
-                    code:
-                        "empty-function",
-
-                    message:
-                        "La función no tiene un nombre válido."
-
-                });
-
-            }
-
-
-            if (
-                node.arguments.length === 0
-            ) {
-
-                errors.push({
-
-                    path,
-
-                    nodeId:
-                        node.id,
-
-                    code:
-                        "empty-function-arguments",
-
-                    message:
-                        `La función ${node.name} no contiene argumentos.`
-
-                });
-
-            }
-
-
-            node.arguments.forEach((
-                argument,
-                index
-            ) => {
-
-                validateNode(
-
-                    argument,
-
-                    [
-                        ...path,
-                        "arguments",
-                        index
-                    ],
-
-                    errors
-
-                );
-
-            });
-
-
-            return;
-
-        }
-
-
-        case "group": {
-
-            validateNode(
-
-                node.expression,
-
-                [
-                    ...path,
-                    "expression"
-                ],
-
-                errors
-
-            );
-
-
-            return;
-
-        }
-
-
-        case "placeholder": {
-
-            errors.push({
-
-                path,
-
-                nodeId:
-                    node.id,
-
-                code:
-                    "placeholder",
-
-                message:
-                    node.label
-                        ? `Falta completar: ${node.label}.`
-                        : "La expresión está incompleta."
-
-            });
-
-
-            return;
-
-        }
-
-    }
 
 }

@@ -1,10 +1,12 @@
 export type ExpressionNode =
     | NumberNode
     | SymbolNode
+    | ConstantNode
     | AdditionNode
     | MultiplicationNode
     | FractionNode
     | PowerNode
+    | FactorialNode
     | NegationNode
     | FunctionCallNode
     | GroupNode
@@ -45,6 +47,22 @@ export type SymbolNode =
     BaseExpressionNode<"symbol"> & {
 
         readonly name: string;
+
+    };
+
+
+export type MathematicalConstant =
+    | "pi"
+    | "e"
+    | "i"
+    | "infinity";
+
+
+export type ConstantNode =
+    BaseExpressionNode<"constant"> & {
+
+        readonly name:
+            MathematicalConstant;
 
     };
 
@@ -91,6 +109,15 @@ export type PowerNode =
     };
 
 
+export type FactorialNode =
+    BaseExpressionNode<"factorial"> & {
+
+        readonly operand:
+            ExpressionNode;
+
+    };
+
+
 export type NegationNode =
     BaseExpressionNode<"negation"> & {
 
@@ -103,7 +130,8 @@ export type NegationNode =
 export type FunctionCallNode =
     BaseExpressionNode<"function-call"> & {
 
-        readonly name: string;
+        readonly name:
+            string;
 
         readonly arguments:
             readonly ExpressionNode[];
@@ -123,6 +151,7 @@ export type GroupNode =
 export type PlaceholderNode =
     BaseExpressionNode<"placeholder"> & {
 
-        readonly label?: string;
+        readonly label?:
+            string;
 
     };

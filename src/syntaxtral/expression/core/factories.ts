@@ -1,19 +1,24 @@
 import type {
+
     AdditionNode,
+    ConstantNode,
     ExpressionNode,
+    FactorialNode,
     FractionNode,
     FunctionCallNode,
     GroupNode,
+    MathematicalConstant,
     MultiplicationNode,
     NegationNode,
     NumberNode,
     PlaceholderNode,
     PowerNode,
     SymbolNode
+
 } from "./types";
 
 
-function createExpressionId(): string {
+function createExpressionNodeId(): string {
 
     return crypto.randomUUID();
 
@@ -27,13 +32,13 @@ export function numberNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "number",
 
         value:
-            value.toString()
+            String(value)
 
     };
 
@@ -47,7 +52,7 @@ export function symbolNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "symbol",
@@ -59,14 +64,34 @@ export function symbolNode(
 }
 
 
+export function constantNode(
+    name: MathematicalConstant
+): ConstantNode {
+
+    return {
+
+        id:
+            createExpressionNodeId(),
+
+        type:
+            "constant",
+
+        name
+
+    };
+
+}
+
+
 export function additionNode(
-    terms: ExpressionNode[]
+    terms:
+        readonly ExpressionNode[]
 ): AdditionNode {
 
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "addition",
@@ -79,13 +104,14 @@ export function additionNode(
 
 
 export function multiplicationNode(
-    factors: ExpressionNode[]
+    factors:
+        readonly ExpressionNode[]
 ): MultiplicationNode {
 
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "multiplication",
@@ -105,7 +131,7 @@ export function fractionNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "fraction",
@@ -126,13 +152,32 @@ export function powerNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "power",
 
         base,
         exponent
+
+    };
+
+}
+
+
+export function factorialNode(
+    operand: ExpressionNode
+): FactorialNode {
+
+    return {
+
+        id:
+            createExpressionNodeId(),
+
+        type:
+            "factorial",
+
+        operand
 
     };
 
@@ -146,7 +191,7 @@ export function negationNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "negation",
@@ -160,13 +205,14 @@ export function negationNode(
 
 export function functionCallNode(
     name: string,
-    argumentsList: ExpressionNode[]
+    argumentsList:
+        readonly ExpressionNode[]
 ): FunctionCallNode {
 
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "function-call",
@@ -188,7 +234,7 @@ export function groupNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "group",
@@ -207,12 +253,16 @@ export function placeholderNode(
     return {
 
         id:
-            createExpressionId(),
+            createExpressionNodeId(),
 
         type:
             "placeholder",
 
-        label
+        ...(
+            label !== undefined
+                ? { label }
+                : {}
+        )
 
     };
 

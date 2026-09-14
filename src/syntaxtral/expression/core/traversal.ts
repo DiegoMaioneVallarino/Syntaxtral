@@ -1,23 +1,26 @@
 import type {
+
     ExpressionNode,
     ExpressionPath
+
 } from "./types";
 
 
 export type ExpressionVisitor = (
-    node: ExpressionNode,
+    expression: ExpressionNode,
     path: ExpressionPath
 ) => void;
 
 
 export function getExpressionChildren(
-    node: ExpressionNode
-): ExpressionNode[] {
+    expression: ExpressionNode
+): readonly ExpressionNode[] {
 
-    switch (node.type) {
+    switch (expression.type) {
 
         case "number":
         case "symbol":
+        case "constant":
         case "placeholder":
 
             return [];
@@ -25,52 +28,57 @@ export function getExpressionChildren(
 
         case "addition":
 
-            return [
-                ...node.terms
-            ];
+            return expression.terms;
 
 
         case "multiplication":
 
-            return [
-                ...node.factors
-            ];
+            return expression.factors;
 
 
         case "fraction":
 
             return [
-                node.numerator,
-                node.denominator
+
+                expression.numerator,
+                expression.denominator
+
             ];
 
 
         case "power":
 
             return [
-                node.base,
-                node.exponent
+
+                expression.base,
+                expression.exponent
+
+            ];
+
+
+        case "factorial":
+
+            return [
+                expression.operand
             ];
 
 
         case "negation":
 
             return [
-                node.operand
+                expression.operand
             ];
 
 
         case "function-call":
 
-            return [
-                ...node.arguments
-            ];
+            return expression.arguments;
 
 
         case "group":
 
             return [
-                node.expression
+                expression.expression
             ];
 
     }
@@ -79,203 +87,41 @@ export function getExpressionChildren(
 
 
 export function walkExpression(
-    node: ExpressionNode,
+    expression: ExpressionNode,
     visitor: ExpressionVisitor,
     path: ExpressionPath = []
 ): void {
 
     visitor(
-        node,
+        expression,
         path
     );
 
 
-    switch (node.type) {
-
-        case "number":
-        case "symbol":
-        case "placeholder":
-
-            return;
+    const children =
+        getExpressionChildren(
+            expression
+        );
 
 
-        case "addition":
+    children.forEach((
+        child,
+        index
+    ) => {
 
-            node.terms.forEach((
-                term,
+        walkExpression(
+
+            child,
+
+            visitor,
+
+            [
+                ...path,
                 index
-            ) => {
+            ]
 
-                walkExpression(
+        );
 
-                    term,
-
-                    visitor,
-
-                    [
-                        ...path,
-                        "terms",
-                        index
-                    ]
-
-                );
-
-            });
-
-            return;
-
-
-        case "multiplication":
-
-            node.factors.forEach((
-                factor,
-                index
-            ) => {
-
-                walkExpression(
-
-                    factor,
-
-                    visitor,
-
-                    [
-                        ...path,
-                        "factors",
-                        index
-                    ]
-
-                );
-
-            });
-
-            return;
-
-
-        case "fraction":
-
-            walkExpression(
-
-                node.numerator,
-
-                visitor,
-
-                [
-                    ...path,
-                    "numerator"
-                ]
-
-            );
-
-
-            walkExpression(
-
-                node.denominator,
-
-                visitor,
-
-                [
-                    ...path,
-                    "denominator"
-                ]
-
-            );
-
-            return;
-
-
-        case "power":
-
-            walkExpression(
-
-                node.base,
-
-                visitor,
-
-                [
-                    ...path,
-                    "base"
-                ]
-
-            );
-
-
-            walkExpression(
-
-                node.exponent,
-
-                visitor,
-
-                [
-                    ...path,
-                    "exponent"
-                ]
-
-            );
-
-            return;
-
-
-        case "negation":
-
-            walkExpression(
-
-                node.operand,
-
-                visitor,
-
-                [
-                    ...path,
-                    "operand"
-                ]
-
-            );
-
-            return;
-
-
-        case "function-call":
-
-            node.arguments.forEach((
-                argument,
-                index
-            ) => {
-
-                walkExpression(
-
-                    argument,
-
-                    visitor,
-
-                    [
-                        ...path,
-                        "arguments",
-                        index
-                    ]
-
-                );
-
-            });
-
-            return;
-
-
-        case "group":
-
-            walkExpression(
-
-                node.expression,
-
-                visitor,
-
-                [
-                    ...path,
-                    "expression"
-                ]
-
-            );
-
-            return;
-
-    }
+    });
 
 }

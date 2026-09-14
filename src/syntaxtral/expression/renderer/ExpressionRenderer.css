@@ -1,0 +1,386 @@
+.syntaxtralExpression {
+
+    display: inline-flex;
+    align-items: baseline;
+
+    color: inherit;
+
+    font-family:
+        "Cambria Math",
+        "Times New Roman",
+        Georgia,
+        serif;
+
+    font-size: 1em;
+    line-height: 1.25;
+
+    white-space: nowrap;
+
+}
+
+
+/* -------------------------------- */
+/* NÚMEROS Y SÍMBOLOS               */
+/* -------------------------------- */
+
+.syntaxtralNumber {
+
+    display: inline-block;
+
+    font-style: normal;
+
+}
+
+
+.syntaxtralSymbol {
+
+    display: inline-block;
+
+    font-style: italic;
+
+}
+
+
+/* -------------------------------- */
+/* OPERADORES                       */
+/* -------------------------------- */
+
+.syntaxtralOperator {
+
+    display: inline-block;
+
+    margin:
+        0
+        0.28em;
+
+    font-style: normal;
+
+}
+
+
+.syntaxtralMultiplicationSymbol {
+
+    display: inline-block;
+
+    margin:
+        0
+        0.2em;
+
+    font-style: normal;
+
+    opacity: 0.82;
+
+}
+
+
+.syntaxtralComma {
+
+    display: inline-block;
+
+    margin-right: 0.25em;
+
+}
+
+
+/* -------------------------------- */
+/* SUMA Y MULTIPLICACIÓN            */
+/* -------------------------------- */
+
+.syntaxtralAddition,
+.syntaxtralMultiplication,
+.syntaxtralNegation {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+/* -------------------------------- */
+/* FRACCIÓN                         */
+/* -------------------------------- */
+
+.syntaxtralFraction {
+
+    display: inline-grid;
+
+    grid-template-rows:
+        auto
+        auto;
+
+    align-items: center;
+    justify-items: stretch;
+
+    min-width: 1.15em;
+
+    margin:
+        0
+        0.16em;
+
+    vertical-align: middle;
+
+    transform:
+        translateY(0.34em);
+
+}
+
+
+.syntaxtralNumerator {
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    min-height: 1em;
+
+    padding:
+        0
+        0.22em
+        0.1em;
+
+    border-bottom:
+        0.075em solid currentColor;
+
+    font-size: 0.86em;
+
+}
+
+
+.syntaxtralDenominator {
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    min-height: 1em;
+
+    padding:
+        0.1em
+        0.22em
+        0;
+
+    font-size: 0.86em;
+
+}
+
+
+/* Fracciones dentro de fracciones */
+
+.syntaxtralFraction
+.syntaxtralFraction {
+
+    font-size: 0.88em;
+
+}
+
+
+/* -------------------------------- */
+/* POTENCIA                         */
+/* -------------------------------- */
+
+.syntaxtralPower {
+
+    display: inline-flex;
+    align-items: flex-start;
+
+    vertical-align: baseline;
+
+}
+
+
+.syntaxtralPowerBase {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+.syntaxtralExponent {
+
+    display: inline-flex;
+
+    margin-left: 0.08em;
+
+    position: relative;
+    top: -0.43em;
+
+    font-size: 0.66em;
+    line-height: 1;
+
+    vertical-align: super;
+
+}
+
+
+/* -------------------------------- */
+/* FUNCIONES                        */
+/* -------------------------------- */
+
+.syntaxtralFunction {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+.syntaxtralFunctionName {
+
+    margin-right: 0.06em;
+
+    font-style: normal;
+
+}
+
+
+.syntaxtralFunctionArguments {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+.syntaxtralParenthesis {
+
+    display: inline-block;
+
+    margin:
+        0
+        0.06em;
+
+    font-style: normal;
+
+    transform:
+        scaleY(1.08);
+
+}
+
+
+/* -------------------------------- */
+/* AGRUPACIÓN                       */
+/* -------------------------------- */
+
+.syntaxtralGroup {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+/* -------------------------------- */
+/* PLACEHOLDER                      */
+/* -------------------------------- */
+
+.syntaxtralPlaceholder {
+
+    min-width: 0.8em;
+    min-height: 1em;
+
+    display: inline-grid;
+    place-items: center;
+
+    padding:
+        0.05em
+        0.15em;
+
+    border:
+        1px dashed
+        #9c69ee99;
+
+    border-radius: 0.15em;
+
+    background-color:
+        #7c3aed18;
+
+    color:
+        #b98aff;
+
+    font-size: 0.75em;
+    font-style: normal;
+
+}
+
+.syntaxtralNodeBoundary {
+
+    display: inline-flex;
+    align-items: baseline;
+
+    position: relative;
+
+    border-radius: 3px;
+
+}
+
+
+.syntaxtralNodeInteractive {
+
+    cursor: pointer;
+
+}
+
+
+.syntaxtralNodeInteractive:hover {
+
+    background-color:
+        #9a62ef13;
+
+}
+
+
+.syntaxtralNodeSelected {
+
+    background-color:
+        #8950df2d;
+
+    box-shadow:
+        0 0 0 1px #a76cffaa;
+
+}.syntaxtralConstant {
+    display: inline-flex;
+    align-items: baseline;
+
+    color: #e8ddff;
+
+    font-family:
+        "Times New Roman",
+        serif;
+
+    font-style: italic;
+}
+
+
+.syntaxtralFactorial {
+    display: inline-flex;
+    align-items: baseline;
+}
+
+
+.syntaxtralFactorialSymbol {
+    display: inline-flex;
+
+    margin-left: 2px;
+
+    color: #f4efff;
+
+    font-family:
+        "Times New Roman",
+        serif;
+
+    font-style: normal;
+    font-weight: 700;
+}
+
+
+.syntaxtralNodeSelected.syntaxtralNodeBoundary
+.syntaxtralConstant {
+    color: #ffffff;
+}
+
+
+.syntaxtralNodeSelected.syntaxtralNodeBoundary
+.syntaxtralFactorialSymbol {
+    color: #ffffff;
+}

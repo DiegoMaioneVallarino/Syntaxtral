@@ -1,0 +1,83 @@
+.expressionKeyboard {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin-top: 14px;
+    padding: 10px;
+
+    border: 1px solid #ffffff12;
+    border-radius: 10px;
+
+    background: #0d0d0f;
+}
+
+
+.expressionKeyboardSection {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(42px, 1fr));
+    gap: 6px;
+}
+
+
+.expressionKeyboard button {
+    min-height: 37px;
+
+    padding: 6px 8px;
+
+    border: 1px solid #ffffff16;
+    border-radius: 7px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #202024,
+            #151518
+        );
+
+    color: #eeeaf7;
+
+    font-family:
+        "Times New Roman",
+        serif;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition:
+        border-color 120ms ease,
+        background-color 120ms ease,
+        transform 120ms ease;
+}
+
+
+.expressionKeyboard button:hover:not(:disabled) {
+    border-color: #a855f788;
+
+    background:
+        linear-gradient(
+            180deg,
+            #30243d,
+            #1c1722
+        );
+
+    transform: translateY(-1px);
+}
+
+
+.expressionKeyboard button:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+
+.expressionKeyboard button:disabled {
+    cursor: not-allowed;
+    opacity: 0.35;
+}
+
+
+.expressionKeyboardDanger {
+    color: #ff9292 !important;
+}

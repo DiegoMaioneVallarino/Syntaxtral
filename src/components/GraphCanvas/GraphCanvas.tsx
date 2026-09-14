@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import type {
+    CSSProperties,
     PointerEvent as ReactPointerEvent,
     WheelEvent as ReactWheelEvent
 } from "react";
@@ -23,36 +24,73 @@ import type {
 
 type GraphCanvasProps = {
 
-    expressions: GraphExpression[];
+    expressions:
+        GraphExpression[];
 
 };
 
 
 type Viewport = {
 
-    centerX: number;
-    centerY: number;
+    centerX:
+        number;
 
-    pixelsPerUnit: number;
+    centerY:
+        number;
+
+    pixelsPerUnit:
+        number;
 
 };
 
 
 type CanvasSize = {
 
-    width: number;
-    height: number;
+    width:
+        number;
+
+    height:
+        number;
 
 };
 
 
 type DragState = {
 
-    pointerX: number;
-    pointerY: number;
+    pointerX:
+        number;
 
-    centerX: number;
-    centerY: number;
+    pointerY:
+        number;
+
+    centerX:
+        number;
+
+    centerY:
+        number;
+
+    moved:
+        boolean;
+
+};
+
+
+type SelectedGraphPoint = {
+
+    expressionId:
+        string;
+
+    expression:
+        string;
+
+    color:
+        string;
+
+    x:
+        number;
+
+    y:
+        number;
 
 };
 
@@ -66,7 +104,9 @@ function normalizeExpression(
 
 
     if (equalIndex === -1) {
+
         return expression;
+
     }
 
 
@@ -92,12 +132,15 @@ function getGridStep(
 
     const magnitude =
         Math.pow(
+
             10,
+
             Math.floor(
                 Math.log10(
                     approximateStep
                 )
             )
+
         );
 
 
@@ -107,15 +150,23 @@ function getGridStep(
 
 
     if (normalizedStep <= 1) {
+
         return magnitude;
+
     }
+
 
     if (normalizedStep <= 2) {
+
         return 2 * magnitude;
+
     }
 
+
     if (normalizedStep <= 5) {
+
         return 5 * magnitude;
+
     }
 
 
@@ -170,49 +221,139 @@ function GraphCanvas({
     });
 
 
-    const compiledExpressions = useMemo(() => {
+    const [
+        selectedPoint,
+        setSelectedPoint
+    ] = useState<SelectedGraphPoint | null>(
+        null
+    );
 
-        return expressions.flatMap(
-            expression => {
 
-                if (!expression.visible) {
-                    return [];
+    const compiledExpressions =
+        useMemo(() => {
+
+            return expressions.flatMap(
+                expression => {
+
+                    if (!expression.visible) {
+
+                        return [];
+
+                    }
+
+
+                    if (
+                        expression.expression
+                            .trim()
+                            .length === 0
+                    ) {
+
+                        return [];
+
+                    }
+
+
+                    try {
+
+                        const normalizedExpression =
+                            normalizeExpression(
+                                expression.expression
+                            );
+
+
+                        const compiled =
+                            compile(
+                                normalizedExpression
+                            );
+
+
+                        return [
+                            {
+                                ...expression,
+                                compiled
+                            }
+                        ];
+
+                    } catch {
+
+                        return [];
+
+                    }
+
                 }
+            );
+
+        }, [expressions]);
 
 
-                try {
+    const selectedScreenPosition =
+        useMemo(() => {
 
-                    const normalizedExpression =
-                        normalizeExpression(
-                            expression.expression
-                        );
+            if (!selectedPoint) {
 
-
-                    const compiled =
-                        compile(
-                            normalizedExpression
-                        );
-
-
-                    return [
-                        {
-                            ...expression,
-                            compiled
-                        }
-                    ];
-
-                } catch {
-
-                    return [];
-
-                }
+                return null;
 
             }
-        );
 
-    }, [
-        expressions
-    ]);
+
+            const screenX =
+
+                canvasSize.width / 2 +
+
+                (
+                    selectedPoint.x -
+                    viewport.centerX
+                ) *
+
+                viewport.pixelsPerUnit;
+
+
+            const screenY =
+
+                canvasSize.height / 2 -
+
+                (
+                    selectedPoint.y -
+                    viewport.centerY
+                ) *
+
+                viewport.pixelsPerUnit;
+
+
+            if (
+                screenX < 0 ||
+                screenX > canvasSize.width ||
+                screenY < 0 ||
+                screenY > canvasSize.height
+            ) {
+
+                return null;
+
+            }
+
+
+            return {
+
+                x:
+                    screenX,
+
+                y:
+                    screenY,
+
+                tooltipLeft:
+                    screenX >
+                    canvasSize.width - 210,
+
+                tooltipBelow:
+                    screenY < 70
+
+            };
+
+        }, [
+            selectedPoint,
+            canvasSize,
+            viewport
+        ]);
 
 
     useEffect(() => {
@@ -221,7 +362,11 @@ function GraphCanvas({
             containerRef.current;
 
 
-        if (!container) return;
+        if (!container) {
+
+            return;
+
+        }
 
 
         const resizeObserver =
@@ -264,14 +409,22 @@ function GraphCanvas({
             canvasRef.current;
 
 
-        if (!canvas) return;
+        if (!canvas) {
+
+            return;
+
+        }
 
 
         const context =
             canvas.getContext("2d");
 
 
-        if (!context) return;
+        if (!context) {
+
+            return;
+
+        }
 
 
         const {
@@ -284,7 +437,9 @@ function GraphCanvas({
             width === 0 ||
             height === 0
         ) {
+
             return;
+
         }
 
 
@@ -341,11 +496,13 @@ function GraphCanvas({
         ) {
 
             drawExpression(
+
                 context,
                 width,
                 height,
                 viewport,
                 expression
+
             );
 
         }
@@ -358,8 +515,9 @@ function GraphCanvas({
 
 
     function handleWheel(
-        event: ReactWheelEvent<HTMLCanvasElement>
-    ) {
+        event:
+            ReactWheelEvent<HTMLCanvasElement>
+    ): void {
 
         event.preventDefault();
 
@@ -368,7 +526,11 @@ function GraphCanvas({
             canvasRef.current;
 
 
-        if (!canvas) return;
+        if (!canvas) {
+
+            return;
+
+        }
 
 
         const bounds =
@@ -396,12 +558,19 @@ function GraphCanvas({
 
             const nextScale =
                 Math.min(
+
                     500,
+
                     Math.max(
+
                         8,
-                        previousViewport.pixelsPerUnit *
+
+                        previousViewport
+                            .pixelsPerUnit *
                         zoomFactor
+
                     )
+
                 );
 
 
@@ -464,8 +633,9 @@ function GraphCanvas({
 
 
     function handlePointerDown(
-        event: ReactPointerEvent<HTMLCanvasElement>
-    ) {
+        event:
+            ReactPointerEvent<HTMLCanvasElement>
+    ): void {
 
         event.currentTarget.setPointerCapture(
             event.pointerId
@@ -484,7 +654,10 @@ function GraphCanvas({
                 viewport.centerX,
 
             centerY:
-                viewport.centerY
+                viewport.centerY,
+
+            moved:
+                false
 
         };
 
@@ -492,14 +665,19 @@ function GraphCanvas({
 
 
     function handlePointerMove(
-        event: ReactPointerEvent<HTMLCanvasElement>
-    ) {
+        event:
+            ReactPointerEvent<HTMLCanvasElement>
+    ): void {
 
         const dragState =
             dragStateRef.current;
 
 
-        if (!dragState) return;
+        if (!dragState) {
+
+            return;
+
+        }
 
 
         const deltaX =
@@ -512,6 +690,25 @@ function GraphCanvas({
 
             event.clientY -
             dragState.pointerY;
+
+
+        const distance =
+
+            Math.hypot(
+                deltaX,
+                deltaY
+            );
+
+
+        if (distance < 4) {
+
+            return;
+
+        }
+
+
+        dragState.moved =
+            true;
 
 
         setViewport(previousViewport => ({
@@ -539,15 +736,240 @@ function GraphCanvas({
     }
 
 
-    function stopDragging() {
+    function handlePointerUp(
+        event:
+            ReactPointerEvent<HTMLCanvasElement>
+    ): void {
+
+        const dragState =
+            dragStateRef.current;
+
 
         dragStateRef.current =
             null;
 
+
+        if (
+            event.currentTarget.hasPointerCapture(
+                event.pointerId
+            )
+        ) {
+
+            event.currentTarget.releasePointerCapture(
+                event.pointerId
+            );
+
+        }
+
+
+        if (
+            !dragState ||
+            dragState.moved
+        ) {
+
+            return;
+
+        }
+
+
+        selectNearestExpression(
+            event
+        );
+
     }
 
 
-    function resetViewport() {
+    function handlePointerCancel(
+        event:
+            ReactPointerEvent<HTMLCanvasElement>
+    ): void {
+
+        dragStateRef.current =
+            null;
+
+
+        if (
+            event.currentTarget.hasPointerCapture(
+                event.pointerId
+            )
+        ) {
+
+            event.currentTarget.releasePointerCapture(
+                event.pointerId
+            );
+
+        }
+
+    }
+
+
+    function selectNearestExpression(
+        event:
+            ReactPointerEvent<HTMLCanvasElement>
+    ): void {
+
+        const canvas =
+            canvasRef.current;
+
+
+        if (!canvas) {
+
+            return;
+
+        }
+
+
+        const bounds =
+            canvas.getBoundingClientRect();
+
+
+        const pointerScreenX =
+
+            event.clientX -
+            bounds.left;
+
+
+        const pointerScreenY =
+
+            event.clientY -
+            bounds.top;
+
+
+        const worldX =
+
+            viewport.centerX +
+
+            (
+                pointerScreenX -
+                bounds.width / 2
+            ) /
+
+            viewport.pixelsPerUnit;
+
+
+        let nearestPoint:
+            SelectedGraphPoint | null = null;
+
+
+        let nearestDistance =
+            Number.POSITIVE_INFINITY;
+
+
+        for (
+            const expression
+            of compiledExpressions
+        ) {
+
+            let result:
+                unknown;
+
+
+            try {
+
+                result =
+                    expression.compiled.evaluate({
+                        x: worldX
+                    });
+
+            } catch {
+
+                continue;
+
+            }
+
+
+            const worldY =
+                Number(result);
+
+
+            if (
+                !Number.isFinite(worldY)
+            ) {
+
+                continue;
+
+            }
+
+
+            const curveScreenY =
+
+                bounds.height / 2 -
+
+                (
+                    worldY -
+                    viewport.centerY
+                ) *
+
+                viewport.pixelsPerUnit;
+
+
+            const distance =
+
+                Math.abs(
+                    curveScreenY -
+                    pointerScreenY
+                );
+
+
+            if (
+                distance <
+                nearestDistance
+            ) {
+
+                nearestDistance =
+                    distance;
+
+
+                nearestPoint = {
+
+                    expressionId:
+                        expression.id,
+
+                    expression:
+                        expression.expression,
+
+                    color:
+                        expression.color,
+
+                    x:
+                        worldX,
+
+                    y:
+                        worldY
+
+                };
+
+            }
+
+        }
+
+
+        const selectionTolerance =
+            14;
+
+
+        if (
+            nearestPoint &&
+            nearestDistance <=
+                selectionTolerance
+        ) {
+
+            setSelectedPoint(
+                nearestPoint
+            );
+
+        } else {
+
+            setSelectedPoint(
+                null
+            );
+
+        }
+
+    }
+
+
+    function resetViewport(): void {
 
         setViewport({
 
@@ -571,12 +993,89 @@ function GraphCanvas({
                 ref={canvasRef}
                 className="graphCanvas"
                 onWheel={handleWheel}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={stopDragging}
-                onPointerCancel={stopDragging}
+                onPointerDown={
+                    handlePointerDown
+                }
+                onPointerMove={
+                    handlePointerMove
+                }
+                onPointerUp={
+                    handlePointerUp
+                }
+                onPointerCancel={
+                    handlePointerCancel
+                }
                 aria-label="Plano cartesiano interactivo"
             />
+
+
+            {selectedPoint &&
+                selectedScreenPosition && (
+
+                <div
+                    className={`
+                        graphSelectedPoint
+
+                        ${
+                            selectedScreenPosition
+                                .tooltipLeft
+                                ? "graphSelectedPointLeft"
+                                : ""
+                        }
+
+                        ${
+                            selectedScreenPosition
+                                .tooltipBelow
+                                ? "graphSelectedPointBelow"
+                                : ""
+                        }
+                    `}
+                    style={{
+
+                        left:
+                            selectedScreenPosition.x,
+
+                        top:
+                            selectedScreenPosition.y,
+
+                        "--selected-point-color":
+                            selectedPoint.color
+
+                    } as CSSProperties}
+                >
+
+                    <span className="graphSelectedPointDot" />
+
+
+                    <div className="graphSelectedPointTooltip">
+
+                        <strong>
+                            {normalizeExpression(
+                                selectedPoint.expression
+                            )}
+                        </strong>
+
+                        <span>
+                            x = {
+                                formatSelectedNumber(
+                                    selectedPoint.x
+                                )
+                            }
+                        </span>
+
+                        <span>
+                            y = {
+                                formatSelectedNumber(
+                                    selectedPoint.y
+                                )
+                            }
+                        </span>
+
+                    </div>
+
+                </div>
+
+            )}
 
 
             <div className="graphCanvasControls">
@@ -584,17 +1083,24 @@ function GraphCanvas({
                 <button
                     type="button"
                     onClick={() => {
+
                         setViewport(previous => ({
 
                             ...previous,
 
                             pixelsPerUnit:
                                 Math.min(
+
                                     500,
-                                    previous.pixelsPerUnit * 1.2
+
+                                    previous
+                                        .pixelsPerUnit *
+                                    1.2
+
                                 )
 
                         }));
+
                     }}
                 >
                     +
@@ -604,17 +1110,24 @@ function GraphCanvas({
                 <button
                     type="button"
                     onClick={() => {
+
                         setViewport(previous => ({
 
                             ...previous,
 
                             pixelsPerUnit:
                                 Math.max(
+
                                     8,
-                                    previous.pixelsPerUnit / 1.2
+
+                                    previous
+                                        .pixelsPerUnit /
+                                    1.2
+
                                 )
 
                         }));
+
                     }}
                 >
                     −
@@ -624,7 +1137,9 @@ function GraphCanvas({
                 <button
                     type="button"
                     className="resetGraphButton"
-                    onClick={resetViewport}
+                    onClick={
+                        resetViewport
+                    }
                 >
                     Reset
                 </button>
@@ -634,28 +1149,36 @@ function GraphCanvas({
 
             <div className="graphCoordinates">
 
-                x: {viewport.centerX.toFixed(2)}
+                x: {
+                    viewport.centerX.toFixed(2)
+                }
 
                 {" · "}
 
-                y: {viewport.centerY.toFixed(2)}
+                y: {
+                    viewport.centerY.toFixed(2)
+                }
 
                 {" · "}
 
-                zoom: {viewport.pixelsPerUnit.toFixed(0)}
+                zoom: {
+                    viewport.pixelsPerUnit.toFixed(0)
+                }
 
             </div>
 
         </div>
     );
+
 }
 
 
 function drawBackground(
-    context: CanvasRenderingContext2D,
+    context:
+        CanvasRenderingContext2D,
     width: number,
     height: number
-) {
+): void {
 
     context.fillStyle =
         "#07080b";
@@ -672,11 +1195,12 @@ function drawBackground(
 
 
 function drawGrid(
-    context: CanvasRenderingContext2D,
+    context:
+        CanvasRenderingContext2D,
     width: number,
     height: number,
     viewport: Viewport
-) {
+): void {
 
     const step =
         getGridStep(
@@ -776,7 +1300,10 @@ function drawGrid(
         );
 
 
-        if (Math.abs(x) > step / 100) {
+        if (
+            Math.abs(x) >
+            step / 100
+        ) {
 
             context.fillText(
 
@@ -833,7 +1360,10 @@ function drawGrid(
         );
 
 
-        if (Math.abs(y) > step / 100) {
+        if (
+            Math.abs(y) >
+            step / 100
+        ) {
 
             context.fillText(
 
@@ -859,11 +1389,12 @@ function drawGrid(
 
 
 function drawAxes(
-    context: CanvasRenderingContext2D,
+    context:
+        CanvasRenderingContext2D,
     width: number,
     height: number,
     viewport: Viewport
-) {
+): void {
 
     const axisX =
 
@@ -922,20 +1453,26 @@ function drawAxes(
 
 
 function drawExpression(
-    context: CanvasRenderingContext2D,
+    context:
+        CanvasRenderingContext2D,
     width: number,
     height: number,
     viewport: Viewport,
     expression: {
-        color: string;
+
+        color:
+            string;
 
         compiled: {
+
             evaluate: (
                 scope?: object
             ) => unknown;
+
         };
+
     }
-) {
+): void {
 
     context.beginPath();
 
@@ -1010,7 +1547,9 @@ function drawExpression(
             Number(result);
 
 
-        if (!Number.isFinite(y)) {
+        if (
+            !Number.isFinite(y)
+        ) {
 
             drawing =
                 false;
@@ -1042,7 +1581,8 @@ function drawExpression(
             Math.abs(
                 screenY -
                 previousScreenY
-            ) > height * 0.75;
+            ) >
+            height * 0.75;
 
 
         const isFarOutsideCanvas =
@@ -1098,7 +1638,9 @@ function formatGridNumber(
     value: number
 ): string {
 
-    if (Math.abs(value) >= 1) {
+    if (
+        Math.abs(value) >= 1
+    ) {
 
         return Number(
             value.toFixed(4)
@@ -1108,6 +1650,30 @@ function formatGridNumber(
 
 
     return value.toPrecision(2);
+
+}
+
+
+function formatSelectedNumber(
+    value: number
+): string {
+
+    if (
+        Math.abs(value) >= 10000 ||
+        (
+            Math.abs(value) > 0 &&
+            Math.abs(value) < 0.0001
+        )
+    ) {
+
+        return value.toExponential(4);
+
+    }
+
+
+    return Number(
+        value.toFixed(6)
+    ).toString();
 
 }
 
