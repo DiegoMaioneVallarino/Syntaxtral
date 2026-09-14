@@ -12,6 +12,9 @@ import Explore from "./pages/Explore/Explore";
 import Articles from "./pages/Articles/Articles";
 import Community from "./pages/Community/Community";
 
+import Calculator
+    from "./features/calculator/Calculator";
+
 function App() {
     return (
         <div className="app">
@@ -40,7 +43,10 @@ function App() {
                         path="/community"
                         element={<Community />}
                     />
-
+                      <Route
+                          path="/calculator"
+                          element={<Calculator />}
+                      />
                 </Routes>
 
             </main>

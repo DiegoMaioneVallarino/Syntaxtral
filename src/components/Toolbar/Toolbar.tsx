@@ -122,6 +122,17 @@ function Toolbar() {
         Create
     </NavLink>
 
+    <NavLink
+    to="/calculator"
+    className={({ isActive }) =>
+        isActive
+            ? "navigationButton navigationButtonActive"
+            : "navigationButton"
+    }
+>
+    Calculator
+</NavLink>
+
 </nav>
 
 
