@@ -14,6 +14,7 @@ import type {
 
 import {
     Html,
+    Line,
     OrbitControls
 } from "@react-three/drei";
 
@@ -25,6 +26,10 @@ import {
 
 import {
     compile
+} from "mathjs";
+
+import type {
+    EvalFunction
 } from "mathjs";
 
 import "./Graph3DCanvas.css";
@@ -39,6 +44,7 @@ type Graph3DCanvasProps = {
     expressions:
         GraphExpression[];
 
+
 };
 
 
@@ -46,14 +52,22 @@ type CompiledSurfaceExpression =
     GraphExpression & {
 
         compiled:
-            ReturnType<typeof compile>;
+            EvalFunction;
 
     };
 
 
-type SelectedSurfacePoint = {
 
-    expression:
+type HoveredCord = {
+    expressionId: string;
+    frameIndex: number;
+};
+
+
+type ActiveGraphPoint = {
+  
+   
+    expressionId:
         string;
 
     color:
@@ -68,23 +82,94 @@ type SelectedSurfacePoint = {
     z:
         number;
 
+    frameIndex?:
+        number;
+
 };
 
 
+type FunctionCordProps = {
+
+    expression:
+        CompiledSurfaceExpression;
+
+    frameIndex:
+        number;
+
+    frameY:
+        number;
+
+    hovered:
+        boolean;
+
+    onHover: (
+        cord: HoveredCord,
+        point: ActiveGraphPoint
+    ) => void;
+
+};
+
+type SurfaceGuideCordProps = {
+
+    expression:
+        CompiledSurfaceExpression;
+
+    frameY:
+        number;
+
+};
 type FunctionSurfaceProps = {
 
     expression:
         CompiledSurfaceExpression;
 
-    onSelect: (
-        point: SelectedSurfacePoint
+    onHover: (
+        point: ActiveGraphPoint
     ) => void;
 
 };
 
 
-const SURFACE_SIZE =
+const GRAPH_SIZE =
     20;
+
+    const SURFACE_GUIDE_COUNT =
+    33;
+
+
+const SURFACE_GUIDE_POSITIONS =
+    Array.from(
+        {
+            length:
+                SURFACE_GUIDE_COUNT
+        },
+        (_, index) => {
+
+            const halfSize =
+                GRAPH_SIZE / 2;
+
+
+            return (
+
+                -halfSize +
+
+                (
+                    index /
+                    (
+                        SURFACE_GUIDE_COUNT -
+                        1
+                    )
+                ) *
+
+                GRAPH_SIZE
+
+            );
+
+        }
+    );
+
+const CURVE_SAMPLES =
+    320;
 
 
 const SURFACE_RESOLUTION =
@@ -102,29 +187,35 @@ function normalizeExpression(
     const equalIndex =
         expression.indexOf("=");
 
-
-    if (equalIndex === -1) {
-
-        return expression;
-
-    }
-
-
-    return expression.slice(
-        equalIndex + 1
-    );
+    return equalIndex === -1
+        ? expression
+        : expression.slice(
+            equalIndex + 1
+        );
 
 }
 
 
 function Graph3DCanvas({
-    expressions
+    expressions,
+
 }: Graph3DCanvasProps) {
 
+
+
+
     const [
-        selectedPoint,
-        setSelectedPoint
-    ] = useState<SelectedSurfacePoint | null>(
+        hoveredCord,
+        setHoveredCord
+    ] = useState<HoveredCord | null>(
+        null
+    );
+
+
+    const [
+        activePoint,
+        setActivePoint
+    ] = useState<ActiveGraphPoint | null>(
         null
     );
 
@@ -141,19 +232,11 @@ function Graph3DCanvas({
                             .trim()
                             .length === 0
                     ) {
-
                         return [];
-
                     }
 
 
                     try {
-
-                        const normalized =
-                            normalizeExpression(
-                                expression.expression
-                            );
-
 
                         return [
                             {
@@ -161,7 +244,9 @@ function Graph3DCanvas({
 
                                 compiled:
                                     compile(
-                                        normalized
+                                        normalizeExpression(
+                                            expression.expression
+                                        )
                                     )
                             }
                         ];
@@ -177,50 +262,154 @@ function Graph3DCanvas({
 
         }, [expressions]);
 
+const flatExpressions =
+    useMemo(() => {
 
-    useEffect(() => {
+        return compiledExpressions.filter(
+            expression =>
+                !expression.is3D
+        );
 
-        setSelectedPoint(
+    }, [compiledExpressions]);
+
+
+const surfaceExpressions =
+    useMemo(() => {
+
+        return compiledExpressions.filter(
+            expression =>
+                expression.is3D
+        );
+
+    }, [compiledExpressions]);
+
+
+const selectedContinuousExpression =
+
+    activePoint
+
+        ? surfaceExpressions.find(
+            expression =>
+                expression.id ===
+                activePoint.expressionId
+        ) ?? null
+
+        : null;
+
+useEffect(() => {
+
+    setHoveredCord(
+        null
+    );
+
+    setActivePoint(
+        null
+    );
+
+}, [expressions]);
+
+
+    function clearHover(): void {
+
+        setHoveredCord(
             null
         );
 
-    }, [expressions]);
+        setActivePoint(
+            null
+        );
+
+    }
+function handleCordHover(
+    cord: HoveredCord,
+    point: ActiveGraphPoint
+): void {
+
+    setHoveredCord(
+        cord
+    );
+
+    setActivePoint(
+        point
+    );
+
+}
+useEffect(() => {
+
+    function handleKeyDown(
+        event: KeyboardEvent
+    ): void {
+
+        if (
+            event.key !== "Escape"
+        ) {
+
+            return;
+
+        }
 
 
+        setHoveredCord(
+            null
+        );
+
+        setActivePoint(
+            null
+        );
+
+    }
+
+
+    window.addEventListener(
+        "keydown",
+        handleKeyDown
+    );
+
+
+    return () => {
+
+        window.removeEventListener(
+            "keydown",
+            handleKeyDown
+        );
+
+    };
+
+}, []);
     return (
         <div className="graph3DCanvasContainer">
 
             <Canvas
                 camera={{
-
-                    position:
-                        [
-                            12,
-                            10,
-                            12
-                        ],
-
-                    fov:
-                        45,
-
-                    near:
-                        0.1,
-
-                    far:
-                        1000
-
+                    position: [
+                        12,
+                        10,
+                        12
+                    ],
+                    fov: 45,
+                    near: 0.1,
+                    far: 1000
                 }}
                 dpr={[
                     1,
                     2
                 ]}
-                onPointerMissed={() => {
+                onPointerMissed={event => {
 
-                    setSelectedPoint(
-                        null
-                    );
+    /*
+     * Solo desbloqueamos con un clic vacío.
+     * Un arrastre de cámara no lo elimina.
+     */
 
-                }}
+    if (
+        event.type === "click"
+    ) {
+
+        clearHover();
+
+    }
+
+}}
             >
 
                 <color
@@ -235,14 +424,14 @@ function Graph3DCanvas({
                     attach="fog"
                     args={[
                         "#07080b",
-                        22,
-                        52
+                        24,
+                        54
                     ]}
                 />
 
 
                 <ambientLight
-                    intensity={0.75}
+                    intensity={0.8}
                 />
 
 
@@ -252,15 +441,15 @@ function Graph3DCanvas({
                         14,
                         8
                     ]}
-                    intensity={1.7}
+                    intensity={1.6}
                 />
 
 
                 <directionalLight
                     position={[
                         -8,
-                        4,
-                        -6
+                        5,
+                        -7
                     ]}
                     intensity={0.7}
                     color="#8b5cf6"
@@ -283,31 +472,116 @@ function Graph3DCanvas({
                     ]}
                 />
 
+{/* Funciones configuradas como 2D */}
+{flatExpressions.map((
+    expression,
+    index
+) => (
 
-                {compiledExpressions.map(
-                    expression => (
+    <FunctionCord
+        key={
+            `flat-${expression.id}`
+        }
+        expression={
+            expression
+        }
+        frameIndex={
+            index
+        }
+        frameY={0}
+        hovered={
+            hoveredCord?.expressionId ===
+                expression.id &&
+            hoveredCord.frameIndex ===
+                index
+        }
+        onHover={
+            handleCordHover
+        }
+    />
 
-                        <FunctionSurface
-                            key={
-                                expression.id
-                            }
-                            expression={
-                                expression
-                            }
-                            onSelect={
-                                setSelectedPoint
-                            }
-                        />
-
-                    )
-                )}
+))}
 
 
-                {selectedPoint && (
+{/* Funciones configuradas como 3D */}
+{surfaceExpressions.map(
+    expression => (
 
-                    <SelectedPointMarker
-                        point={
-                            selectedPoint
+        <FunctionSurface
+            key={
+                `surface-${expression.id}`
+            }
+            expression={
+                expression
+            }
+            onHover={
+                setActivePoint
+            }
+        />
+
+    )
+)}
+
+
+{/* 33 slices guía para cada superficie */}
+{surfaceExpressions.flatMap(
+    expression => (
+
+        SURFACE_GUIDE_POSITIONS.map((
+            frameY,
+            frameIndex
+        ) => (
+
+            <SurfaceGuideCord
+                key={
+                    `guide-${expression.id}-${frameIndex}`
+                }
+                expression={
+                    expression
+                }
+                frameY={
+                    frameY
+                }
+            />
+
+        ))
+
+    )
+)}
+
+
+{/* Slice seleccionado sobre la superficie */}
+{activePoint &&
+    selectedContinuousExpression && (
+
+    <FunctionCord
+        expression={
+            selectedContinuousExpression
+        }
+        frameIndex={0}
+        frameY={
+            activePoint.y
+        }
+        hovered
+        onHover={(
+            _cord,
+            point
+        ) => {
+
+            setActivePoint(
+                point
+            );
+
+        }}
+    />
+
+)}
+                
+                {activePoint && (
+
+                   <ActivePointMarker
+                    point={
+                            activePoint
                         }
                     />
 
@@ -328,38 +602,20 @@ function Graph3DCanvas({
             </Canvas>
 
 
+            
+
+
             <div className="graph3DInstructions">
 
                 Arrastra para girar
 
-                <span>
-                    ·
-                </span>
+                <span>·</span>
 
                 Rueda para acercar
 
-                <span>
-                    ·
-                </span>
+                <span>·</span>
 
-                Clic para seleccionar
-
-            </div>
-
-
-            <div className="graph3DAxisLegend">
-
-                <span className="graph3DAxisX">
-                    X
-                </span>
-
-                <span className="graph3DAxisY">
-                    Y
-                </span>
-
-                <span className="graph3DAxisZ">
-                    Z
-                </span>
+                Pasa sobre una cuerda
 
             </div>
 
@@ -369,9 +625,349 @@ function Graph3DCanvas({
 }
 
 
+function FunctionCord({
+    expression,
+    frameIndex,
+    frameY,
+    hovered,
+    onHover
+}: FunctionCordProps) {
+
+    const segments =
+        useMemo(() => {
+
+            return createCurveSegments(
+    expression.compiled,
+    frameY,
+    expression.variables
+);
+
+        }, [
+            expression.compiled,
+            frameY
+        ]);
+
+
+    function selectPoint(
+        event: ThreeEvent<MouseEvent>
+    ): void {
+
+        event.stopPropagation();
+
+        onHover(
+            {
+                expressionId:
+                    expression.id,
+
+                frameIndex
+            },
+            {
+                expressionId:
+                    expression.id,
+
+                color:
+                    expression.color,
+
+                x:
+                    event.point.x,
+
+                y:
+                    frameY,
+
+                z:
+                    event.point.y,
+
+                frameIndex
+            }
+        );
+
+    }
+
+
+    return (
+        <group>
+
+            {segments.map((
+                points,
+                segmentIndex
+            ) => (
+
+                <Line
+                    key={segmentIndex}
+                    points={points}
+                    color={
+                        hovered
+                            ? "#ffffff"
+                            : expression.color
+                    }
+                    lineWidth={
+                        hovered
+                            ? 1.2
+                            : 1
+                    }
+                    transparent
+                    opacity={
+                        hovered
+                            ? 1
+                            : 0.78
+                    }
+
+                    /*
+                     * La cuerda seleccionada siempre se
+                     * dibuja encima de la superficie.
+                     */
+                    depthTest={
+                        !hovered
+                    }
+                    renderOrder={
+                        hovered
+                            ? 20
+                            : 2
+                    }
+                    onClick={
+                        selectPoint
+                    }
+                    onPointerMove={event => {
+
+                        /*
+                         * Solamente recorremos la cuerda
+                         * que ya está seleccionada.
+                         */
+                        if (!hovered) {
+                            return;
+                        }
+
+                        selectPoint(
+                            event
+                        );
+
+                    }}
+                />
+
+            ))}
+
+        </group>
+    );
+
+}
+
+function SurfaceGuideCord({
+    expression,
+    frameY
+}: SurfaceGuideCordProps) {
+
+    const segments =
+        useMemo(() => {
+
+            return createCurveSegments(
+    expression.compiled,
+    frameY,
+    expression.variables
+);
+
+        }, [
+            expression.compiled,
+            frameY
+        ]);
+
+
+    return (
+        <group>
+
+            {segments.map((
+                points,
+                segmentIndex
+            ) => (
+
+                <Line
+                    key={segmentIndex}
+                    points={points}
+                    color={
+                        expression.color
+                    }
+                    lineWidth={0.75}
+                    transparent
+                    opacity={0.6}
+                    depthTest
+                    renderOrder={5}
+
+                    /*
+                     * Los slices decorativos no deben
+                     * capturar clics ni el ratón.
+                     */
+                    raycast={() => {}}
+                />
+
+            ))}
+
+        </group>
+    );
+
+}
+function createCurveSegments(
+    compiled:
+        EvalFunction,
+    frameY:
+        number,
+    variables:
+        Readonly<
+            Record<string, number>
+        >
+): Array<
+    Array<
+        [number, number, number]
+    >
+> {
+
+    const segments:
+        Array<
+            Array<
+                [number, number, number]
+            >
+        > = [];
+
+
+    let currentSegment:
+        Array<
+            [number, number, number]
+        > = [];
+
+
+    let previousZ:
+        number | null = null;
+
+
+    const halfSize =
+        GRAPH_SIZE / 2;
+
+
+    function finishSegment(): void {
+
+        if (
+            currentSegment.length >= 2
+        ) {
+
+            segments.push(
+                currentSegment
+            );
+
+        }
+
+
+        currentSegment =
+            [];
+
+        previousZ =
+            null;
+
+    }
+
+
+    for (
+        let index = 0;
+        index <= CURVE_SAMPLES;
+        index += 1
+    ) {
+
+        const x =
+
+            -halfSize +
+
+            (
+                index /
+                CURVE_SAMPLES
+            ) *
+
+            GRAPH_SIZE;
+
+
+        let z:
+            number;
+
+
+        try {
+
+            z =
+                Number(
+                    compiled.evaluate({
+    ...variables,
+    x,
+    y:
+        frameY
+})
+                );
+
+        } catch {
+
+            finishSegment();
+
+            continue;
+
+        }
+
+
+        if (
+            !Number.isFinite(z) ||
+            Math.abs(z) >
+                MAXIMUM_HEIGHT
+        ) {
+
+            finishSegment();
+
+            continue;
+
+        }
+
+
+        const discontinuity =
+
+            previousZ !== null &&
+
+            Math.abs(
+                z -
+                previousZ
+            ) > 8;
+
+
+        if (discontinuity) {
+
+            finishSegment();
+
+        }
+
+
+        /*
+         * Posición Three.js:
+         *
+         * X matemático → X
+         * Z matemático → Y vertical
+         * Y matemático → Z profundidad
+         */
+
+        currentSegment.push([
+            x,
+            z,
+            frameY
+        ]);
+
+
+        previousZ =
+            z;
+
+    }
+
+
+    finishSegment();
+
+
+    return segments;
+
+}
+
+
 function FunctionSurface({
     expression,
-    onSelect
+    onHover,
 }: FunctionSurfaceProps) {
 
     const geometry =
@@ -395,18 +991,18 @@ function FunctionSurface({
     }, [geometry]);
 
 
-    function handleSurfaceClick(
-        event:
-            ThreeEvent<MouseEvent>
-    ): void {
+   function handleSurfaceClick(
+    event:
+        ThreeEvent<MouseEvent>
+): void {
 
         event.stopPropagation();
 
 
-        onSelect({
+        onHover({
 
-            expression:
-                expression.expression,
+            expressionId:
+                  expression.id,
 
             color:
                 expression.color,
@@ -428,32 +1024,35 @@ function FunctionSurface({
     return (
         <mesh
             geometry={geometry}
-            onClick={handleSurfaceClick}
+           onClick={
+    handleSurfaceClick
+}
         >
 
             <meshStandardMaterial
-                color={
-                    expression.color
-                }
-                side={
-                    DoubleSide
-                }
-                transparent
-                opacity={0.76}
-                roughness={0.52}
-                metalness={0.08}
-                wireframe={false}
-            />
+    color={
+        expression.color
+    }
+    side={
+        DoubleSide
+    }
+    transparent
+    opacity={0.58}
+    roughness={0.5}
+    metalness={0.08}
+    polygonOffset
+    polygonOffsetFactor={1}
+    polygonOffsetUnits={1}
+/>
 
         </mesh>
     );
 
 }
 
-
 function createSurfaceGeometry(
     compiled:
-        ReturnType<typeof compile>
+        EvalFunction
 ): BufferGeometry {
 
     const geometry =
@@ -473,7 +1072,7 @@ function createSurfaceGeometry(
 
 
     const halfSize =
-        SURFACE_SIZE / 2;
+        GRAPH_SIZE / 2;
 
 
     const pointsPerSide =
@@ -495,7 +1094,7 @@ function createSurfaceGeometry(
                 SURFACE_RESOLUTION
             ) *
 
-            SURFACE_SIZE;
+            GRAPH_SIZE;
 
 
         for (
@@ -513,7 +1112,7 @@ function createSurfaceGeometry(
                     SURFACE_RESOLUTION
                 ) *
 
-                SURFACE_SIZE;
+                GRAPH_SIZE;
 
 
             let z =
@@ -527,27 +1126,22 @@ function createSurfaceGeometry(
             try {
 
                 const result =
-                    compiled.evaluate({
-                        x,
-                        y
-                    });
-
-
-                const numericResult =
-                    Number(result);
+                    Number(
+                        compiled.evaluate({
+                            x,
+                            y
+                        })
+                    );
 
 
                 if (
-                    Number.isFinite(
-                        numericResult
-                    ) &&
-                    Math.abs(
-                        numericResult
-                    ) <= MAXIMUM_HEIGHT
+                    Number.isFinite(result) &&
+                    Math.abs(result) <=
+                        MAXIMUM_HEIGHT
                 ) {
 
                     z =
-                        numericResult;
+                        result;
 
                     valid =
                         true;
@@ -561,20 +1155,6 @@ function createSurfaceGeometry(
 
             }
 
-
-            /*
-             * Three.js usa Y como eje vertical.
-             *
-             * Matemáticamente tenemos:
-             *
-             * x = horizontal
-             * y = profundidad
-             * z = altura
-             *
-             * Por eso guardamos:
-             *
-             * [x, z, y]
-             */
 
             positions.push(
                 x,
@@ -605,7 +1185,6 @@ function createSurfaceGeometry(
         ) {
 
             const topLeft =
-
                 row *
                 pointsPerSide +
                 column;
@@ -631,11 +1210,9 @@ function createSurfaceGeometry(
             ) {
 
                 indices.push(
-
                     topLeft,
                     bottomLeft,
                     topRight
-
                 );
 
             }
@@ -648,11 +1225,9 @@ function createSurfaceGeometry(
             ) {
 
                 indices.push(
-
                     topRight,
                     bottomLeft,
                     bottomRight
-
                 );
 
             }
@@ -663,14 +1238,11 @@ function createSurfaceGeometry(
 
 
     geometry.setAttribute(
-
         "position",
-
         new Float32BufferAttribute(
             positions,
             3
         )
-
     );
 
 
@@ -687,20 +1259,19 @@ function createSurfaceGeometry(
 }
 
 
-function SelectedPointMarker({
+function ActivePointMarker({
     point
 }: {
-    point: SelectedSurfacePoint;
+    point:
+        ActiveGraphPoint;
 }) {
 
     return (
         <group
             position={[
-
                 point.x,
                 point.z,
                 point.y
-
             ]}
         >
 
@@ -708,9 +1279,9 @@ function SelectedPointMarker({
 
                 <sphereGeometry
                     args={[
-                        0.12,
-                        20,
-                        20
+                        0.105,
+                        18,
+                        18
                     ]}
                 />
 
@@ -725,10 +1296,9 @@ function SelectedPointMarker({
                 center
                 position={[
                     0,
-                    0.8,
+                    0.75,
                     0
                 ]}
-                distanceFactor={8}
             >
 
                 <div
@@ -739,39 +1309,34 @@ function SelectedPointMarker({
                     }}
                 >
 
-                    <strong
-                        style={{
-                            color:
-                                point.color
-                        }}
-                    >
-                        {normalizeExpression(
-                            point.expression
+                    <strong className="graph3DPointMainValue">
+
+                        {formatNumber(
+                            point.z
                         )}
+
                     </strong>
 
-                    <span>
+
+                    <span className="graph3DPointSecondaryValue">
+
                         x = {
                             formatNumber(
                                 point.x
                             )
                         }
+
                     </span>
 
-                    <span>
+
+                    <span className="graph3DPointSecondaryValue">
+
                         y = {
                             formatNumber(
                                 point.y
                             )
                         }
-                    </span>
 
-                    <span>
-                        z = {
-                            formatNumber(
-                                point.z
-                            )
-                        }
                     </span>
 
                 </div>

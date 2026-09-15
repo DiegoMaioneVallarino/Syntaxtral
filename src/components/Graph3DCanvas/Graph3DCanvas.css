@@ -142,4 +142,170 @@
 
     text-overflow: ellipsis;
     white-space: nowrap;
+}.graph3DRepresentationPanel {
+    width: 185px;
+
+    position: absolute;
+
+    top: 16px;
+    right: 16px;
+
+    z-index: 15;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 12px;
+
+    border: 1px solid #ffffff16;
+    border-radius: 8px;
+
+    background-color: #0c0d12e8;
+
+    box-shadow:
+        0 10px 30px #00000088;
+
+    backdrop-filter: blur(9px);
+}
+
+
+.graph3DControlTitle {
+    color: #756e7e;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+
+.graph3DModeButtons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+
+    padding: 3px;
+
+    border: 1px solid #ffffff10;
+    border-radius: 6px;
+
+    background-color: #08090d;
+}
+
+
+.graph3DModeButtons button {
+    height: 28px;
+
+    border: none;
+    border-radius: 4px;
+
+    background-color: transparent;
+
+    color: #746e7c;
+
+    font-size: 9px;
+
+    cursor: pointer;
+}
+
+
+.graph3DModeButtons button:hover {
+    color: #ffffff;
+}
+
+
+.graph3DModeButtons
+.graph3DModeActive {
+    background-color: #6f38cb;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 13px #7c3aed55;
+}
+
+
+.graph3DRepetitionControl {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+
+.graph3DRepetitionControl > span {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: #837c8a;
+
+    font-size: 9px;
+}
+
+
+.graph3DRepetitionControl strong {
+    color: #b88bf9;
+
+    font-family: monospace;
+    font-size: 11px;
+}
+
+
+.graph3DRepetitionControl input {
+    width: 100%;
+
+    accent-color: #8b4ee8;
+
+    cursor: pointer;
+}
+
+
+.graph3DRepetitionControl input:disabled {
+    cursor: not-allowed;
+
+    opacity: 0.3;
+}
+
+.graph3DPointTooltip {
+    width: 140px;
+    min-width: 140px;
+
+    box-sizing: border-box;
+
+    transform: none;
+}
+
+
+.graph3DPointTooltip
+.graph3DPointMainValue {
+    max-width: none;
+
+    margin: 0;
+
+    overflow: visible;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 23px;
+    font-style: italic;
+    font-weight: 500;
+
+    line-height: 1;
+
+    text-overflow: initial;
+}
+
+
+.graph3DPointSecondaryValue {
+    margin-top: 3px;
+
+    color: #918a99 !important;
+
+    font-family: monospace;
+    font-size: 9px;
 }

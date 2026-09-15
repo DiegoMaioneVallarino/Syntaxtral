@@ -401,7 +401,41 @@ function GraphCanvas({
         };
 
     }, []);
+useEffect(() => {
 
+    function handleKeyDown(
+        event: KeyboardEvent
+    ): void {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            setSelectedPoint(
+                null
+            );
+
+        }
+
+    }
+
+
+    window.addEventListener(
+        "keydown",
+        handleKeyDown
+    );
+
+
+    return () => {
+
+        window.removeEventListener(
+            "keydown",
+            handleKeyDown
+        );
+
+    };
+
+}, []);
 
     useEffect(() => {
 
@@ -665,75 +699,214 @@ function GraphCanvas({
 
 
     function handlePointerMove(
-        event:
-            ReactPointerEvent<HTMLCanvasElement>
-    ): void {
+    event:
+        ReactPointerEvent<HTMLCanvasElement>
+): void {
 
-        const dragState =
-            dragStateRef.current;
+    const dragState =
+        dragStateRef.current;
 
 
-        if (!dragState) {
+    /*
+     * Si no estamos arrastrando la cámara
+     * y existe una curva seleccionada,
+     * el mouse solamente controla x.
+     */
 
-            return;
+    if (!dragState) {
+
+        if (
+            selectedPoint &&
+            event.buttons === 0
+        ) {
+
+            updateSelectedPointFromMouse(
+                event
+            );
 
         }
 
 
-        const deltaX =
+        return;
 
-            event.clientX -
-            dragState.pointerX;
-
-
-        const deltaY =
-
-            event.clientY -
-            dragState.pointerY;
+    }
 
 
-        const distance =
+    const deltaX =
 
-            Math.hypot(
-                deltaX,
-                deltaY
+        event.clientX -
+        dragState.pointerX;
+
+
+    const deltaY =
+
+        event.clientY -
+        dragState.pointerY;
+
+
+    const distance =
+
+        Math.hypot(
+            deltaX,
+            deltaY
+        );
+
+
+    if (distance < 4) {
+
+        return;
+
+    }
+
+
+    dragState.moved =
+        true;
+
+
+    setViewport(previousViewport => ({
+
+        ...previousViewport,
+
+        centerX:
+
+            dragState.centerX -
+
+            deltaX /
+            previousViewport.pixelsPerUnit,
+
+        centerY:
+
+            dragState.centerY +
+
+            deltaY /
+            previousViewport.pixelsPerUnit
+
+    }));
+
+}
+
+function updateSelectedPointFromMouse(
+    event:
+        ReactPointerEvent<HTMLCanvasElement>
+): void {
+
+    if (!selectedPoint) {
+
+        return;
+
+    }
+
+
+    const canvas =
+        canvasRef.current;
+
+
+    if (!canvas) {
+
+        return;
+
+    }
+
+
+    const selectedExpression =
+        compiledExpressions.find(
+            expression =>
+                expression.id ===
+                selectedPoint.expressionId
+        );
+
+
+    if (!selectedExpression) {
+
+        return;
+
+    }
+
+
+    const bounds =
+        canvas.getBoundingClientRect();
+
+
+    const pointerScreenX =
+
+        event.clientX -
+        bounds.left;
+
+
+    const worldX =
+
+        viewport.centerX +
+
+        (
+            pointerScreenX -
+            bounds.width / 2
+        ) /
+
+        viewport.pixelsPerUnit;
+
+
+    try {
+
+        const worldY =
+            Number(
+                selectedExpression
+                    .compiled
+                    .evaluate({
+                        x:
+                            worldX
+                    })
             );
 
 
-        if (distance < 4) {
+        /*
+         * Si caemos en una discontinuidad,
+         * conservamos el último punto válido.
+         * No borramos la selección.
+         */
+
+        if (
+            !Number.isFinite(
+                worldY
+            )
+        ) {
 
             return;
 
         }
 
 
-        dragState.moved =
-            true;
+        setSelectedPoint(previous => {
+
+            if (!previous) {
+
+                return previous;
+
+            }
 
 
-        setViewport(previousViewport => ({
+            return {
 
-            ...previousViewport,
+                ...previous,
 
-            centerX:
+                x:
+                    worldX,
 
-                dragState.centerX -
+                y:
+                    worldY
 
-                deltaX /
+            };
 
-                previousViewport.pixelsPerUnit,
+        });
 
-            centerY:
+    } catch {
 
-                dragState.centerY +
-
-                deltaY /
-
-                previousViewport.pixelsPerUnit
-
-        }));
+        /*
+         * Conservamos el último punto válido.
+         */
 
     }
+
+}
 
 
     function handlePointerUp(
@@ -866,10 +1039,13 @@ function GraphCanvas({
 
             try {
 
-                result =
-                    expression.compiled.evaluate({
-                        x: worldX
-                    });
+             result =
+    expression.compiled.evaluate({
+        ...expression.variables,
+
+        x:
+            worldX
+    });
 
             } catch {
 
@@ -1047,31 +1223,24 @@ function GraphCanvas({
                     <span className="graphSelectedPointDot" />
 
 
-                    <div className="graphSelectedPointTooltip">
+                   <strong className="graphPointMainValue">
 
-                        <strong>
-                            {normalizeExpression(
-                                selectedPoint.expression
-                            )}
-                        </strong>
+    {formatSelectedNumber(
+        selectedPoint.y
+    )}
 
-                        <span>
-                            x = {
-                                formatSelectedNumber(
-                                    selectedPoint.x
-                                )
-                            }
-                        </span>
+</strong>
 
-                        <span>
-                            y = {
-                                formatSelectedNumber(
-                                    selectedPoint.y
-                                )
-                            }
-                        </span>
 
-                    </div>
+<span className="graphPointSecondaryValue">
+
+    x = {
+        formatSelectedNumber(
+            selectedPoint.x
+        )
+    }
+
+</span>
 
                 </div>
 
@@ -1460,20 +1629,41 @@ function drawExpression(
     viewport: Viewport,
     expression: {
 
-        color:
-            string;
+    color:
+        string;
+        coordinateSystem:
+    "cartesian" | "polar";
+    variables:
+        Readonly<
+            Record<string, number>
+        >;
 
-        compiled: {
+    compiled: {
 
-            evaluate: (
-                scope?: object
-            ) => unknown;
+        evaluate: (
+            scope?: object
+        ) => unknown;
 
-        };
+    };
 
-    }
+}
 ): void {
+if (
+    expression.coordinateSystem ===
+    "polar"
+) {
 
+    drawPolarExpression(
+        context,
+        width,
+        height,
+        viewport,
+        expression
+    );
+
+    return;
+
+}
     context.beginPath();
 
 
@@ -1526,10 +1716,10 @@ function drawExpression(
         try {
 
             result =
-                expression.compiled.evaluate({
-                    x
-                });
-
+    expression.compiled.evaluate({
+        ...expression.variables,
+        x
+    });
         } catch {
 
             drawing =
@@ -1633,7 +1823,216 @@ function drawExpression(
 
 }
 
+function drawPolarExpression(
+    context:
+        CanvasRenderingContext2D,
+    width:
+        number,
+    height:
+        number,
+    viewport:
+        Viewport,
+    expression: {
 
+        color:
+            string;
+
+        variables:
+            Readonly<
+                Record<string, number>
+            >;
+
+        compiled: {
+
+            evaluate: (
+                scope?: object
+            ) => unknown;
+
+        };
+
+    }
+): void {
+
+    const samples =
+        720;
+
+
+    context.beginPath();
+
+    context.strokeStyle =
+        expression.color;
+
+    context.lineWidth =
+        2.5;
+
+    context.lineJoin =
+        "round";
+
+    context.lineCap =
+        "round";
+
+
+    let drawing =
+        false;
+
+    let previousScreenX:
+        number | null = null;
+
+    let previousScreenY:
+        number | null = null;
+
+
+    for (
+        let index = 0;
+        index <= samples;
+        index += 1
+    ) {
+
+        const theta =
+
+            (
+                index /
+                samples
+            ) *
+
+            Math.PI *
+            2;
+
+
+        let radius:
+            number;
+
+
+        try {
+
+            radius =
+                Number(
+                    expression.compiled.evaluate({
+                        ...expression.variables,
+                        theta
+                    })
+                );
+
+        } catch {
+
+            drawing =
+                false;
+
+            previousScreenX =
+                null;
+
+            previousScreenY =
+                null;
+
+            continue;
+
+        }
+
+
+        if (
+            !Number.isFinite(radius) ||
+            Math.abs(radius) > 10000
+        ) {
+
+            drawing =
+                false;
+
+            previousScreenX =
+                null;
+
+            previousScreenY =
+                null;
+
+            continue;
+
+        }
+
+
+        const x =
+            radius *
+            Math.cos(theta);
+
+
+        const y =
+            radius *
+            Math.sin(theta);
+
+
+        const screenX =
+
+            width / 2 +
+
+            (
+                x -
+                viewport.centerX
+            ) *
+
+            viewport.pixelsPerUnit;
+
+
+        const screenY =
+
+            height / 2 -
+
+            (
+                y -
+                viewport.centerY
+            ) *
+
+            viewport.pixelsPerUnit;
+
+
+        const discontinuity =
+
+            previousScreenX !== null &&
+            previousScreenY !== null &&
+
+            Math.hypot(
+
+                screenX -
+                    previousScreenX,
+
+                screenY -
+                    previousScreenY
+
+            ) > 180;
+
+
+        if (
+            !drawing ||
+            discontinuity
+        ) {
+
+            context.moveTo(
+                screenX,
+                screenY
+            );
+
+            drawing =
+                true;
+
+        } else {
+
+            context.lineTo(
+                screenX,
+                screenY
+            );
+
+        }
+
+
+        previousScreenX =
+            screenX;
+
+        previousScreenY =
+            screenY;
+
+    }
+
+
+    context.stroke();
+
+}
 function formatGridNumber(
     value: number
 ): string {

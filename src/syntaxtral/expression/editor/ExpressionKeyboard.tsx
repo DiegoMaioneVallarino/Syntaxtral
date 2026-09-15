@@ -149,7 +149,25 @@ export function ExpressionKeyboard({
                     </button>
 
                 ))}
+<button
+    type="button"
+    disabled={
+        disabled
+    }
+    onClick={() => {
 
+        onAction({
+            type:
+                "symbol",
+
+            value:
+                "theta"
+        });
+
+    }}
+>
+    θ
+</button>
 
                 <button
                     type="button"

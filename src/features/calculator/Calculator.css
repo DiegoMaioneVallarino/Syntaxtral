@@ -877,3 +877,967 @@
     box-shadow:
         0 0 14px #7c3aed55;
 }
+
+.calculatorFlow {
+    min-height: 0;
+    flex: 1;
+
+    overflow-y: auto;
+}
+
+
+.calculatorNote {
+    padding: 13px 15px 15px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+    background-color:
+        #0d0e13;
+}
+
+
+.calculatorNote:focus-within {
+    background-color:
+        #13141b;
+
+    box-shadow:
+        inset 2px 0 #7d44e9;
+}
+
+
+.calculatorNoteHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+}
+
+
+.calculatorNoteHeader span {
+    color: #766e80;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+}
+
+
+.calculatorNoteHeader button {
+    border: none;
+
+    background-color: transparent;
+
+    color: #615a69;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+
+.calculatorNoteHeader button:hover {
+    color: #ef6a88;
+}
+
+
+.calculatorNote textarea {
+    width: 100%;
+    min-height: 75px;
+
+    padding: 9px 10px;
+
+    border: 1px solid #ffffff11;
+    border-radius: 6px;
+    outline: none;
+
+    box-sizing: border-box;
+
+    resize: vertical;
+
+    background-color: #090a0e;
+
+    color: #c9c2d0;
+
+    font-family: inherit;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+.calculatorNote textarea:focus {
+    border-color: #7f49d3;
+
+    box-shadow:
+        0 0 0 2px #7f49d31c;
+}
+
+
+.calculatorNote textarea::placeholder {
+    color: #514b58;
+}
+
+
+.addNoteButton {
+    min-height: 45px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 0 17px;
+
+    border: none;
+    border-top: 1px solid #ffffff0d;
+
+    background-color: transparent;
+
+    color: #8e8797;
+
+    font-size: 11px;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+
+.addNoteButton:hover {
+    background-color: #13141a;
+
+    color: #ffffff;
+}
+
+
+.addNoteButton span {
+    color: #9d64ef;
+
+    font-size: 20px;
+}.calculatorFlow {
+    min-height: 0;
+    flex: 1;
+
+    overflow-y: auto;
+}
+
+
+.calculatorFormulaBlock {
+    padding: 15px 17px 18px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            #54249012,
+            transparent 70%
+        ),
+        #0c0d12;
+
+    cursor: pointer;
+
+    transition:
+        background-color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+
+.calculatorFormulaBlockActive {
+    background-color: #11121a;
+
+    box-shadow:
+        inset 2px 0 #8148df;
+}
+
+
+.calculatorFormulaHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 13px;
+}
+
+
+.calculatorFormulaHeader > div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+
+.calculatorFormulaHeader strong {
+    color: #81798a;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+}
+
+
+.calculatorFormulaColor {
+    width: 10px;
+    height: 10px;
+
+    display: block;
+
+    border: 1px solid #ffffff66;
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 9px currentColor;
+}
+
+
+.calculatorFormulaHeader button {
+    border: none;
+
+    background-color: transparent;
+
+    color: #625b69;
+
+    font-size: 17px;
+
+    cursor: pointer;
+}
+
+
+.calculatorFormulaHeader button:hover {
+    color: #ef6a88;
+}
+
+
+.calculatorFormulaExpression {
+    min-height: 65px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow-x: auto;
+
+    color: #f2edf7;
+
+    font-size: 27px;
+}
+
+
+.calculatorBlockActions {
+    min-height: 46px;
+
+    display: grid;
+    grid-template-columns:
+        1fr
+        1fr;
+
+    border-top:
+        1px solid #ffffff0d;
+}
+
+
+.calculatorBlockActions button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    border: none;
+
+    background-color: #0c0d11;
+
+    color: #88818f;
+
+    font-size: 10px;
+
+    cursor: pointer;
+}
+
+
+.calculatorBlockActions button + button {
+    border-left:
+        1px solid #ffffff0d;
+}
+
+
+.calculatorBlockActions button:hover {
+    background-color: #15161d;
+
+    color: #ffffff;
+}
+
+
+.calculatorBlockActions button span {
+    color: #a266f1;
+
+    font-size: 18px;
+}
+
+/* ========================================
+   EXTRUSION TOOLBAR
+======================================== */
+
+.calculatorExtrusionToolbar {
+
+    position: relative;
+
+    flex: 0 0 auto;
+
+    padding:
+        9px
+        12px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+    background-color:
+        #0c0d12;
+
+    z-index: 15;
+
+}
+
+
+.calculatorExtrusionButton {
+
+    width: 100%;
+    min-height: 36px;
+
+    display: grid;
+
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding:
+        0
+        11px;
+
+    border:
+        1px solid #ffffff13;
+
+    border-radius: 6px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #16171e,
+            #111218
+        );
+
+    color: #7f7789;
+
+    cursor: pointer;
+
+}
+
+
+
+
+/* ========================================
+   FORMULA AUTO HEIGHT
+======================================== */
+
+.calculatorFlow {
+
+    min-height: 0;
+
+    flex: 1;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+
+
+.calculatorFormulaBlock {
+
+    height: auto;
+    min-height: max-content;
+
+    overflow: visible;
+
+}
+
+
+.calculatorFormulaExpression {
+
+    height: auto;
+    min-height: 65px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding:
+        12px
+        0;
+
+    box-sizing: border-box;
+
+    /*
+     * overflow-x: auto hacía que el navegador
+     * convirtiera también overflow-y en auto.
+     */
+    overflow: visible;
+
+}
+
+
+.calculatorFormulaExpression
+.syntaxtralExpression {
+
+    max-width: none;
+
+    flex: 0 0 auto;
+
+    overflow: visible;
+
+}
+
+
+.calculatorFormulaExtrudedBadge {
+
+    padding:
+        2px
+        5px;
+
+    border:
+        1px solid #8852dc66;
+
+    border-radius: 3px;
+
+    background-color:
+        #2b193e;
+
+    color: #b683f4;
+
+    font-family: monospace;
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+
+}
+
+/* ========================================
+   FORMULA CONTROLS
+======================================== */
+
+.calculatorFormulaFooter {
+
+    display: grid;
+
+    grid-template-columns:
+        112px
+        minmax(0, 1fr)
+        112px;
+
+    align-items: end;
+
+    gap: 8px;
+
+    margin-top: 5px;
+
+}
+
+
+.calculatorFormulaControls {
+
+    display: flex;
+    align-items: center;
+
+    gap: 6px;
+
+}
+
+
+.calculatorFormulaControls button {
+
+    height: 25px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 0;
+
+    border:
+        1px solid #7344ab66;
+
+    border-radius: 5px;
+
+    background-color:
+        #17101f;
+
+    color:
+        #795492;
+
+    cursor: pointer;
+
+    transition:
+        border-color 140ms ease,
+        color 140ms ease,
+        background-color 140ms ease,
+        box-shadow 140ms ease;
+
+}
+
+
+.calculatorFormulaControls button:hover {
+
+    border-color:
+        #9b5de8;
+
+    color:
+        #c699fa;
+
+}
+
+
+.calculatorFormulaControls
+.calculatorFormulaControlActive {
+
+    border-color:
+        #8b4fd8;
+
+    background-color:
+        #28163b;
+
+    color:
+        #b97af8;
+
+    box-shadow:
+        0 0 10px #873fe63b;
+
+}
+
+
+.calculatorFormulaVisibilityButton {
+
+    width: 30px;
+
+}
+
+
+.calculatorFormulaVisibilityButton svg {
+
+    width: 20px;
+    height: 20px;
+
+    overflow: visible;
+
+}
+
+
+.calculatorFormulaVisibilityButton path:first-child {
+
+    fill:
+        #8e4ac333;
+
+    stroke:
+        currentColor;
+
+    stroke-width: 1.5;
+
+}
+
+
+.calculatorFormulaVisibilityButton circle {
+
+    fill:
+        currentColor;
+
+    stroke: none;
+
+}
+
+
+.calculatorEyeSlash {
+
+    fill: none;
+
+    stroke:
+        #ef6a88;
+
+    stroke-width: 1.8;
+
+    stroke-linecap: round;
+
+}
+
+
+.calculatorFormulaDimensionButton {
+
+    width: 27px;
+
+    font-family: monospace;
+    font-size: 7px;
+    font-weight: 700;
+
+}
+
+
+.calculatorFormulaFooterSpacer {
+
+    width: 78px;
+
+}
+
+
+.expressionGraphHiddenStatus {
+
+    color:
+        #706878 !important;
+
+}
+
+
+/* La expresión determina la altura del bloque */
+
+.calculatorFormulaBlock {
+
+    height: auto;
+
+    overflow: visible;
+
+}
+
+
+.calculatorFormulaExpression {
+
+    height: auto;
+    min-height: 65px;
+
+    padding:
+        12px
+        0;
+
+    box-sizing: border-box;
+
+    overflow: visible;
+
+}
+
+
+.calculatorFormulaExpression
+.syntaxtralExpression {
+
+    flex: 0 0 auto;
+
+    max-width: none;
+
+    overflow: visible;
+
+}
+
+.calculatorBlockActions {
+
+    grid-template-columns:
+        1fr
+        1fr
+        1fr;
+
+}
+
+
+.calculatorVariableBlock {
+
+    padding:
+        14px
+        16px
+        16px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+    background:
+        radial-gradient(
+            circle at 15% 20%,
+            #7437a717,
+            transparent 60%
+        ),
+        #0d0e13;
+
+}
+
+
+.calculatorVariableHeader {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 14px;
+
+}
+
+
+.calculatorVariableHeader > div {
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+
+.calculatorVariableHeader span {
+
+    color: #746d7d;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+
+}
+
+
+.calculatorVariableHeader input {
+
+    width: 54px;
+
+    padding:
+        4px
+        6px;
+
+    border:
+        1px solid #864bce66;
+
+    border-radius: 4px;
+    outline: none;
+
+    background-color:
+        #15101d;
+
+    color: #c792fa;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 15px;
+    font-style: italic;
+
+    text-align: center;
+
+}
+
+
+.calculatorVariableHeader > button {
+
+    border: none;
+
+    background:
+        transparent;
+
+    color: #625b69;
+
+    font-size: 17px;
+
+    cursor: pointer;
+
+}
+
+
+.calculatorVariableHeader > button:hover {
+
+    color: #ef6a88;
+
+}
+
+
+.calculatorVariableValue {
+
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+
+    gap: 8px;
+
+    margin-bottom: 12px;
+
+    color: #817889;
+
+}
+
+
+.calculatorVariableValue strong {
+
+    color: #bb7ff4;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 25px;
+    font-style: italic;
+    font-weight: 500;
+
+}
+
+
+.calculatorVariableValue output {
+
+    color: #eee8f3;
+
+    font-family: monospace;
+    font-size: 16px;
+
+}
+
+
+.calculatorVariableSlider {
+
+    width: 100%;
+
+    accent-color:
+        #914fe4;
+
+    cursor: ew-resize;
+
+}
+
+
+.calculatorVariableRange {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 6px;
+
+    margin-top: 11px;
+
+}
+
+
+.calculatorVariableRange label {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.calculatorVariableRange span {
+
+    color: #625b6a;
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+
+}
+
+
+.calculatorVariableRange input {
+
+    min-width: 0;
+    width: 100%;
+
+    padding:
+        5px
+        6px;
+
+    border:
+        1px solid #ffffff12;
+
+    border-radius: 4px;
+    outline: none;
+
+    box-sizing: border-box;
+
+    background-color:
+        #090a0e;
+
+    color: #aaa2b1;
+
+    font-family: monospace;
+    font-size: 9px;
+
+}
+
+
+.calculatorVariableRange input:focus {
+
+    border-color:
+        #874bd6;
+
+}
+
+
+.calculatorInsertVariableButton {
+
+    width: 100%;
+    min-height: 29px;
+
+    margin-top: 10px;
+
+    border:
+        1px solid #7541b844;
+
+    border-radius: 4px;
+
+    background-color:
+        #181020;
+
+    color: #8f6aaa;
+
+    font-size: 8px;
+
+    cursor: pointer;
+
+}
+
+
+.calculatorInsertVariableButton:hover:not(:disabled) {
+
+    border-color: #9656e5;
+
+    color: #d2adf7;
+
+}
+
+
+.calculatorInsertVariableButton:disabled {
+
+    opacity: 0.35;
+
+    cursor: default;
+
+}
+
+.calculatorFormulaCoordinateButton {
+
+    width: 27px;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 8px;
+    font-style: italic;
+    font-weight: 700;
+
+}

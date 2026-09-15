@@ -196,11 +196,17 @@ function ExpressionNodeContent({
 
         case "symbol":
 
-            return (
-                <span className="syntaxtralSymbol">
-                    {node.name}
-                </span>
-            );
+    return (
+        <span className="syntaxtralSymbol">
+
+            {
+                node.name === "theta"
+                    ? "θ"
+                    : node.name
+            }
+
+        </span>
+    );
 
 
         case "constant":

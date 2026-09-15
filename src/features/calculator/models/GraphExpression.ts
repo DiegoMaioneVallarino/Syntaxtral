@@ -1,11 +1,30 @@
+export type GraphCoordinateSystem =
+    | "cartesian"
+    | "polar";
+    
 export type GraphExpression = {
 
-    id: string;
+    readonly id:
+        string;
 
-    expression: string;
+    expression:
+        string;
 
-    color: string;
+    color:
+        string;
 
-    visible: boolean;
+    visible:
+        boolean;
+
+    is3D:
+        boolean;
+
+    coordinateSystem:
+        GraphCoordinateSystem;
+
+    variables:
+        Readonly<
+            Record<string, number>
+        >;
 
 };
