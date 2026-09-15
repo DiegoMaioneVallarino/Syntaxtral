@@ -11,7 +11,7 @@ import Home from "./pages/Home/Home";
 import Explore from "./pages/Explore/Explore";
 import Articles from "./pages/Articles/Articles";
 import Community from "./pages/Community/Community";
-
+import Profile from "./pages/Profile/Profile";
 import Calculator
     from "./features/calculator/Calculator";
 
@@ -47,6 +47,10 @@ function App() {
                           path="/calculator"
                           element={<Calculator />}
                       />
+                      <Route
+    path="/profile"
+    element={<Profile />}
+/>
                 </Routes>
 
             </main>

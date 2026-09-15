@@ -22,7 +22,9 @@
         );
 
     box-sizing: border-box;
-
+position: relative;
+z-index: 100;
+overflow: visible;
 }
 
 
@@ -521,5 +523,358 @@
     align-items: center;
 
     text-decoration: none;
+
+}.profileMenuArea {
+
+    position: relative;
+
+    flex-shrink: 0;
+
+}
+
+
+.profileButtonActive {
+
+    transform: scale(1.06);
+
+    box-shadow:
+        0 0 0 3px #7740d928,
+        0 0 22px #7f42ef70;
+
+}
+
+
+.profileDropdown {
+
+    width: 245px;
+
+    position: absolute;
+
+    top:
+        calc(100% + 12px);
+
+    right: 0;
+
+    padding: 8px;
+
+    border:
+        1px solid #ffffff18;
+
+    border-radius: 9px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            180deg,
+            #17181ef8,
+            #0d0e12fa
+        );
+
+    box-shadow:
+        0 22px 55px #000000c4;
+
+    backdrop-filter:
+        blur(15px);
+
+    z-index: 200;
+
+    animation:
+        profileDropdownEnter
+        150ms ease-out;
+
+}
+
+
+@keyframes profileDropdownEnter {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(-7px)
+            scale(0.98);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+.profileDropdownHeader {
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        10px
+        9px
+        12px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+}
+
+
+.profileDropdownAvatar {
+
+    width: 39px;
+    height: 39px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border:
+        1px solid #8a53eb;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 32% 25%,
+            #ffc85c,
+            #7d43ee 32%,
+            #18102c 74%
+        );
+
+    color: #ffffff;
+
+    font-size: 10px;
+    font-weight: 700;
+
+}
+
+
+.profileDropdownHeader > div {
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+
+}
+
+
+.profileDropdownHeader strong {
+
+    overflow: hidden;
+
+    color: #eee9f2;
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 13px;
+    font-style: italic;
+    font-weight: 500;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+}
+
+
+.profileDropdownHeader small {
+
+    color: #746d7c;
+
+    font-size: 9px;
+
+}
+
+
+.profileDropdownStats {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    padding:
+        10px
+        7px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+}
+
+
+.profileDropdownStats > div {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 2px;
+
+}
+
+
+.profileDropdownStats > div + div {
+
+    border-left:
+        1px solid #ffffff0e;
+
+}
+
+
+.profileDropdownStats strong {
+
+    color: #d9d2df;
+
+    font-size: 11px;
+
+}
+
+
+.profileDropdownStats span {
+
+    color: #665f6d;
+
+    font-size: 7px;
+
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+
+}
+
+
+.profileDropdownNavigation {
+
+    display: flex;
+    flex-direction: column;
+
+    padding:
+        7px
+        0;
+
+}
+
+
+.profileDropdownNavigation a,
+.profileDropdownFooter button {
+
+    min-height: 36px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        0
+        10px;
+
+    border:
+        1px solid transparent;
+
+    border-radius: 5px;
+
+    box-sizing: border-box;
+
+    background:
+        transparent;
+
+    color: #99929f;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    font-size: 10px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+}
+
+
+.profileDropdownNavigation a:hover,
+.profileDropdownFooter button:hover {
+
+    border-color:
+        #7d48d141;
+
+    background-color:
+        #21172c;
+
+    color: #ffffff;
+
+}
+
+
+.profileDropdownNavigation a span,
+.profileDropdownFooter button span {
+
+    width: 16px;
+
+    color: #9660df;
+
+    text-align: center;
+
+}
+
+
+.profileDropdownFooter {
+
+    display: flex;
+    flex-direction: column;
+
+    padding-top: 7px;
+
+    border-top:
+        1px solid #ffffff0d;
+
+}
+
+
+.profileDropdownFooter button {
+
+    width: 100%;
+
+}
+
+
+.profileDropdownFooter
+.profileLogoutButton {
+
+    color: #a97884;
+
+}
+
+
+.profileDropdownFooter
+.profileLogoutButton:hover {
+
+    border-color:
+        #ef6a8840;
+
+    background-color:
+        #2b151d;
+
+    color: #ef8299;
 
 }
