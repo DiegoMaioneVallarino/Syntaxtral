@@ -453,6 +453,52 @@ function ExpressionNodeContent({
                     {node.label ?? "□"}
                 </span>
             );
+        case "summation":
+
+    return (
+        <span className="syntaxtralSummation">
+
+            <span className="syntaxtralSummationOperator">
+
+                <span className="syntaxtralSummationUpper">
+                    {renderChild(
+                        node.upperBound
+                    )}
+                </span>
+
+                <span className="syntaxtralSummationSymbol">
+                    ∑
+                </span>
+
+                <span className="syntaxtralSummationLower">
+
+                    {renderChild(
+                        node.index
+                    )}
+
+                    <span className="syntaxtralOperator">
+                        =
+                    </span>
+
+                    {renderChild(
+                        node.lowerBound
+                    )}
+
+                </span>
+
+            </span>
+
+
+            <span className="syntaxtralSummationBody">
+
+                {renderChild(
+                    node.body
+                )}
+
+            </span>
+
+        </span>
+    );
 
     }
 

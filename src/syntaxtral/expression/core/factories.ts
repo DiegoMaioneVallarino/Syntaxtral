@@ -5,6 +5,7 @@ import type {
     ExpressionNode,
     FactorialNode,
     FractionNode,
+    SummationNode,
     FunctionCallNode,
     GroupNode,
     MathematicalConstant,
@@ -122,6 +123,29 @@ export function multiplicationNode(
 
 }
 
+export function summationNode(
+    index: ExpressionNode,
+    lowerBound: ExpressionNode,
+    upperBound: ExpressionNode,
+    body: ExpressionNode
+): SummationNode {
+
+    return {
+
+        id:
+            crypto.randomUUID(),
+
+        type:
+            "summation",
+
+        index,
+        lowerBound,
+        upperBound,
+        body
+
+    };
+
+}
 
 export function fractionNode(
     numerator: ExpressionNode,

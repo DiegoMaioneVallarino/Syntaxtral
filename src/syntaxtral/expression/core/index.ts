@@ -16,7 +16,9 @@ export type {
     NumberNode,
     PlaceholderNode,
     PowerNode,
-    SymbolNode
+    SymbolNode,
+    SummationNode
+    
 
 } from "./types";
 
@@ -34,7 +36,8 @@ export {
     numberNode,
     placeholderNode,
     powerNode,
-    symbolNode
+    symbolNode,
+    summationNode,
 
 } from "./factories";
 
@@ -75,6 +78,7 @@ export {
     expressionToJSON,
     expressionToMathJs,
     expressionToPlainText
+    
 
 } from "./serialization";
 

@@ -40,7 +40,9 @@ export type ExpressionKeyboardAction =
             "cos" |
             "tan" |
             "log";
-    };
+    } | {
+        type: "summation";
+    }
 
 
 type ExpressionKeyboardProps = {
@@ -366,6 +368,22 @@ export function ExpressionKeyboard({
                 ))}
 
             </div>
+            <button
+    type="button"
+    disabled={
+        disabled
+    }
+    onClick={() => {
+
+        onAction({
+            type:
+                "summation"
+        });
+
+    }}
+>
+    ∑
+</button>
 
         </div>
     );

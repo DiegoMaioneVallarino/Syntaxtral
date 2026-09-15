@@ -384,3 +384,72 @@
 .syntaxtralFactorialSymbol {
     color: #ffffff;
 }
+
+.syntaxtralSummation {
+
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    vertical-align: middle;
+
+}
+
+
+.syntaxtralSummationOperator {
+
+    min-width: 46px;
+    min-height: 72px;
+
+    display: inline-grid;
+
+    grid-template-rows:
+        auto
+        auto
+        auto;
+
+    place-items: center;
+
+    line-height: 1;
+
+}
+
+
+.syntaxtralSummationUpper,
+.syntaxtralSummationLower {
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    font-size: 0.42em;
+    font-style: normal;
+
+}
+
+
+.syntaxtralSummationSymbol {
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+    font-size: 1.75em;
+    font-style: normal;
+    font-weight: 400;
+
+    line-height: 0.8;
+
+}
+
+
+.syntaxtralSummationBody {
+
+    display: inline-flex;
+    align-items: center;
+
+}

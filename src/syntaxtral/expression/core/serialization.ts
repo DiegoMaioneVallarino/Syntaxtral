@@ -202,7 +202,16 @@ export function expressionToPlainText(
 
             return expression.label ??
                 "□";
+        case "summation":
 
+            return (
+                `sum(` +
+                `${expressionToPlainText(expression.body)}, ` +
+                `${expressionToPlainText(expression.index)} = ` +
+                `${expressionToPlainText(expression.lowerBound)}..` +
+                `${expressionToPlainText(expression.upperBound)}` +
+                `)`
+            );
     }
 
 }
@@ -330,6 +339,34 @@ export function expressionToMathJs(
                 "No se puede convertir un placeholder incompleto a MathJS"
 
             );
+
+        case "summation": {
+
+    const indexName =
+
+        expression.index.type === "symbol"
+
+            ? expression.index.name
+
+            : "";
+
+
+    const serializedBody =
+        expressionToMathJs(
+            expression.body
+        );
+
+
+    return (
+        `syntaxtralSum(` +
+        `${JSON.stringify(serializedBody)}, ` +
+        `${JSON.stringify(indexName)}, ` +
+        `${expressionToMathJs(expression.lowerBound)}, ` +
+        `${expressionToMathJs(expression.upperBound)}` +
+        `)`
+    );
+
+}
 
     }
 

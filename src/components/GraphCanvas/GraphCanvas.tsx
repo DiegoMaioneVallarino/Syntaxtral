@@ -21,6 +21,9 @@ import type {
     GraphExpression
 } from "../../features/calculator/models/GraphExpression";
 
+import {
+    createEvaluationScope
+} from "../../features/calculator/math/createEvaluationScope";
 
 type GraphCanvasProps = {
 
@@ -1040,12 +1043,14 @@ function updateSelectedPointFromMouse(
             try {
 
              result =
-    expression.compiled.evaluate({
-        ...expression.variables,
+    expression.compiled.evaluate(
+        createEvaluationScope({
+            ...expression.variables,
 
-        x:
-            worldX
-    });
+            x:
+                worldX
+        })
+    );
 
             } catch {
 
@@ -1716,10 +1721,12 @@ if (
         try {
 
             result =
-    expression.compiled.evaluate({
-        ...expression.variables,
-        x
-    });
+    expression.compiled.evaluate(
+        createEvaluationScope({
+            ...expression.variables,
+            x
+        })
+    );
         } catch {
 
             drawing =
@@ -1906,12 +1913,14 @@ function drawPolarExpression(
         try {
 
             radius =
-                Number(
-                    expression.compiled.evaluate({
-                        ...expression.variables,
-                        theta
-                    })
-                );
+    Number(
+        expression.compiled.evaluate(
+            createEvaluationScope({
+                ...expression.variables,
+                theta
+            })
+        )
+    );
 
         } catch {
 

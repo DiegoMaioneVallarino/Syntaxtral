@@ -21,6 +21,7 @@ import {
     placeholderNode,
     powerNode,
     replaceExpressionNodeById,
+    summationNode,
     symbolNode
 } from "../../syntaxtral/expression";
 
@@ -679,7 +680,44 @@ const variableScope =
 
             }
 
+case "summation": {
 
+    const index =
+        symbolNode(
+            "k"
+        );
+
+
+    const lowerBound =
+        numberNode(
+            "1"
+        );
+
+
+    const upperBound =
+        placeholderNode(
+            "límite"
+        );
+
+
+    const summation =
+        summationNode(
+            index,
+            lowerBound,
+            upperBound,
+            selectedNode
+        );
+
+
+    replaceSelectedNode(
+        summation,
+        upperBound.id
+    );
+
+
+    return;
+
+}
             case "clear": {
 
                 const emptyNode =

@@ -244,6 +244,41 @@ export function replaceExpressionNodeById(
                     )
 
             };
+        case "summation":
+
+    return {
+
+        ...expression,
+
+        index:
+            replaceExpressionNodeById(
+                expression.index,
+                nodeId,
+                replacement
+            ),
+
+        lowerBound:
+            replaceExpressionNodeById(
+                expression.lowerBound,
+                nodeId,
+                replacement
+            ),
+
+        upperBound:
+            replaceExpressionNodeById(
+                expression.upperBound,
+                nodeId,
+                replacement
+            ),
+
+        body:
+            replaceExpressionNodeById(
+                expression.body,
+                nodeId,
+                replacement
+            )
+
+    };
 
     }
 
@@ -318,6 +353,14 @@ function getChildren(
             return [
                 expression.expression
             ];
+        case "summation":
+
+            return [
+                expression.index,
+                expression.lowerBound,
+                expression.upperBound,
+                expression.body
+             ];
 
     }
 

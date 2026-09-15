@@ -7,6 +7,7 @@ export type ExpressionNode =
     | FractionNode
     | PowerNode
     | FactorialNode
+    | SummationNode
     | NegationNode
     | FunctionCallNode
     | GroupNode
@@ -49,7 +50,22 @@ export type SymbolNode =
         readonly name: string;
 
     };
+export type SummationNode =
+    BaseExpressionNode<"summation"> & {
 
+        readonly index:
+            ExpressionNode;
+
+        readonly lowerBound:
+            ExpressionNode;
+
+        readonly upperBound:
+            ExpressionNode;
+
+        readonly body:
+            ExpressionNode;
+
+    };
 
 export type MathematicalConstant =
     | "pi"

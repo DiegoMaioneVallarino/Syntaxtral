@@ -81,6 +81,15 @@ export function getExpressionChildren(
                 expression.expression
             ];
 
+        case "summation":
+
+            return [
+                expression.index,
+                expression.lowerBound,
+                expression.upperBound,
+                expression.body
+            ];
+
     }
 
 }
