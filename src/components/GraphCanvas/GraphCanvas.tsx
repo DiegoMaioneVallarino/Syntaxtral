@@ -851,14 +851,19 @@ function updateSelectedPointFromMouse(
     try {
 
         const worldY =
-            Number(
-                selectedExpression
-                    .compiled
-                    .evaluate({
-                        x:
-                            worldX
-                    })
-            );
+    Number(
+        selectedExpression.compiled.evaluate(
+            createEvaluationScope({
+                ...selectedExpression.variables,
+
+                x:
+                    worldX,
+
+                theta:
+                    worldX
+            })
+        )
+    );
 
 
         /*
@@ -1916,9 +1921,17 @@ function drawPolarExpression(
     Number(
         expression.compiled.evaluate(
             createEvaluationScope({
-                ...expression.variables,
-                theta
-            })
+    ...expression.variables,
+
+    theta,
+
+    /*
+     * En modo Rθ:
+     * x === theta
+     */
+    x:
+        theta
+})
         )
     );
 

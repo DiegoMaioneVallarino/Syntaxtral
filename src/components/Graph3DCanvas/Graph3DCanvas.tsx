@@ -38,7 +38,9 @@ import type {
     GraphExpression
 } from "../../features/calculator/models/GraphExpression";
 
-
+import {
+    createEvaluationScope
+} from "../../features/calculator/math/createEvaluationScope";
 type Graph3DCanvasProps = {
 
     expressions:
@@ -634,19 +636,19 @@ function FunctionCord({
 }: FunctionCordProps) {
 
     const segments =
-        useMemo(() => {
+    useMemo(() => {
 
-            return createCurveSegments(
-    expression.compiled,
-    frameY,
-    expression.variables
-);
-
-        }, [
-            expression.compiled,
+        return createCurveSegments(
+            expression,
             frameY
-        ]);
+        );
 
+    }, [
+        expression.compiled,
+        expression.coordinateSystem,
+        expression.variables,
+        frameY
+    ]);
 
     function selectPoint(
         event: ThreeEvent<MouseEvent>
@@ -757,18 +759,19 @@ function SurfaceGuideCord({
 }: SurfaceGuideCordProps) {
 
     const segments =
-        useMemo(() => {
+    useMemo(() => {
 
-            return createCurveSegments(
-    expression.compiled,
-    frameY,
-    expression.variables
-);
-
-        }, [
-            expression.compiled,
+        return createCurveSegments(
+            expression,
             frameY
-        ]);
+        );
+
+    }, [
+        expression.compiled,
+        expression.coordinateSystem,
+        expression.variables,
+        frameY
+    ]);
 
 
     return (
@@ -805,47 +808,29 @@ function SurfaceGuideCord({
 
 }
 function createCurveSegments(
-    compiled:
-        EvalFunction,
-    frameY:
-        number,
-    variables:
-        Readonly<
-            Record<string, number>
-        >
-): Array<
-    Array<
-        [number, number, number]
-    >
-> {
+    expression: CompiledSurfaceExpression,
+    frameY: number
+): Array<Array<[number, number, number]>> {
 
     const segments:
-        Array<
-            Array<
-                [number, number, number]
-            >
-        > = [];
-
+        Array<Array<[number, number, number]>> = [];
 
     let currentSegment:
-        Array<
-            [number, number, number]
-        > = [];
+        Array<[number, number, number]> = [];
 
-
-    let previousZ:
-        number | null = null;
-
+    let previousPoint:
+        [number, number, number] | null = null;
 
     const halfSize =
         GRAPH_SIZE / 2;
 
+    const isPolar =
+        expression.coordinateSystem === "polar";
+
 
     function finishSegment(): void {
 
-        if (
-            currentSegment.length >= 2
-        ) {
+        if (currentSegment.length >= 2) {
 
             segments.push(
                 currentSegment
@@ -853,12 +838,8 @@ function createCurveSegments(
 
         }
 
-
-        currentSegment =
-            [];
-
-        previousZ =
-            null;
+        currentSegment = [];
+        previousPoint = null;
 
     }
 
@@ -869,32 +850,56 @@ function createCurveSegments(
         index += 1
     ) {
 
-        const x =
+        const progress =
+            index / CURVE_SAMPLES;
 
-            -halfSize +
+        const parameter =
+            isPolar
+                ? progress * Math.PI * 2
+                : -halfSize + progress * GRAPH_SIZE;
 
-            (
-                index /
-                CURVE_SAMPLES
-            ) *
-
-            GRAPH_SIZE;
-
-
-        let z:
+        let result:
             number;
 
 
         try {
 
-            z =
+            const scope =
+                isPolar
+                    ? {
+                        ...expression.variables,
+
+                        theta:
+                            parameter,
+
+                        /*
+                         * En Rθ, x y theta son
+                         * el mismo parámetro.
+                         */
+                        x:
+                            parameter,
+
+                        y:
+                            frameY
+                    }
+                    : {
+                        ...expression.variables,
+
+                        x:
+                            parameter,
+
+                        y:
+                            frameY
+                    };
+
+
+            result =
                 Number(
-                    compiled.evaluate({
-    ...variables,
-    x,
-    y:
-        frameY
-})
+                    expression.compiled.evaluate(
+                        createEvaluationScope(
+                            scope
+                        )
+                    )
                 );
 
         } catch {
@@ -907,9 +912,8 @@ function createCurveSegments(
 
 
         if (
-            !Number.isFinite(z) ||
-            Math.abs(z) >
-                MAXIMUM_HEIGHT
+            !Number.isFinite(result) ||
+            Math.abs(result) > MAXIMUM_HEIGHT
         ) {
 
             finishSegment();
@@ -919,13 +923,29 @@ function createCurveSegments(
         }
 
 
+        const point:
+            [number, number, number] =
+                isPolar
+                    ? [
+                        result * Math.cos(parameter),
+                        result * Math.sin(parameter),
+                        frameY
+                    ]
+                    : [
+                        parameter,
+                        result,
+                        frameY
+                    ];
+
+
         const discontinuity =
 
-            previousZ !== null &&
+            previousPoint !== null &&
 
-            Math.abs(
-                z -
-                previousZ
+            Math.hypot(
+                point[0] - previousPoint[0],
+                point[1] - previousPoint[1],
+                point[2] - previousPoint[2]
             ) > 8;
 
 
@@ -936,29 +956,17 @@ function createCurveSegments(
         }
 
 
-        /*
-         * Posición Three.js:
-         *
-         * X matemático → X
-         * Z matemático → Y vertical
-         * Y matemático → Z profundidad
-         */
+        currentSegment.push(
+            point
+        );
 
-        currentSegment.push([
-            x,
-            z,
-            frameY
-        ]);
-
-
-        previousZ =
-            z;
+        previousPoint =
+            point;
 
     }
 
 
     finishSegment();
-
 
     return segments;
 
@@ -971,13 +979,17 @@ function FunctionSurface({
 }: FunctionSurfaceProps) {
 
     const geometry =
-        useMemo(() => {
+    useMemo(() => {
 
-            return createSurfaceGeometry(
-                expression.compiled
-            );
+        return createSurfaceGeometry(
+            expression
+        );
 
-        }, [expression.compiled]);
+    }, [
+        expression.compiled,
+        expression.coordinateSystem,
+        expression.variables
+    ]);
 
 
     useEffect(() => {
@@ -1051,32 +1063,29 @@ function FunctionSurface({
 }
 
 function createSurfaceGeometry(
-    compiled:
-        EvalFunction
+    expression: CompiledSurfaceExpression
 ): BufferGeometry {
 
     const geometry =
         new BufferGeometry();
 
-
     const positions:
         number[] = [];
-
 
     const indices:
         number[] = [];
 
-
     const validPoints:
         boolean[] = [];
-
 
     const halfSize =
         GRAPH_SIZE / 2;
 
-
     const pointsPerSide =
         SURFACE_RESOLUTION + 1;
+
+    const isPolar =
+        expression.coordinateSystem === "polar";
 
 
     for (
@@ -1085,7 +1094,7 @@ function createSurfaceGeometry(
         row += 1
     ) {
 
-        const y =
+        const frameY =
 
             -halfSize +
 
@@ -1103,45 +1112,95 @@ function createSurfaceGeometry(
             column += 1
         ) {
 
-            const x =
+            const progress =
+                column /
+                SURFACE_RESOLUTION;
 
-                -halfSize +
-
-                (
-                    column /
-                    SURFACE_RESOLUTION
-                ) *
-
-                GRAPH_SIZE;
-
-
-            let z =
-                0;
+            const parameter =
+                isPolar
+                    ? progress * Math.PI * 2
+                    : -halfSize + progress * GRAPH_SIZE;
 
 
             let valid =
                 false;
 
+            let pointX =
+                0;
+
+            let pointY =
+                0;
+
+            let pointZ =
+                frameY;
+
 
             try {
 
+                const scope =
+                    isPolar
+                        ? {
+                            ...expression.variables,
+
+                            theta:
+                                parameter,
+
+                            /*
+                             * Alias solicitado:
+                             * x equivale a theta en Rθ.
+                             */
+                            x:
+                                parameter,
+
+                            y:
+                                frameY
+                        }
+                        : {
+                            ...expression.variables,
+
+                            x:
+                                parameter,
+
+                            y:
+                                frameY
+                        };
+
+
                 const result =
                     Number(
-                        compiled.evaluate({
-                            x,
-                            y
-                        })
+                        expression.compiled.evaluate(
+                            createEvaluationScope(
+                                scope
+                            )
+                        )
                     );
 
 
                 if (
                     Number.isFinite(result) &&
-                    Math.abs(result) <=
-                        MAXIMUM_HEIGHT
+                    Math.abs(result) <= MAXIMUM_HEIGHT
                 ) {
 
-                    z =
-                        result;
+                    if (isPolar) {
+
+                        pointX =
+                            result *
+                            Math.cos(parameter);
+
+                        pointY =
+                            result *
+                            Math.sin(parameter);
+
+                    } else {
+
+                        pointX =
+                            parameter;
+
+                        pointY =
+                            result;
+
+                    }
+
 
                     valid =
                         true;
@@ -1157,11 +1216,10 @@ function createSurfaceGeometry(
 
 
             positions.push(
-                x,
-                z,
-                y
+                pointX,
+                pointY,
+                pointZ
             );
-
 
             validPoints.push(
                 valid
@@ -1189,15 +1247,12 @@ function createSurfaceGeometry(
                 pointsPerSide +
                 column;
 
-
             const topRight =
                 topLeft + 1;
-
 
             const bottomLeft =
                 topLeft +
                 pointsPerSide;
-
 
             const bottomRight =
                 bottomLeft + 1;
@@ -1245,14 +1300,11 @@ function createSurfaceGeometry(
         )
     );
 
-
     geometry.setIndex(
         indices
     );
 
-
     geometry.computeVertexNormals();
-
 
     return geometry;
 
