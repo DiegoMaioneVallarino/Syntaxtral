@@ -559,22 +559,19 @@ const canvasExpressions =
                  * propios generadores de geometría 3D.
                  */
                 if (
-                    block.representation.kind ===
-                        "implicit-surface" ||
+    block.representation.kind ===
+        "parametric-surface" ||
 
-                    block.representation.kind ===
-                        "parametric-surface" ||
+    block.representation.kind ===
+        "inequality-solid" ||
 
-                    block.representation.kind ===
-                        "inequality-solid" ||
+    block.representation.kind ===
+        "projection-intersection"
+) {
 
-                    block.representation.kind ===
-                        "projection-intersection"
-                ) {
+    return [];
 
-                    return [];
-
-                }
+}
 
 
                 const serialized =
@@ -618,8 +615,9 @@ const canvasExpressions =
                             block.coordinateSystem,
 
                         variables:
-                            graphEvaluationScope
-
+                            graphEvaluationScope,
+                    representation:
+                        block.representation,
                     }
                 ];
 

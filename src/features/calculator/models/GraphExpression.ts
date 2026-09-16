@@ -1,7 +1,13 @@
+import type {
+    FormulaRepresentation
+} from "../object3d";
+
+
 export type GraphCoordinateSystem =
     | "cartesian"
     | "polar";
-    
+
+
 export type GraphExpression = {
 
     readonly id:
@@ -22,9 +28,12 @@ export type GraphExpression = {
     coordinateSystem:
         GraphCoordinateSystem;
 
+    representation:
+        FormulaRepresentation;
+
     variables:
-    Readonly<
-        Record<string, unknown>
-    >;
+        Readonly<
+            Record<string, unknown>
+        >;
 
 };

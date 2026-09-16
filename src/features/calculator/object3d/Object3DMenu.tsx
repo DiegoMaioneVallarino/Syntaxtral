@@ -97,7 +97,22 @@ const objectItems:
             available:
                 true
         },
+{
+    kind:
+        "implicit-torus",
 
+    symbol:
+        "◉",
+
+    name:
+        "Toro implícito",
+
+    description:
+        "Construye un toro mediante una ecuación implícita.",
+
+    available:
+        true
+},
         {
             kind:
                 "parametric-surface",

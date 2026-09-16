@@ -98,6 +98,77 @@ export function createObject3DFormulaPreset(
 
             };
 
+            case "implicit-torus":
+
+    return {
+
+        title:
+            "Toro implícito",
+
+        expression:
+            equalityNode(
+
+                powerNode(
+
+                    additionNode([
+
+                        powerNode(
+                            symbolNode("x"),
+                            numberNode(2)
+                        ),
+
+                        powerNode(
+                            symbolNode("y"),
+                            numberNode(2)
+                        ),
+
+                        powerNode(
+                            symbolNode("z"),
+                            numberNode(2)
+                        ),
+
+                        numberNode(8)
+
+                    ]),
+
+                    numberNode(2)
+
+                ),
+
+                multiplicationNode([
+
+                    numberNode(36),
+
+                    additionNode([
+
+                        powerNode(
+                            symbolNode("x"),
+                            numberNode(2)
+                        ),
+
+                        powerNode(
+                            symbolNode("y"),
+                            numberNode(2)
+                        )
+
+                    ])
+
+                ])
+
+            ),
+
+        representation: {
+
+            kind:
+                "implicit-surface",
+
+            isoValue:
+                0
+
+        }
+
+    };
+
     }
 
 }

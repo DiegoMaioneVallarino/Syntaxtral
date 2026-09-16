@@ -5,15 +5,17 @@ import type {
 
 export type Object3DKind =
     | "explicit-surface"
-    | "parametric-surface"
     | "implicit-surface"
+    | "implicit-torus"
+    | "parametric-surface"
     | "inequality-solid"
     | "projection-intersection";
 
 
 export type CreatableObject3DKind =
     | "explicit-surface"
-    | "implicit-surface";
+    | "implicit-surface"
+    | "implicit-torus";
 
 
 export type FormulaRepresentation =

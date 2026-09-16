@@ -37,7 +37,13 @@ import "./Graph3DCanvas.css";
 import type {
     GraphExpression
 } from "../../features/calculator/models/GraphExpression";
+import {
+    createImplicitSurfaceGeometry
+} from "./createImplicitSurfaceGeometry";
 
+import type {
+    CompiledImplicitExpression
+} from "./createImplicitSurfaceGeometry";
 import {
     createEvaluationScope
 } from "../../features/calculator/math/createEvaluationScope";
@@ -131,6 +137,17 @@ type FunctionSurfaceProps = {
 
 };
 
+type ImplicitSurfaceProps = {
+
+    expression:
+        CompiledImplicitExpression;
+
+    onSelect: (
+        point: ActiveGraphPoint
+    ) => void;
+
+};
+
 
 const GRAPH_SIZE =
     20;
@@ -197,6 +214,57 @@ function normalizeExpression(
 
 }
 
+function normalizeImplicitExpression(
+    expression: string
+): string {
+
+    const equalIndex =
+        expression.indexOf("=");
+
+
+    if (
+        equalIndex === -1
+    ) {
+
+        return expression;
+
+    }
+
+
+    const left =
+        expression
+            .slice(
+                0,
+                equalIndex
+            )
+            .trim();
+
+
+    const right =
+        expression
+            .slice(
+                equalIndex + 1
+            )
+            .trim();
+
+
+    /*
+     * Convierte:
+     *
+     * left = right
+     *
+     * en:
+     *
+     * left - right
+     *
+     * para encontrar la isosuperficie F = 0.
+     */
+    return (
+        `((${left}) - (${right}))`
+    );
+
+}
+
 
 function Graph3DCanvas({
     expressions,
@@ -245,11 +313,20 @@ function Graph3DCanvas({
                                 ...expression,
 
                                 compiled:
-                                    compile(
-                                        normalizeExpression(
-                                            expression.expression
-                                        )
-                                    )
+    compile(
+
+        expression.representation.kind ===
+            "implicit-surface"
+
+            ? normalizeImplicitExpression(
+                expression.expression
+            )
+
+            : normalizeExpression(
+                expression.expression
+            )
+
+    )
                             }
                         ];
 
@@ -269,10 +346,16 @@ const flatExpressions =
 
         return compiledExpressions.filter(
             expression =>
-                !expression.is3D
+
+                !expression.is3D &&
+
+                expression.representation.kind !==
+                    "implicit-surface"
         );
 
-    }, [compiledExpressions]);
+    }, [
+        compiledExpressions
+    ]);
 
 
 const surfaceExpressions =
@@ -280,10 +363,36 @@ const surfaceExpressions =
 
         return compiledExpressions.filter(
             expression =>
-                expression.is3D
+
+                expression.is3D &&
+
+                expression.representation.kind !==
+                    "implicit-surface"
         );
 
-    }, [compiledExpressions]);
+    }, [
+        compiledExpressions
+    ]);
+
+
+const implicitSurfaceExpressions =
+    useMemo(() => {
+
+        return compiledExpressions.filter(
+            (
+                expression
+            ): expression is
+                CompiledImplicitExpression => (
+
+                expression.representation.kind ===
+                    "implicit-surface"
+
+            )
+        );
+
+    }, [
+        compiledExpressions
+    ]);
 
 
 const selectedContinuousExpression =
@@ -524,6 +633,25 @@ useEffect(() => {
     )
 )}
 
+{/* Superficies implícitas */}
+
+{implicitSurfaceExpressions.map(
+    expression => (
+
+        <ImplicitSurface
+            key={
+                `implicit-${expression.id}`
+            }
+            expression={
+                expression
+            }
+            onSelect={
+                setActivePoint
+            }
+        />
+
+    )
+)}
 
 {/* 33 slices guía para cada superficie */}
 {surfaceExpressions.flatMap(
@@ -971,7 +1099,102 @@ function createCurveSegments(
     return segments;
 
 }
+function ImplicitSurface({
+    expression,
+    onSelect
+}: ImplicitSurfaceProps) {
 
+    const geometry =
+        useMemo(() => {
+
+            return createImplicitSurfaceGeometry(
+                expression
+            );
+
+        }, [
+            expression.compiled,
+            expression.variables,
+            expression.representation.isoValue
+        ]);
+
+
+    useEffect(() => {
+
+        return () => {
+
+            geometry.dispose();
+
+        };
+
+    }, [
+        geometry
+    ]);
+
+
+    function handleSurfaceClick(
+        event: ThreeEvent<MouseEvent>
+    ): void {
+
+        event.stopPropagation();
+
+
+        onSelect({
+
+            expressionId:
+                expression.id,
+
+            color:
+                expression.color,
+
+            /*
+             * Conversión de Three.js de vuelta
+             * al sistema matemático:
+             *
+             * Math X = Three X
+             * Math Y = Three Z
+             * Math Z = Three Y
+             */
+            x:
+                event.point.x,
+
+            y:
+                event.point.z,
+
+            z:
+                event.point.y
+
+        });
+
+    }
+
+
+    return (
+        <mesh
+            geometry={
+                geometry
+            }
+            onClick={
+                handleSurfaceClick
+            }
+        >
+
+            <meshStandardMaterial
+                color={
+                    expression.color
+                }
+                side={
+                    DoubleSide
+                }
+                transparent
+                opacity={0.78}
+                roughness={0.38}
+                metalness={0.14}
+            />
+
+        </mesh>
+    );
+
+}
 
 function FunctionSurface({
     expression,
