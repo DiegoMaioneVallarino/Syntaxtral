@@ -44,14 +44,27 @@ import GraphCanvas from "../../components/GraphCanvas/GraphCanvas";
 import Graph3DCanvas from "../../components/Graph3DCanvas/Graph3DCanvas";
 
 import type {
+    GraphCoordinateSystem,
     GraphExpression
 } from "./models/GraphExpression";
+import {
+    createObject3DFormulaPreset,
+    Object3DMenu
+} from "./object3d";
 
+import type {
+    CreatableObject3DKind,
+    FormulaRepresentation
+} from "./object3d";
 
 type GraphMode =
     | "2d"
     | "3d";
 
+    type CalculatorDrawerMode =
+    | "keyboard"
+    | "objects-3d"
+    | null;
 
 type FormulaBlock = {
 
@@ -72,10 +85,13 @@ type FormulaBlock = {
 
     is3D:
         boolean;
+
     coordinateSystem:
-    | "cartesian"
-    | "polar";
-  
+        GraphCoordinateSystem;
+
+    representation:
+        FormulaRepresentation;
+
 };
 
 
@@ -120,8 +136,7 @@ type VariableBlock = {
 type CalculatorBlock =
     | FormulaBlock
     | VariableBlock
-    | NoteBlock;
-
+    | NoteBlock
 
 const formulaColors = [
     "#a855f7",
@@ -172,8 +187,10 @@ is3D:
     false,
 
 coordinateSystem:
-    "cartesian"
-
+    "cartesian",
+representation: {
+    kind: "curve"
+}
 };
 
 
@@ -238,12 +255,12 @@ function Calculator() {
     );
 
 
-    const [
-        keyboardOpen,
-        setKeyboardOpen
-    ] = useState(
-        false
-    );
+  const [
+    drawerMode,
+    setDrawerMode
+] = useState<CalculatorDrawerMode>(
+    null
+);
 
 
     const [
@@ -521,73 +538,98 @@ const graphEvaluationScope =
     ]);
 
 
+const canvasExpressions =
+    useMemo<GraphExpression[]>(() => {
 
-    const canvasExpressions =
-        useMemo<GraphExpression[]>(() => {
+        return blocks.flatMap(
+            block => {
 
-            return blocks.flatMap(
-                block => {
+                if (
+                    block.type !== "formula"
+                ) {
 
-                    if (
-                        block.type !== "formula"
-                    ) {
-
-                        return [];
-
-                    }
-
-
-                    const serialized =
-
-    block.expression.type ===
-        "function-definition"
-
-        ? `${block.expression.name}(x)`
-
-        : trySerializeExpression(
-            block.expression
-        );
-
-
-                    if (!serialized) {
-
-                        return [];
-
-                    }
-
-
-                   return [
-                            {
-    id:
-        block.id,
-
-    expression:
-        serialized,
-
-    color:
-        block.color,
-
-    visible:
-        block.visible,
-
-    is3D:
-        block.is3D,
-
-    coordinateSystem:
-        block.coordinateSystem,
-
-    variables:
-    graphEvaluationScope
-}
-                        ];
+                    return [];
 
                 }
-            );
 
-        }, [
-    blocks,
-    graphEvaluationScope
-]);
+
+                /*
+                 * Estos objetos ya se pueden crear y editar
+                 * como fórmulas, pero todavía necesitan sus
+                 * propios generadores de geometría 3D.
+                 */
+                if (
+                    block.representation.kind ===
+                        "implicit-surface" ||
+
+                    block.representation.kind ===
+                        "parametric-surface" ||
+
+                    block.representation.kind ===
+                        "inequality-solid" ||
+
+                    block.representation.kind ===
+                        "projection-intersection"
+                ) {
+
+                    return [];
+
+                }
+
+
+                const serialized =
+
+                    block.expression.type ===
+                        "function-definition"
+
+                        ? `${block.expression.name}(x)`
+
+                        : trySerializeExpression(
+                            block.expression
+                        );
+
+
+                if (!serialized) {
+
+                    return [];
+
+                }
+
+
+                return [
+                    {
+
+                        id:
+                            block.id,
+
+                        expression:
+                            serialized,
+
+                        color:
+                            block.color,
+
+                        visible:
+                            block.visible,
+
+                        is3D:
+                            block.is3D,
+
+                        coordinateSystem:
+                            block.coordinateSystem,
+
+                        variables:
+                            graphEvaluationScope
+
+                    }
+                ];
+
+            }
+        );
+
+    }, [
+        blocks,
+        graphEvaluationScope
+    ]);
 
 
     function replaceSelectedNode(
@@ -1003,33 +1045,37 @@ case "summation": {
             ).length;
 
 
-                    const block:
-                FormulaBlock = {
+                    const block: FormulaBlock = {
 
-                id:
-                    crypto.randomUUID(),
+    id:
+        crypto.randomUUID(),
 
-                type:
-                    "formula",
+    type:
+        "formula",
 
-                expression,
+    expression:
+        placeholderNode("Expresión"),
 
-                color:
-                    formulaColors[
-                        formulaCount %
-                        formulaColors.length
-                    ],
+    color:
+        formulaColors[
+            formulaCount %
+            formulaColors.length
+        ],
 
-                visible:
-                    true,
+    visible:
+        true,
 
-                is3D:
-                    false,
+    is3D:
+        false,
 
-                coordinateSystem:
-                    "cartesian"
+    coordinateSystem:
+        "cartesian",
 
-            };
+    representation: {
+        kind: "curve"
+    }
+
+};
 
 
         setBlocks(previous => [
@@ -1048,12 +1094,86 @@ case "summation": {
         );
 
 
-        setKeyboardOpen(
-            true
+        setDrawerMode(
+            "keyboard"
         );
 
     }
 
+   function addObjectFormula(
+    kind: CreatableObject3DKind
+): void {
+
+    const preset =
+        createObject3DFormulaPreset(
+            kind
+        );
+
+
+    const formulaCount =
+        blocks.filter(
+            block =>
+                block.type === "formula"
+        ).length;
+
+
+    const block: FormulaBlock = {
+
+        id:
+            crypto.randomUUID(),
+
+        type:
+            "formula",
+
+        expression:
+            preset.expression,
+
+        color:
+            formulaColors[
+                formulaCount %
+                formulaColors.length
+            ],
+
+        visible:
+            true,
+
+        is3D:
+            true,
+
+        coordinateSystem:
+            "cartesian",
+
+        representation:
+            preset.representation
+
+    };
+
+
+    setBlocks(
+        previousBlocks => [
+            ...previousBlocks,
+            block
+        ]
+    );
+
+
+    setActiveFormulaBlockId(
+        block.id
+    );
+
+    setSelectedExpressionNodeId(
+        preset.expression.id
+    );
+
+    setGraphMode(
+        "3d"
+    );
+
+    setDrawerMode(
+        "keyboard"
+    );
+
+}
 
     function addNoteBlock(): void {
 
@@ -1165,9 +1285,11 @@ case "summation": {
                 null
             );
 
-            setKeyboardOpen(
-                false
-            );
+            setDrawerMode(previous =>
+            previous === "keyboard"
+                ? null
+                : previous
+        );
 
         }
 
@@ -1485,30 +1607,69 @@ function toggleFormulaCoordinateSystem(
                     <div className="calculatorHeaderActions">
 
                         <button
-                            type="button"
-                            className={`
-                                calculatorKeyboardButton
-                                ${
-                                    keyboardOpen
-                                        ? "calculatorKeyboardButtonActive"
-                                        : ""
-                                }
-                            `}
-                            disabled={
-                                !activeFormulaBlock
-                            }
-                            aria-label="Abrir teclado matemático"
-                            onClick={() => {
+    type="button"
+    className={`
+        calculatorKeyboardButton
+        ${
+            drawerMode === "keyboard"
+                ? "calculatorKeyboardButtonActive"
+                : ""
+        }
+    `}
+    disabled={
+        !activeFormulaBlock
+    }
+    aria-label="Abrir teclado matemático"
+    aria-pressed={
+        drawerMode === "keyboard"
+    }
+    onClick={() => {
 
-                                setKeyboardOpen(
-                                    previous =>
-                                        !previous
-                                );
+        setDrawerMode(previous =>
+            previous === "keyboard"
+                ? null
+                : "keyboard"
+        );
 
-                            }}
-                        >
-                            ∑
-                        </button>
+    }}
+>
+    ∑
+</button>
+
+
+<button
+    type="button"
+    className={`
+        calculatorKeyboardButton
+        ${
+            drawerMode === "objects-3d"
+                ? "calculatorKeyboardButtonActive"
+                : ""
+        }
+    `}
+    aria-label="Abrir biblioteca de objetos 3D"
+    aria-pressed={
+        drawerMode === "objects-3d"
+    }
+    onClick={() => {
+
+        setDrawerMode(previous =>
+            previous === "objects-3d"
+                ? null
+                : "objects-3d"
+        );
+
+    }}
+>
+    <svg
+        viewBox="0 0 24 24"
+        aria-hidden="true"
+    >
+        <path d="M12 2.8L20 7.2V16.8L12 21.2L4 16.8V7.2L12 2.8Z" />
+        <path d="M4 7.2L12 11.8L20 7.2" />
+        <path d="M12 11.8V21.2" />
+    </svg>
+</button>
 
 
                         <button
@@ -1948,9 +2109,9 @@ if (
                                                 node.id
                                             );
 
-                                            setKeyboardOpen(
-                                                true
-                                            );
+                                            setDrawerMode(
+                                            "keyboard"
+                                        );
 
                                         }}
                                     />
@@ -2188,61 +2349,89 @@ if (
 
 
                 <div
-                    className={`
-                        expressionKeyboardDrawer
-                        ${
-                            keyboardOpen
-                                ? "expressionKeyboardDrawerOpen"
-                                : ""
-                        }
-                    `}
-                    aria-hidden={
-                        !keyboardOpen
-                    }
-                >
+    className={`
+        expressionKeyboardDrawer
+        ${
+            drawerMode !== null
+                ? "expressionKeyboardDrawerOpen"
+                : ""
+        }
+    `}
+    aria-hidden={
+        drawerMode === null
+    }
+>
 
-                    <header className="expressionKeyboardDrawerHeader">
+    <header className="expressionKeyboardDrawerHeader">
 
-                        <div>
+        <div>
 
-                            <span>
-                                Syntaxtral
-                            </span>
+            <span>
+                Syntaxtral
+            </span>
 
-                            <strong>
-                                Mathematical keyboard
-                            </strong>
+            <strong>
 
-                        </div>
+                {
+                    drawerMode === "objects-3d"
+                        ? "3D object library"
+                        : "Mathematical keyboard"
+                }
 
+            </strong>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-
-                                setKeyboardOpen(
-                                    false
-                                );
-
-                            }}
-                        >
-                            ×
-                        </button>
-
-                    </header>
+        </div>
 
 
-                    <ExpressionKeyboard
-                        disabled={
-                            !activeFormulaBlock ||
-                            !selectedExpressionNodeId
-                        }
-                        onAction={
-                            handleKeyboardAction
-                        }
-                    />
+        <button
+            type="button"
+            onClick={() => {
 
-                </div>
+                setDrawerMode(
+                    null
+                );
+
+            }}
+        >
+            ×
+        </button>
+
+    </header>
+
+
+    {drawerMode === "keyboard" && (
+
+        <ExpressionKeyboard
+            disabled={
+                !activeFormulaBlock ||
+                !selectedExpressionNodeId
+            }
+            functions={
+                availableFunctions
+            }
+            variables={
+                availableVariables
+            }
+            sets={
+                availableSets
+            }
+            onAction={
+                handleKeyboardAction
+            }
+        />
+
+    )}
+
+
+    {drawerMode === "objects-3d" && (
+
+        <Object3DMenu
+    onCreate={addObjectFormula}
+/>
+
+    )}
+
+</div>
 
             </aside>
 

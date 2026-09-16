@@ -1,0 +1,235 @@
+.object3DMenu {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+
+    padding:
+        14px
+        10px;
+
+}
+
+
+.object3DMenuIntro {
+
+    padding:
+        4px
+        4px
+        10px;
+
+    border-bottom:
+        1px solid #ffffff0d;
+
+}
+
+
+.object3DMenuIntro span {
+
+    color: #a855f7;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 1.2px;
+
+    text-transform: uppercase;
+
+}
+
+
+.object3DMenuIntro p {
+
+    margin:
+        7px
+        0
+        0;
+
+    color: #76717d;
+
+    font-size: 11px;
+    line-height: 1.45;
+
+}
+
+
+.object3DMenuGrid {
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+
+}
+
+
+.object3DMenuItem {
+
+    width: 100%;
+    min-height: 64px;
+
+    display: grid;
+
+    grid-template-columns:
+        38px
+        minmax(0, 1fr)
+        24px;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding:
+        9px
+        10px;
+
+    border:
+        1px solid #ffffff12;
+
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #17171d,
+            #101014
+        );
+
+    color: #ebe7f1;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        border-color 140ms ease,
+        background-color 140ms ease,
+        transform 140ms ease;
+
+}
+
+
+.object3DMenuItem:hover {
+
+    border-color: #9b5de566;
+
+    background:
+        linear-gradient(
+            135deg,
+            #21182c,
+            #141018
+        );
+
+    transform:
+        translateX(2px);
+
+}
+
+
+.object3DMenuSymbol {
+
+    width: 36px;
+    height: 36px;
+
+    display: grid;
+    place-items: center;
+
+    border:
+        1px solid #9b5de544;
+
+    border-radius: 7px;
+
+    background: #7c3aed18;
+
+    color: #bc83ff;
+
+    font-family:
+        "Times New Roman",
+        serif;
+
+    font-size: 21px;
+
+}
+
+
+.object3DMenuContent {
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+
+}
+
+
+.object3DMenuContent strong {
+
+    color: #e9e4ef;
+
+    font-size: 12px;
+    font-weight: 500;
+
+}
+
+
+.object3DMenuContent small {
+
+    color: #716c78;
+
+    font-size: 9px;
+    line-height: 1.35;
+
+}
+
+
+.object3DMenuArrow {
+
+    color: #9057e8;
+
+    font-size: 18px;
+
+    text-align: center;
+
+}
+
+.object3DMenuItemUnavailable {
+
+    cursor: default;
+
+    opacity: 0.42;
+
+}
+
+
+.object3DMenuItemUnavailable:hover {
+
+    border-color: #ffffff12;
+
+    background:
+        linear-gradient(
+            135deg,
+            #17171d,
+            #101014
+        );
+
+    transform: none;
+
+}
+
+
+.object3DMenuComingSoon {
+
+    color: #756d80;
+
+    font-family: monospace;
+    font-size: 7px;
+
+    letter-spacing: 0.4px;
+
+    text-align: center;
+    text-transform: uppercase;
+
+}
