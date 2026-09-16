@@ -2,7 +2,9 @@ import {
     useMemo,
     useState
 } from "react";
-
+import {
+    compile
+} from "mathjs";
 import {
     additionNode,
     constantNode,
@@ -22,7 +24,9 @@ import {
     powerNode,
     replaceExpressionNodeById,
     summationNode,
-    symbolNode
+    symbolNode,
+    functionDefinitionNode,
+    equalityNode,
 } from "../../syntaxtral/expression";
 
 import type {
@@ -31,6 +35,10 @@ import type {
 } from "../../syntaxtral/expression";
 
 import "./Calculator.css";
+
+import {
+    createEvaluationScope
+} from "./math/createEvaluationScope";
 
 import GraphCanvas from "../../components/GraphCanvas/GraphCanvas";
 import Graph3DCanvas from "../../components/Graph3DCanvas/Graph3DCanvas";
@@ -186,6 +194,22 @@ function trySerializeExpression(
     }
 
 }
+const identifierPattern =
+    /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+
+const reservedFunctionNames =
+    new Set([
+        "sin",
+        "cos",
+        "tan",
+        "log",
+        "sqrt",
+        "factorial",
+        "syntaxtralSum"
+    ]);
+
+
 
 
 function Calculator() {
@@ -282,6 +306,221 @@ const variableScope =
         return scope;
 
     }, [blocks]);
+const functionScope =
+    useMemo<
+        Record<
+            string,
+            (...argumentsList: number[]) => number
+        >
+    >(() => {
+
+        const functions:
+            Record<
+                string,
+                (...argumentsList: number[]) => number
+            > = {};
+
+
+        for (const block of blocks) {
+
+            if (
+                block.type !== "formula" ||
+                block.expression.type !==
+                    "function-definition"
+            ) {
+
+                continue;
+
+            }
+
+
+            const definition =
+                block.expression;
+
+
+            if (
+                definition.name.type !== "symbol" ||
+                definition.parameters.length === 0 ||
+                definition.parameters.some(
+                    parameter =>
+                        parameter.type !== "symbol"
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            const functionName =
+                definition.name.name;
+
+            const parameterNames =
+                definition.parameters.map(
+                    parameter =>
+                        parameter.type === "symbol"
+                            ? parameter.name
+                            : ""
+                );
+
+
+            if (
+                reservedFunctionNames.has(
+                    functionName
+                )
+            ) {
+
+                continue;
+
+            }
+
+
+            try {
+
+                const compiledBody =
+                    compile(
+                        expressionToMathJs(
+                            definition.body
+                        )
+                    );
+
+
+                functions[functionName] =
+                    (
+                        ...argumentsList:
+                            number[]
+                    ): number => {
+
+                        const argumentScope:
+                            Record<string, number> = {};
+
+
+                        parameterNames.forEach((
+                            parameterName,
+                            index
+                        ) => {
+
+                            argumentScope[parameterName] =
+                                Number(
+                                    argumentsList[index]
+                                );
+
+                        });
+
+
+                        try {
+
+                            return Number(
+                                compiledBody.evaluate(
+                                    createEvaluationScope({
+                                        ...variableScope,
+                                        ...functions,
+                                        ...argumentScope
+                                    })
+                                )
+                            );
+
+                        } catch {
+
+                            return Number.NaN;
+
+                        }
+
+                    };
+
+            } catch {
+
+                /*
+                 * La definición todavía está incompleta.
+                 */
+
+            }
+
+        }
+
+
+        return functions;
+
+    }, [
+        blocks,
+        variableScope
+    ]);
+
+const availableFunctions =
+    useMemo(() => {
+
+        return blocks.flatMap(
+            block => {
+
+                if (
+                    block.type !== "formula" ||
+                    block.expression.type !==
+                        "function-definition" ||
+                    block.expression.name.type !==
+                        "symbol"
+                ) {
+
+                    return [];
+
+                }
+
+
+                const parameters =
+                    block.expression.parameters
+                        .flatMap(
+                            parameter =>
+                                parameter.type === "symbol"
+                                    ? [parameter.name]
+                                    : []
+                        );
+
+
+                return [
+                    {
+                        name:
+                            block.expression.name.name,
+
+                        parameters
+                    }
+                ];
+
+            }
+        );
+
+    }, [blocks]);
+
+
+const availableVariables =
+    useMemo(() => {
+
+        return blocks.flatMap(
+            block =>
+                block.type === "variable"
+                    ? [block.name]
+                    : []
+        );
+
+    }, [blocks]);
+
+
+const availableSets:
+    readonly string[] = [];
+
+    
+const graphEvaluationScope =
+    useMemo<
+        Record<string, unknown>
+    >(() => ({
+
+        ...variableScope,
+        ...functionScope
+
+    }), [
+        variableScope,
+        functionScope
+    ]);
+
+
 
     const canvasExpressions =
         useMemo<GraphExpression[]>(() => {
@@ -299,9 +538,15 @@ const variableScope =
 
 
                     const serialized =
-                        trySerializeExpression(
-                            block.expression
-                        );
+
+    block.expression.type ===
+        "function-definition"
+
+        ? `${block.expression.name}(x)`
+
+        : trySerializeExpression(
+            block.expression
+        );
 
 
                     if (!serialized) {
@@ -332,7 +577,7 @@ const variableScope =
         block.coordinateSystem,
 
     variables:
-        variableScope
+    graphEvaluationScope
 }
                         ];
 
@@ -341,7 +586,7 @@ const variableScope =
 
         }, [
     blocks,
-    variableScope
+    graphEvaluationScope
 ]);
 
 
@@ -718,6 +963,13 @@ case "summation": {
     return;
 
 }
+
+
+
+
+
+
+
             case "clear": {
 
                 const emptyNode =

@@ -23,8 +23,8 @@ export type GraphExpression = {
         GraphCoordinateSystem;
 
     variables:
-        Readonly<
-            Record<string, number>
-        >;
+    Readonly<
+        Record<string, unknown>
+    >;
 
 };

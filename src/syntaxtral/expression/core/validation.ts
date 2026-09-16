@@ -1,8 +1,6 @@
 import type {
-
     ExpressionNode,
     MathematicalConstant
-
 } from "./types";
 
 
@@ -30,13 +28,15 @@ export type ExpressionValidationResult = {
 
 const validConstants:
     readonly MathematicalConstant[] = [
-
         "pi",
         "e",
         "i",
         "infinity"
-
     ];
+
+
+const identifierPattern =
+    /^[A-Za-z_][A-Za-z0-9_]*$/;
 
 
 export function validateExpression(
@@ -53,10 +53,8 @@ export function validateExpression(
     ): void {
 
         errors.push({
-
             nodeId,
             message
-
         });
 
     }
@@ -120,6 +118,17 @@ export function validateExpression(
                     addError(
                         node.id,
                         "El símbolo no puede estar vacío"
+                    );
+
+                } else if (
+                    !identifierPattern.test(
+                        node.name
+                    )
+                ) {
+
+                    addError(
+                        node.id,
+                        `"${node.name}" no es un símbolo válido`
                     );
 
                 }
@@ -193,7 +202,6 @@ export function validateExpression(
                     node.numerator
                 );
 
-
                 validateNode(
                     node.denominator
                 );
@@ -206,7 +214,6 @@ export function validateExpression(
                 validateNode(
                     node.base
                 );
-
 
                 validateNode(
                     node.exponent
@@ -233,6 +240,19 @@ export function validateExpression(
                 break;
 
 
+            case "equality":
+
+                validateNode(
+                    node.left
+                );
+
+                validateNode(
+                    node.right
+                );
+
+                break;
+
+
             case "function-call":
 
                 if (
@@ -242,6 +262,17 @@ export function validateExpression(
                     addError(
                         node.id,
                         "La función necesita un nombre"
+                    );
+
+                } else if (
+                    !identifierPattern.test(
+                        node.name
+                    )
+                ) {
+
+                    addError(
+                        node.id,
+                        `"${node.name}" no es un nombre válido de función`
                     );
 
                 }
@@ -266,6 +297,123 @@ export function validateExpression(
                 break;
 
 
+            case "function-definition": {
+
+                if (
+                    node.name.type !== "symbol"
+                ) {
+
+                    addError(
+                        node.name.id,
+                        "El nombre de la función debe ser un símbolo"
+                    );
+
+                }
+
+
+                validateNode(
+                    node.name
+                );
+
+
+                if (
+                    node.parameters.length === 0
+                ) {
+
+                    addError(
+                        node.id,
+                        "La función necesita al menos un parámetro"
+                    );
+
+                }
+
+
+                const parameterNames =
+                    new Set<string>();
+
+
+                node.parameters.forEach(
+                    parameter => {
+
+                        if (
+                            parameter.type !== "symbol"
+                        ) {
+
+                            addError(
+                                parameter.id,
+                                "El parámetro debe ser un símbolo"
+                            );
+
+                        } else if (
+                            parameterNames.has(
+                                parameter.name
+                            )
+                        ) {
+
+                            addError(
+                                parameter.id,
+                                `El parámetro "${parameter.name}" está repetido`
+                            );
+
+                        } else {
+
+                            parameterNames.add(
+                                parameter.name
+                            );
+
+                        }
+
+
+                        validateNode(
+                            parameter
+                        );
+
+                    }
+                );
+
+
+                validateNode(
+                    node.body
+                );
+
+                break;
+
+            }
+
+
+            case "summation":
+
+                if (
+                    node.index.type !== "symbol"
+                ) {
+
+                    addError(
+                        node.index.id,
+                        "El índice de la sumatoria debe ser un símbolo"
+                    );
+
+                }
+
+
+                validateNode(
+                    node.index
+                );
+
+                validateNode(
+                    node.lowerBound
+                );
+
+                validateNode(
+                    node.upperBound
+                );
+
+                validateNode(
+                    node.body
+                );
+
+                break;
+
+
             case "group":
 
                 validateNode(
@@ -278,11 +426,8 @@ export function validateExpression(
             case "placeholder":
 
                 /*
-                 * El placeholder representa una expresión
-                 * que el usuario todavía no ha completado.
-                 *
-                 * Es estructuralmente válido, aunque todavía
-                 * no sea evaluable matemáticamente.
+                 * Es estructuralmente válido,
+                 * aunque todavía no sea evaluable.
                  */
 
                 break;

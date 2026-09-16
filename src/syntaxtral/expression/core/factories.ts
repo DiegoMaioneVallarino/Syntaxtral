@@ -1,11 +1,11 @@
 import type {
-
     AdditionNode,
     ConstantNode,
+    EqualityNode,
     ExpressionNode,
     FactorialNode,
     FractionNode,
-    SummationNode,
+    FunctionDefinitionNode,
     FunctionCallNode,
     GroupNode,
     MathematicalConstant,
@@ -14,8 +14,8 @@ import type {
     NumberNode,
     PlaceholderNode,
     PowerNode,
+    SummationNode,
     SymbolNode
-
 } from "./types";
 
 
@@ -250,7 +250,50 @@ export function functionCallNode(
 
 }
 
+export function functionDefinitionNode(
+    name: ExpressionNode,
+    parameters: readonly ExpressionNode[],
+    body: ExpressionNode
+): FunctionDefinitionNode {
 
+    return {
+
+        id:
+            createExpressionNodeId(),
+
+        type:
+            "function-definition",
+
+        name,
+
+        parameters,
+
+        body
+
+    };
+
+}
+
+export function equalityNode(
+    left: ExpressionNode,
+    right: ExpressionNode
+): EqualityNode {
+
+    return {
+
+        id:
+            createExpressionNodeId(),
+
+        type:
+            "equality",
+
+        left,
+
+        right
+
+    };
+
+}
 export function groupNode(
     expression: ExpressionNode
 ): GroupNode {

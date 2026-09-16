@@ -187,7 +187,20 @@ export function replaceExpressionNodeById(
 
             };
 
+case "function-definition":
 
+    return {
+
+        ...expression,
+
+        body:
+            replaceExpressionNodeById(
+                expression.body,
+                nodeId,
+                replacement
+            )
+
+    };
         case "negation":
 
             return {
@@ -204,7 +217,60 @@ export function replaceExpressionNodeById(
                     )
 
             };
+case "equality":
 
+    return {
+
+        ...expression,
+
+        left:
+            replaceExpressionNodeById(
+                expression.left,
+                nodeId,
+                replacement
+            ),
+
+        right:
+            replaceExpressionNodeById(
+                expression.right,
+                nodeId,
+                replacement
+            )
+
+    };
+
+
+case "function-definition":
+
+    return {
+
+        ...expression,
+
+        name:
+            replaceExpressionNodeById(
+                expression.name,
+                nodeId,
+                replacement
+            ),
+
+        parameters:
+            expression.parameters.map(
+                parameter =>
+                    replaceExpressionNodeById(
+                        parameter,
+                        nodeId,
+                        replacement
+                    )
+            ),
+
+        body:
+            replaceExpressionNodeById(
+                expression.body,
+                nodeId,
+                replacement
+            )
+
+    };
 
         case "function-call":
 
@@ -341,8 +407,26 @@ function getChildren(
             return [
                 expression.operand
             ];
+        case "equality":
+
+            return [
+                expression.left,
+                expression.right
+            ];
 
 
+        case "function-definition":
+
+            return [
+                expression.name,
+                ...expression.parameters,
+                expression.body
+            ];
+        case "function-definition":
+
+            return [
+                expression.body
+            ];
         case "function-call":
 
             return expression.arguments;

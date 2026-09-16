@@ -50,7 +50,7 @@ function getCompiledBody(
 export function createEvaluationScope(
     values:
         Readonly<
-            Record<string, number>
+            Record<string, unknown>
         >
 ): Record<string, unknown> {
 

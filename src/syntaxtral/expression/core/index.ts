@@ -1,14 +1,15 @@
 export type {
-
     AdditionNode,
     BaseExpressionNode,
     ConstantNode,
+    EqualityNode,
     ExpressionNode,
     ExpressionNodeType,
     ExpressionPath,
     FactorialNode,
     FractionNode,
     FunctionCallNode,
+    FunctionDefinitionNode,
     GroupNode,
     MathematicalConstant,
     MultiplicationNode,
@@ -16,29 +17,27 @@ export type {
     NumberNode,
     PlaceholderNode,
     PowerNode,
-    SymbolNode,
-    SummationNode
-    
-
+    SummationNode,
+    SymbolNode
 } from "./types";
 
 
 export {
-
     additionNode,
     constantNode,
+    equalityNode,
     factorialNode,
     fractionNode,
     functionCallNode,
+    functionDefinitionNode,
     groupNode,
     multiplicationNode,
     negationNode,
     numberNode,
     placeholderNode,
     powerNode,
-    symbolNode,
     summationNode,
-
+    symbolNode
 } from "./factories";
 
 

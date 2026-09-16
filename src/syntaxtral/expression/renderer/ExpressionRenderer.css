@@ -453,3 +453,67 @@
     align-items: center;
 
 }
+.syntaxtralFunctionDefinition {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+.syntaxtralFunctionDefinitionName,
+.syntaxtralFunctionParameter {
+
+    display: inline-block;
+
+    color: #e9ddff;
+
+    font-style: italic;
+
+}
+
+
+.syntaxtralFunctionEquals {
+
+    display: inline-block;
+
+    margin:
+        0
+        0.35em;
+
+    color: #aaa2b8;
+
+    font-style: normal;
+
+}
+
+
+.syntaxtralFunctionBody {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+.syntaxtralFunctionParameters,
+.syntaxtralEquality {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+.syntaxtralEqualityOperator {
+
+    display: inline-block;
+
+    margin:
+        0
+        0.35em;
+
+    color: #aaa2b8;
+
+    font-style: normal;
+
+}

@@ -90,6 +90,26 @@ export function getExpressionChildren(
                 expression.body
             ];
 
+        case "function-definition":
+
+    return [
+        expression.body
+    ];
+        case "equality":
+
+            return [
+                expression.left,
+                expression.right
+            ];
+
+
+        case "function-definition":
+
+            return [
+                expression.name,
+                ...expression.parameters,
+                expression.body
+            ];
     }
 
 }

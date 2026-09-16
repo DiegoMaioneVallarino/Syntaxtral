@@ -420,8 +420,87 @@ function ExpressionNodeContent({
 
                 </span>
             );
+            case "function-definition":
 
+    return (
+        <span className="syntaxtralFunctionDefinition">
 
+            <span className="syntaxtralFunctionDefinitionName">
+
+                {renderChild(
+                    node.name
+                )}
+
+            </span>
+
+            <span className="syntaxtralParenthesis">
+                (
+            </span>
+
+            <span className="syntaxtralFunctionParameters">
+
+                {node.parameters.map((
+                    parameter,
+                    index
+                ) => (
+
+                    <Fragment key={parameter.id}>
+
+                        {index > 0 && (
+
+                            <span className="syntaxtralComma">
+                                ,
+                            </span>
+
+                        )}
+
+                        {renderChild(
+                            parameter
+                        )}
+
+                    </Fragment>
+
+                ))}
+
+            </span>
+
+            <span className="syntaxtralParenthesis">
+                )
+            </span>
+
+            <span className="syntaxtralFunctionEquals">
+                =
+            </span>
+
+            <span className="syntaxtralFunctionBody">
+
+                {renderChild(
+                    node.body
+                )}
+
+            </span>
+
+        </span>
+    );
+case "equality":
+
+    return (
+        <span className="syntaxtralEquality">
+
+            {renderChild(
+                node.left
+            )}
+
+            <span className="syntaxtralEqualityOperator">
+                =
+            </span>
+
+            {renderChild(
+                node.right
+            )}
+
+        </span>
+    );
         case "group":
 
             return (

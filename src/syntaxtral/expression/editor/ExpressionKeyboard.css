@@ -81,3 +81,140 @@
 .expressionKeyboardDanger {
     color: #ff9292 !important;
 }
+
+.expressionKeyboardCatalogTabs {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 6px;
+
+}
+
+
+.expressionKeyboardCatalogTabs button {
+
+    min-height: 34px;
+
+    border-color: transparent;
+
+    background: transparent;
+
+    font-size: 18px;
+    font-style: italic;
+
+}
+
+
+.expressionKeyboardCatalogTabs
+.expressionKeyboardCatalogActive {
+
+    border-color: #a855f788;
+
+    background: #a855f718;
+
+    color: #c084fc;
+
+}
+
+
+.expressionKeyboardCatalog {
+
+    min-height: 44px;
+    max-height: 130px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    gap: 6px;
+
+    padding: 8px;
+
+    overflow-y: auto;
+
+    border:
+        1px solid #ffffff10;
+
+    border-radius: 8px;
+
+    background: #09090b;
+
+}
+
+
+.expressionKeyboardCatalog > span {
+
+    width: 100%;
+
+    padding: 8px;
+
+    color: #6f6979;
+
+    font-size: 11px;
+    font-style: italic;
+
+    text-align: center;
+
+}
+
+
+.expressionKeyboardCatalog button {
+
+    min-height: 31px;
+
+    padding:
+        4px
+        10px;
+
+    color: #c084fc;
+
+    font-size: 14px;
+
+}
+
+
+.expressionKeyboardAlphabet {
+
+    grid-template-columns:
+        repeat(6, minmax(34px, 1fr));
+
+}
+
+
+.expressionKeyboardShiftActive {
+
+    border-color: #a855f7 !important;
+
+    background:
+        linear-gradient(
+            180deg,
+            #633495,
+            #35194f
+        ) !important;
+
+    color: #ffffff !important;
+
+}
+
+
+.expressionKeyboardStructural {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr
+        1fr;
+
+    gap: 6px;
+
+}
+
+
+.expressionKeyboardStructural button {
+
+    min-height: 38px;
+
+}

@@ -9,7 +9,9 @@ export type ExpressionNode =
     | FactorialNode
     | SummationNode
     | NegationNode
+    | EqualityNode
     | FunctionCallNode
+    | FunctionDefinitionNode
     | GroupNode
     | PlaceholderNode;
 
@@ -141,7 +143,16 @@ export type NegationNode =
             ExpressionNode;
 
     };
+export type EqualityNode =
+    BaseExpressionNode<"equality"> & {
 
+        readonly left:
+            ExpressionNode;
+
+        readonly right:
+            ExpressionNode;
+
+    };
 
 export type FunctionCallNode =
     BaseExpressionNode<"function-call"> & {
@@ -154,6 +165,19 @@ export type FunctionCallNode =
 
     };
 
+export type FunctionDefinitionNode =
+    BaseExpressionNode<"function-definition"> & {
+
+        readonly name:
+            ExpressionNode;
+
+        readonly parameters:
+            readonly ExpressionNode[];
+
+        readonly body:
+            ExpressionNode;
+
+    };
 
 export type GroupNode =
     BaseExpressionNode<"group"> & {

@@ -1,8 +1,6 @@
 import type {
-
     ExpressionNode,
     MathematicalConstant
-
 } from "./types";
 
 
@@ -18,7 +16,9 @@ export class ExpressionSerializationError
         message: string
     ) {
 
-        super(message);
+        super(
+            message
+        );
 
         this.name =
             "ExpressionSerializationError";
@@ -32,29 +32,21 @@ export class ExpressionSerializationError
 
 
 function constantToPlainText(
-    constant:
-        MathematicalConstant
+    constant: MathematicalConstant
 ): string {
 
     switch (constant) {
 
         case "pi":
-
             return "π";
 
-
         case "e":
-
             return "e";
 
-
         case "i":
-
             return "i";
 
-
         case "infinity":
-
             return "∞";
 
     }
@@ -63,29 +55,21 @@ function constantToPlainText(
 
 
 function constantToMathJs(
-    constant:
-        MathematicalConstant
+    constant: MathematicalConstant
 ): string {
 
     switch (constant) {
 
         case "pi":
-
             return "pi";
 
-
         case "e":
-
             return "e";
 
-
         case "i":
-
             return "i";
 
-
         case "infinity":
-
             return "Infinity";
 
     }
@@ -136,82 +120,100 @@ export function expressionToPlainText(
 
         case "fraction":
 
-            return `(${
-                expressionToPlainText(
-                    expression.numerator
-                )
-            }) / (${
-                expressionToPlainText(
-                    expression.denominator
-                )
-            })`;
+            return (
+                `(${expressionToPlainText(expression.numerator)})` +
+                " / " +
+                `(${expressionToPlainText(expression.denominator)})`
+            );
 
 
         case "power":
 
-            return `(${
-                expressionToPlainText(
-                    expression.base
-                )
-            })^(${
-                expressionToPlainText(
-                    expression.exponent
-                )
-            })`;
+            return (
+                `(${expressionToPlainText(expression.base)})` +
+                "^" +
+                `(${expressionToPlainText(expression.exponent)})`
+            );
 
 
         case "factorial":
 
-            return `(${
-                expressionToPlainText(
-                    expression.operand
-                )
-            })!`;
+            return (
+                `(${expressionToPlainText(expression.operand)})!`
+            );
 
 
         case "negation":
 
-            return `−(${
+            return (
+                `−(${expressionToPlainText(expression.operand)})`
+            );
+
+
+        case "equality":
+
+            return (
+                `${expressionToPlainText(expression.left)} = ` +
                 expressionToPlainText(
-                    expression.operand
+                    expression.right
                 )
-            })`;
+            );
 
 
         case "function-call":
 
-            return `${expression.name}(${
+            return (
+                `${expression.name}(` +
                 expression.arguments
                     .map(
                         expressionToPlainText
                     )
-                    .join(", ")
-            })`;
+                    .join(", ") +
+                ")"
+            );
+
+
+        case "function-definition":
+
+            return (
+                `${expressionToPlainText(expression.name)}` +
+                `(${
+                    expression.parameters
+                        .map(
+                            expressionToPlainText
+                        )
+                        .join(", ")
+                }) = ` +
+                expressionToPlainText(
+                    expression.body
+                )
+            );
+
+
+        case "summation":
+
+            return (
+                "sum(" +
+                `${expressionToPlainText(expression.body)}, ` +
+                `${expressionToPlainText(expression.index)} = ` +
+                `${expressionToPlainText(expression.lowerBound)}..` +
+                `${expressionToPlainText(expression.upperBound)}` +
+                ")"
+            );
 
 
         case "group":
 
-            return `(${
-                expressionToPlainText(
-                    expression.expression
-                )
-            })`;
+            return (
+                `(${expressionToPlainText(expression.expression)})`
+            );
 
 
         case "placeholder":
 
             return expression.label ??
                 "□";
-        case "summation":
 
-            return (
-                `sum(` +
-                `${expressionToPlainText(expression.body)}, ` +
-                `${expressionToPlainText(expression.index)} = ` +
-                `${expressionToPlainText(expression.lowerBound)}..` +
-                `${expressionToPlainText(expression.upperBound)}` +
-                `)`
-            );
     }
 
 }
@@ -243,130 +245,165 @@ export function expressionToMathJs(
         case "addition":
 
             return expression.terms
-                .map(term => (
-                    `(${
-                        expressionToMathJs(
-                            term
-                        )
-                    })`
-                ))
+                .map(
+                    term =>
+                        `(${expressionToMathJs(term)})`
+                )
                 .join(" + ");
 
 
         case "multiplication":
 
             return expression.factors
-                .map(factor => (
-                    `(${
-                        expressionToMathJs(
-                            factor
-                        )
-                    })`
-                ))
+                .map(
+                    factor =>
+                        `(${expressionToMathJs(factor)})`
+                )
                 .join(" * ");
 
 
         case "fraction":
 
-            return `(${
-                expressionToMathJs(
-                    expression.numerator
-                )
-            }) / (${
-                expressionToMathJs(
-                    expression.denominator
-                )
-            })`;
+            return (
+                `(${expressionToMathJs(expression.numerator)})` +
+                " / " +
+                `(${expressionToMathJs(expression.denominator)})`
+            );
 
 
         case "power":
 
-            return `(${
-                expressionToMathJs(
-                    expression.base
-                )
-            }) ^ (${
-                expressionToMathJs(
-                    expression.exponent
-                )
-            })`;
+            return (
+                `(${expressionToMathJs(expression.base)})` +
+                " ^ " +
+                `(${expressionToMathJs(expression.exponent)})`
+            );
 
 
         case "factorial":
 
-            return `factorial(${
-                expressionToMathJs(
-                    expression.operand
-                )
-            })`;
+            return (
+                `factorial(${expressionToMathJs(expression.operand)})`
+            );
 
 
         case "negation":
 
-            return `-(${
-                expressionToMathJs(
-                    expression.operand
-                )
-            })`;
+            return (
+                `-(${expressionToMathJs(expression.operand)})`
+            );
+
+
+        case "equality":
+
+            return (
+                `(${expressionToMathJs(expression.left)}) = ` +
+                `(${expressionToMathJs(expression.right)})`
+            );
 
 
         case "function-call":
 
-            return `${expression.name}(${
+            return (
+                `${expression.name}(` +
                 expression.arguments
                     .map(
                         expressionToMathJs
                     )
-                    .join(", ")
-            })`;
+                    .join(", ") +
+                ")"
+            );
+
+
+        case "function-definition": {
+
+            if (
+                expression.name.type !== "symbol"
+            ) {
+
+                throw new ExpressionSerializationError(
+                    expression.name.id,
+                    "El nombre de una función debe ser un símbolo"
+                );
+
+            }
+
+
+            const parameters =
+                expression.parameters.map(
+                    parameter => {
+
+                        if (
+                            parameter.type !== "symbol"
+                        ) {
+
+                            throw new ExpressionSerializationError(
+                                parameter.id,
+                                "Los parámetros deben ser símbolos"
+                            );
+
+                        }
+
+
+                        return parameter.name;
+
+                    }
+                );
+
+
+            return (
+                `${expression.name.name}` +
+                `(${parameters.join(", ")}) = ` +
+                expressionToMathJs(
+                    expression.body
+                )
+            );
+
+        }
+
+
+        case "summation": {
+
+            const indexName =
+
+                expression.index.type === "symbol"
+
+                    ? expression.index.name
+
+                    : "";
+
+
+            const serializedBody =
+                expressionToMathJs(
+                    expression.body
+                );
+
+
+            return (
+                "syntaxtralSum(" +
+                `${JSON.stringify(serializedBody)}, ` +
+                `${JSON.stringify(indexName)}, ` +
+                `${expressionToMathJs(expression.lowerBound)}, ` +
+                `${expressionToMathJs(expression.upperBound)}` +
+                ")"
+            );
+
+        }
 
 
         case "group":
 
-            return `(${
-                expressionToMathJs(
-                    expression.expression
-                )
-            })`;
+            return (
+                `(${expressionToMathJs(expression.expression)})`
+            );
 
 
         case "placeholder":
 
             throw new ExpressionSerializationError(
-
                 expression.id,
-
                 "No se puede convertir un placeholder incompleto a MathJS"
-
             );
-
-        case "summation": {
-
-    const indexName =
-
-        expression.index.type === "symbol"
-
-            ? expression.index.name
-
-            : "";
-
-
-    const serializedBody =
-        expressionToMathJs(
-            expression.body
-        );
-
-
-    return (
-        `syntaxtralSum(` +
-        `${JSON.stringify(serializedBody)}, ` +
-        `${JSON.stringify(indexName)}, ` +
-        `${expressionToMathJs(expression.lowerBound)}, ` +
-        `${expressionToMathJs(expression.upperBound)}` +
-        `)`
-    );
-
-}
 
     }
 
@@ -380,23 +417,16 @@ export function expressionToJSON(
     try {
 
         return JSON.stringify(
-
             expression,
-
             null,
-
             2
-
         );
 
     } catch {
 
         throw new ExpressionSerializationError(
-
             expression.id,
-
             "No fue posible convertir la expresión a JSON"
-
         );
 
     }

@@ -1,4 +1,19 @@
+import {
+    useState
+} from "react";
+
 import "./ExpressionKeyboard.css";
+
+
+export type KeyboardFunctionItem = {
+
+    readonly name:
+        string;
+
+    readonly parameters:
+        readonly string[];
+
+};
 
 
 export type ExpressionKeyboardAction =
@@ -31,24 +46,41 @@ export type ExpressionKeyboardAction =
             "negation" |
             "square-root" |
             "group" |
+            "equality" |
             "clear";
     }
     | {
         type: "function";
-        value:
-            "sin" |
-            "cos" |
-            "tan" |
-            "log";
-    } | {
+        value: string;
+    }
+    | {
         type: "summation";
     }
+    | {
+        type: "function-definition";
+    };
+
+
+type KeyboardCatalog =
+    | "functions"
+    | "variables"
+    | "sets"
+    | null;
 
 
 type ExpressionKeyboardProps = {
 
     disabled?:
         boolean;
+
+    functions?:
+        readonly KeyboardFunctionItem[];
+
+    variables?:
+        readonly string[];
+
+    sets?:
+        readonly string[];
 
     onAction: (
         action: ExpressionKeyboardAction
@@ -57,13 +89,209 @@ type ExpressionKeyboardProps = {
 };
 
 
+const letters =
+    "abcdefghijklmnopqrstuvwxyz"
+        .split("");
+
+
 export function ExpressionKeyboard({
     disabled = false,
+    functions = [],
+    variables = [],
+    sets = [],
     onAction
 }: ExpressionKeyboardProps) {
 
+    const [
+        uppercase,
+        setUppercase
+    ] = useState(
+        false
+    );
+
+
+    const [
+        activeCatalog,
+        setActiveCatalog
+    ] = useState<KeyboardCatalog>(
+        null
+    );
+
+
+    function toggleCatalog(
+        catalog: Exclude<KeyboardCatalog, null>
+    ): void {
+
+        setActiveCatalog(previous =>
+            previous === catalog
+                ? null
+                : catalog
+        );
+
+    }
+
+
     return (
         <div className="expressionKeyboard">
+
+            <div className="expressionKeyboardCatalogTabs">
+
+                <button
+                    type="button"
+                    className={
+                        activeCatalog === "functions"
+                            ? "expressionKeyboardCatalogActive"
+                            : ""
+                    }
+                    onClick={() => {
+                        toggleCatalog(
+                            "functions"
+                        );
+                    }}
+                >
+                    fxs
+                </button>
+
+                <button
+                    type="button"
+                    className={
+                        activeCatalog === "variables"
+                            ? "expressionKeyboardCatalogActive"
+                            : ""
+                    }
+                    onClick={() => {
+                        toggleCatalog(
+                            "variables"
+                        );
+                    }}
+                >
+                    vars
+                </button>
+
+                <button
+                    type="button"
+                    className={
+                        activeCatalog === "sets"
+                            ? "expressionKeyboardCatalogActive"
+                            : ""
+                    }
+                    onClick={() => {
+                        toggleCatalog(
+                            "sets"
+                        );
+                    }}
+                >
+                    sets
+                </button>
+
+            </div>
+
+
+            {activeCatalog && (
+
+                <div className="expressionKeyboardCatalog">
+
+                    {activeCatalog === "functions" && (
+
+                        functions.length > 0
+                            ? functions.map(
+                                functionItem => (
+
+                                    <button
+                                        key={functionItem.name}
+                                        type="button"
+                                        disabled={disabled}
+                                        onClick={() => {
+
+                                            onAction({
+                                                type:
+                                                    "function",
+
+                                                value:
+                                                    functionItem.name
+                                            });
+
+                                        }}
+                                    >
+                                        {functionItem.name}
+                                        (
+                                        {functionItem.parameters.join(", ")}
+                                        )
+                                    </button>
+
+                                )
+                            )
+                            : (
+                                <span>
+                                    No hay funciones creadas
+                                </span>
+                            )
+
+                    )}
+
+
+                    {activeCatalog === "variables" && (
+
+                        variables.length > 0
+                            ? variables.map(
+                                variable => (
+
+                                    <button
+                                        key={variable}
+                                        type="button"
+                                        disabled={disabled}
+                                        onClick={() => {
+
+                                            onAction({
+                                                type:
+                                                    "symbol",
+
+                                                value:
+                                                    variable
+                                            });
+
+                                        }}
+                                    >
+                                        {variable}
+                                    </button>
+
+                                )
+                            )
+                            : (
+                                <span>
+                                    No hay variables creadas
+                                </span>
+                            )
+
+                    )}
+
+
+                    {activeCatalog === "sets" && (
+
+                        sets.length > 0
+                            ? sets.map(setName => (
+
+                                <button
+                                    key={setName}
+                                    type="button"
+                                    disabled
+                                >
+                                    {setName}
+                                </button>
+
+                            ))
+                            : (
+                                <span>
+                                    Los sets vienen en la siguiente mutación
+                                </span>
+                            )
+
+                    )}
+
+                </div>
+
+            )}
+
 
             <div className="expressionKeyboardSection">
 
@@ -85,10 +313,15 @@ export function ExpressionKeyboard({
                         type="button"
                         disabled={disabled}
                         onClick={() => {
+
                             onAction({
-                                type: "digit",
-                                value: digit
+                                type:
+                                    "digit",
+
+                                value:
+                                    digit
                             });
+
                         }}
                     >
                         {digit}
@@ -101,9 +334,12 @@ export function ExpressionKeyboard({
                     type="button"
                     disabled={disabled}
                     onClick={() => {
+
                         onAction({
-                            type: "decimal"
+                            type:
+                                "decimal"
                         });
+
                     }}
                 >
                     .
@@ -115,9 +351,12 @@ export function ExpressionKeyboard({
                     className="expressionKeyboardDanger"
                     disabled={disabled}
                     onClick={() => {
+
                         onAction({
-                            type: "clear"
+                            type:
+                                "clear"
                         });
+
                     }}
                 >
                     ⌫
@@ -126,101 +365,151 @@ export function ExpressionKeyboard({
             </div>
 
 
+            <div className="
+                expressionKeyboardSection
+                expressionKeyboardAlphabet
+            ">
+
+                <button
+                    type="button"
+                    className={
+                        uppercase
+                            ? "expressionKeyboardShiftActive"
+                            : ""
+                    }
+                    aria-pressed={uppercase}
+                    onClick={() => {
+
+                        setUppercase(previous =>
+                            !previous
+                        );
+
+                    }}
+                >
+                    ⇧
+                </button>
+
+
+                {letters.map(letter => {
+
+                    const value =
+                        uppercase
+                            ? letter.toUpperCase()
+                            : letter;
+
+
+                    return (
+                        <button
+                            key={letter}
+                            type="button"
+                            disabled={disabled}
+                            onClick={() => {
+
+                                onAction({
+                                    type:
+                                        "symbol",
+
+                                    value
+                                });
+
+                            }}
+                        >
+                            {value}
+                        </button>
+                    );
+
+                })}
+
+            </div>
+
+
             <div className="expressionKeyboardSection">
-
-                {[
-                    "x",
-                    "y",
-                    "z",
-                    "t",
-                    "n"
-                ].map(symbol => (
-
-                    <button
-                        key={symbol}
-                        type="button"
-                        disabled={disabled}
-                        onClick={() => {
-                            onAction({
-                                type: "symbol",
-                                value: symbol
-                            });
-                        }}
-                    >
-                        {symbol}
-                    </button>
-
-                ))}
-<button
-    type="button"
-    disabled={
-        disabled
-    }
-    onClick={() => {
-
-        onAction({
-            type:
-                "symbol",
-
-            value:
-                "theta"
-        });
-
-    }}
->
-    θ
-</button>
 
                 <button
                     type="button"
                     disabled={disabled}
                     onClick={() => {
+
                         onAction({
-                            type: "constant",
-                            value: "pi"
+                            type:
+                                "symbol",
+
+                            value:
+                                "theta"
                         });
+
+                    }}
+                >
+                    θ
+                </button>
+
+                <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => {
+
+                        onAction({
+                            type:
+                                "constant",
+
+                            value:
+                                "pi"
+                        });
+
                     }}
                 >
                     π
                 </button>
 
-
                 <button
                     type="button"
                     disabled={disabled}
                     onClick={() => {
+
                         onAction({
-                            type: "constant",
-                            value: "e"
+                            type:
+                                "constant",
+
+                            value:
+                                "e"
                         });
+
                     }}
                 >
-                    e
+                    ℯ
                 </button>
-
 
                 <button
                     type="button"
                     disabled={disabled}
                     onClick={() => {
+
                         onAction({
-                            type: "constant",
-                            value: "i"
+                            type:
+                                "constant",
+
+                            value:
+                                "i"
                         });
+
                     }}
                 >
                     i
                 </button>
 
-
                 <button
                     type="button"
                     disabled={disabled}
                     onClick={() => {
+
                         onAction({
-                            type: "constant",
-                            value: "infinity"
+                            type:
+                                "constant",
+
+                            value:
+                                "infinity"
                         });
+
                     }}
                 >
                     ∞
@@ -231,108 +520,44 @@ export function ExpressionKeyboard({
 
             <div className="expressionKeyboardSection">
 
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "addition"
-                        });
-                    }}
-                >
-                    +
-                </button>
+                {[
+                    ["+", "addition"],
+                    ["−", "negation"],
+                    ["×", "multiplication"],
+                    ["a⁄b", "fraction"],
+                    ["xʸ", "power"],
+                    ["x!", "factorial"],
+                    ["√x", "square-root"],
+                    ["( )", "group"],
+                    ["=", "equality"]
+                ].map(([label, type]) => (
 
+                    <button
+                        key={type}
+                        type="button"
+                        disabled={disabled}
+                        onClick={() => {
 
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "negation"
-                        });
-                    }}
-                >
-                    −
-                </button>
+                            onAction({
+                                type:
+                                    type as
+                                        | "addition"
+                                        | "negation"
+                                        | "multiplication"
+                                        | "fraction"
+                                        | "power"
+                                        | "factorial"
+                                        | "square-root"
+                                        | "group"
+                                        | "equality"
+                            });
 
+                        }}
+                    >
+                        {label}
+                    </button>
 
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "multiplication"
-                        });
-                    }}
-                >
-                    ×
-                </button>
-
-
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "fraction"
-                        });
-                    }}
-                >
-                    a⁄b
-                </button>
-
-
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "power"
-                        });
-                    }}
-                >
-                    xʸ
-                </button>
-
-
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "factorial"
-                        });
-                    }}
-                >
-                    x!
-                </button>
-
-
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "square-root"
-                        });
-                    }}
-                >
-                    √x
-                </button>
-
-
-                <button
-                    type="button"
-                    disabled={disabled}
-                    onClick={() => {
-                        onAction({
-                            type: "group"
-                        });
-                    }}
-                >
-                    ( )
-                </button>
+                ))}
 
             </div>
 
@@ -351,15 +576,15 @@ export function ExpressionKeyboard({
                         type="button"
                         disabled={disabled}
                         onClick={() => {
+
                             onAction({
-                                type: "function",
+                                type:
+                                    "function",
+
                                 value:
-                                    functionName as
-                                        "sin" |
-                                        "cos" |
-                                        "tan" |
-                                        "log"
+                                    functionName
                             });
+
                         }}
                     >
                         {functionName}
@@ -368,22 +593,42 @@ export function ExpressionKeyboard({
                 ))}
 
             </div>
-            <button
-    type="button"
-    disabled={
-        disabled
-    }
-    onClick={() => {
 
-        onAction({
-            type:
-                "summation"
-        });
 
-    }}
->
-    ∑
-</button>
+            <div className="expressionKeyboardStructural">
+
+                <button
+                    type="button"
+                    disabled={disabled}
+                    onClick={() => {
+
+                        onAction({
+                            type:
+                                "summation"
+                        });
+
+                    }}
+                >
+                    ∑
+                </button>
+
+                <button
+                    type="button"
+                    disabled={disabled}
+                    title="Convertir en definición de función"
+                    onClick={() => {
+
+                        onAction({
+                            type:
+                                "function-definition"
+                        });
+
+                    }}
+                >
+                    f(x)=
+                </button>
+
+            </div>
 
         </div>
     );

@@ -1645,7 +1645,7 @@ function drawExpression(
     "cartesian" | "polar";
     variables:
         Readonly<
-            Record<string, number>
+            Record<string, unknown>
         >;
 
     compiled: {
@@ -1851,7 +1851,7 @@ function drawPolarExpression(
 
         variables:
             Readonly<
-                Record<string, number>
+                Record<string, unknown>
             >;
 
         compiled: {
