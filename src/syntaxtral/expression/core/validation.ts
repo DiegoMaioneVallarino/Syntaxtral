@@ -380,7 +380,26 @@ export function validateExpression(
 
             }
 
+            case "vector":
 
+                if (
+                    node.components.length < 2
+                ) {
+
+                    addError(
+                        node.id,
+                        "Un vector necesita al menos dos componentes"
+                    );
+
+                }
+
+
+                node.components.forEach(
+                    validateNode
+                );
+
+                break;
+                
             case "summation":
 
                 if (

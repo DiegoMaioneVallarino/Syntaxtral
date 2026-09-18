@@ -12,9 +12,9 @@ export type ExpressionNode =
     | EqualityNode
     | FunctionCallNode
     | FunctionDefinitionNode
+    | VectorNode
     | GroupNode
     | PlaceholderNode;
-
 
 export type ExpressionNodeType =
     ExpressionNode["type"];
@@ -178,7 +178,13 @@ export type FunctionDefinitionNode =
             ExpressionNode;
 
     };
+export type VectorNode =
+    BaseExpressionNode<"vector"> & {
 
+        readonly components:
+            readonly ExpressionNode[];
+
+    };
 export type GroupNode =
     BaseExpressionNode<"group"> & {
 

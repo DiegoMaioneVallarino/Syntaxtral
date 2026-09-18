@@ -97,6 +97,37 @@ type SelectedGraphPoint = {
 
 };
 
+const EXPRESSION_DISSOLVE_DURATION =
+    120;
+
+
+const EXPRESSION_CONSTRUCTION_DURATION =
+    700;
+
+function clampConstructionProgress(
+    value: number
+): number {
+
+    return Math.min(
+        1,
+        Math.max(
+            0,
+            value
+        )
+    );
+
+}
+
+
+function easeConstructionProgress(
+    value: number
+): number {
+
+    return clampConstructionProgress(
+        value
+    );
+
+}
 
 function normalizeExpression(
     expression: string
@@ -288,6 +319,14 @@ function GraphCanvas({
 
         }, [expressions]);
 
+const settledExpressionsRef =
+    useRef<
+        typeof compiledExpressions
+    >([]);
+
+
+
+
 
     const selectedScreenPosition =
         useMemo(() => {
@@ -442,77 +481,81 @@ useEffect(() => {
 
     useEffect(() => {
 
-        const canvas =
-            canvasRef.current;
+    const canvas =
+        canvasRef.current;
 
 
-        if (!canvas) {
+    if (!canvas) {
 
-            return;
+        return;
 
-        }
-
-
-        const context =
-            canvas.getContext("2d");
+    }
 
 
-        if (!context) {
-
-            return;
-
-        }
-
-
-        const {
-            width,
-            height
-        } = canvasSize;
-
-
-        if (
-            width === 0 ||
-            height === 0
-        ) {
-
-            return;
-
-        }
-
-
-        const pixelRatio =
-            window.devicePixelRatio || 1;
-
-
-        canvas.width =
-            width * pixelRatio;
-
-
-        canvas.height =
-            height * pixelRatio;
-
-
-        context.setTransform(
-
-            pixelRatio,
-            0,
-            0,
-            pixelRatio,
-            0,
-            0
-
+    const context =
+        canvas.getContext(
+            "2d"
         );
 
 
+    if (!context) {
+
+        return;
+
+    }
+
+
+    const {
+        width,
+        height
+    } = canvasSize;
+
+
+    if (
+        width === 0 ||
+        height === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const pixelRatio =
+        window.devicePixelRatio || 1;
+
+
+    canvas.width =
+        width * pixelRatio;
+
+
+    canvas.height =
+        height * pixelRatio;
+
+
+    context.setTransform(
+
+        pixelRatio,
+        0,
+        0,
+        pixelRatio,
+        0,
+        0
+
+    );
+
+
+    function drawBase(): void {
+
         drawBackground(
-            context,
+            context!,
             width,
             height
         );
 
 
         drawGrid(
-            context,
+            context!,
             width,
             height,
             viewport
@@ -520,35 +563,224 @@ useEffect(() => {
 
 
         drawAxes(
-            context,
+            context!,
             width,
             height,
             viewport
         );
 
+    }
+
+
+    function drawExpressions(
+        expressionsToDraw:
+            typeof compiledExpressions,
+        constructionProgress:
+            number,
+        opacity:
+            number
+    ): void {
+
+        context!.save();
+
+
+        context!.globalAlpha =
+            clampConstructionProgress(
+                opacity
+            );
+
 
         for (
             const expression
-            of compiledExpressions
+            of expressionsToDraw
         ) {
 
             drawExpression(
 
-                context,
+                context!,
                 width,
                 height,
                 viewport,
-                expression
+                expression,
+                constructionProgress
 
             );
 
         }
 
-    }, [
-        canvasSize,
-        viewport,
-        compiledExpressions
-    ]);
+
+        context!.restore();
+
+    }
+
+
+const expressionsChanged =
+
+    settledExpressionsRef.current !==
+    compiledExpressions;
+
+    /*
+     * Un cambio de cámara o tamaño solamente
+     * redibuja la forma terminada.
+     */
+    if (!expressionsChanged) {
+
+        drawBase();
+
+
+        drawExpressions(
+            compiledExpressions,
+            1,
+            1
+        );
+
+
+        return;
+
+    }
+
+
+    const previousExpressions =
+        settledExpressionsRef.current;
+
+
+    const hasPreviousExpression =
+        previousExpressions.length > 0;
+
+
+    const startedAt =
+        performance.now();
+
+
+    let animationFrameId =
+        0;
+
+
+    function renderFrame(
+        timestamp: number
+    ): void {
+
+        const elapsed =
+            timestamp -
+            startedAt;
+
+
+        drawBase();
+
+
+        /*
+         * Primero desaparece la geometría anterior.
+         */
+        if (
+            hasPreviousExpression &&
+            elapsed <
+                EXPRESSION_DISSOLVE_DURATION
+        ) {
+
+            const dissolveProgress =
+
+                elapsed /
+                EXPRESSION_DISSOLVE_DURATION;
+
+
+            drawExpressions(
+
+                previousExpressions,
+
+                1,
+
+                1 -
+                dissolveProgress
+
+            );
+
+        }
+
+
+        const constructionStartedAt =
+
+            hasPreviousExpression
+
+                ? EXPRESSION_DISSOLVE_DURATION
+
+                : 0;
+
+
+        const constructionProgress =
+
+            easeConstructionProgress(
+
+                (
+                    elapsed -
+                    constructionStartedAt
+                ) /
+
+                EXPRESSION_CONSTRUCTION_DURATION
+
+            );
+
+
+        /*
+         * La nueva expresión solamente comienza después
+         * de que la anterior terminó de disolverse.
+         */
+        if (
+            elapsed >=
+            constructionStartedAt
+        ) {
+
+            drawExpressions(
+
+                compiledExpressions,
+
+                constructionProgress,
+
+                1
+
+            );
+
+        }
+
+
+        if (
+            constructionProgress < 1
+        ) {
+
+            animationFrameId =
+                requestAnimationFrame(
+                    renderFrame
+                );
+
+            return;
+
+        }
+
+
+        settledExpressionsRef.current =
+            compiledExpressions;
+
+    }
+
+
+    animationFrameId =
+        requestAnimationFrame(
+            renderFrame
+        );
+
+
+    return () => {
+
+        cancelAnimationFrame(
+            animationFrameId
+        );
+
+    };
+
+}, [
+    canvasSize,
+    viewport,
+    compiledExpressions
+]);
 
 
     function handleWheel(
@@ -1634,29 +1866,37 @@ function drawAxes(
 function drawExpression(
     context:
         CanvasRenderingContext2D,
-    width: number,
-    height: number,
-    viewport: Viewport,
+    width:
+        number,
+    height:
+        number,
+    viewport:
+        Viewport,
     expression: {
 
-    color:
-        string;
+        color:
+            string;
+
         coordinateSystem:
-    "cartesian" | "polar";
-    variables:
-        Readonly<
-            Record<string, unknown>
-        >;
+            "cartesian" |
+            "polar";
 
-    compiled: {
+        variables:
+            Readonly<
+                Record<string, unknown>
+            >;
 
-        evaluate: (
-            scope?: object
-        ) => unknown;
+        compiled: {
 
-    };
+            evaluate: (
+                scope?: object
+            ) => unknown;
 
-}
+        };
+
+    },
+    constructionProgress:
+        number
 ): void {
 if (
     expression.coordinateSystem ===
@@ -1668,7 +1908,8 @@ if (
         width,
         height,
         viewport,
-        expression
+        expression,
+        constructionProgress
     );
 
     return;
@@ -1700,10 +1941,19 @@ if (
     let drawing =
         false;
 
+const visibleWidth =
+    Math.floor(
 
+        width *
+
+        clampConstructionProgress(
+            constructionProgress
+        )
+
+    );
     for (
         let screenX = 0;
-        screenX <= width;
+screenX <= visibleWidth;
         screenX += 1
     ) {
 
@@ -1845,7 +2095,6 @@ function drawPolarExpression(
     viewport:
         Viewport,
     expression: {
-
         color:
             string;
 
@@ -1854,21 +2103,32 @@ function drawPolarExpression(
                 Record<string, unknown>
             >;
 
-        compiled: {
+            compiled: {
 
-            evaluate: (
-                scope?: object
-            ) => unknown;
+        evaluate: (
+            scope?: object
+        ) => unknown;
 
-        };
+    };
 
-    }
+},
+constructionProgress:
+    number
 ): void {
 
     const samples =
         720;
 
+const visibleSamples =
+    Math.floor(
 
+        samples *
+
+        clampConstructionProgress(
+            constructionProgress
+        )
+
+    );
     context.beginPath();
 
     context.strokeStyle =
@@ -1896,7 +2156,7 @@ function drawPolarExpression(
 
     for (
         let index = 0;
-        index <= samples;
+        index <= visibleSamples;
         index += 1
     ) {
 

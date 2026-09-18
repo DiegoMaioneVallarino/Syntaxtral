@@ -501,6 +501,56 @@ case "equality":
 
         </span>
     );
+    case "vector":
+
+    return (
+        <span className="syntaxtralVector">
+
+            <span
+                className="
+                    syntaxtralVectorBracket
+                    syntaxtralVectorBracketLeft
+                "
+                aria-hidden="true"
+            >
+                (
+            </span>
+
+
+            <span className="syntaxtralVectorComponents">
+
+                {node.components.map(
+                    component => (
+
+                        <span
+                            key={component.id}
+                            className="syntaxtralVectorComponent"
+                        >
+
+                            {renderChild(
+                                component
+                            )}
+
+                        </span>
+
+                    )
+                )}
+
+            </span>
+
+
+            <span
+                className="
+                    syntaxtralVectorBracket
+                    syntaxtralVectorBracketRight
+                "
+                aria-hidden="true"
+            >
+                )
+            </span>
+
+        </span>
+    );
         case "group":
 
             return (

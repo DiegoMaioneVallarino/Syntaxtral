@@ -558,10 +558,7 @@ const canvasExpressions =
                  * como fórmulas, pero todavía necesitan sus
                  * propios generadores de geometría 3D.
                  */
-                if (
-    block.representation.kind ===
-        "parametric-surface" ||
-
+            if (
     block.representation.kind ===
         "inequality-solid" ||
 
@@ -574,16 +571,74 @@ const canvasExpressions =
 }
 
 
-                const serialized =
+               let serialized:
+    string | null;
 
-                    block.expression.type ===
-                        "function-definition"
 
-                        ? `${block.expression.name}(x)`
+if (
+    block.representation.kind ===
+        "parametric-surface"
+) {
 
-                        : trySerializeExpression(
-                            block.expression
-                        );
+    /*
+     * Una superficie paramétrica guarda:
+     *
+     * r(u,v) = vector
+     *
+     * Para construir la geometría compilamos
+     * directamente el cuerpo vectorial.
+     */
+    if (
+        block.expression.type !==
+            "function-definition"
+    ) {
+
+        return [];
+
+    }
+
+
+    serialized =
+        trySerializeExpression(
+            block.expression.body
+        );
+
+} else if (
+    block.expression.type ===
+        "function-definition"
+) {
+
+    if (
+        block.expression.name.type !==
+            "symbol"
+    ) {
+
+        return [];
+
+    }
+
+
+    const independentVariable =
+
+        block.coordinateSystem === "polar"
+
+            ? "theta"
+
+            : "x";
+
+
+    serialized =
+        `${block.expression.name.name}` +
+        `(${independentVariable})`;
+
+} else {
+
+    serialized =
+        trySerializeExpression(
+            block.expression
+        );
+
+}
 
 
                 if (!serialized) {

@@ -115,7 +115,21 @@ export function replaceExpressionNodeById(
 
             };
 
+case "vector":
 
+    return {
+        ...expression,
+
+        components:
+            expression.components.map(
+                component =>
+                    replaceExpressionNodeById(
+                        component,
+                        nodeId,
+                        replacement
+                    )
+            )
+    };
         case "fraction":
 
             return {
@@ -187,20 +201,7 @@ export function replaceExpressionNodeById(
 
             };
 
-case "function-definition":
 
-    return {
-
-        ...expression,
-
-        body:
-            replaceExpressionNodeById(
-                expression.body,
-                nodeId,
-                replacement
-            )
-
-    };
         case "negation":
 
             return {
@@ -292,7 +293,23 @@ case "function-definition":
                     )
 
             };
+        case "vector":
 
+            return {
+
+                ...expression,
+
+                components:
+                    expression.components.map(
+                        component =>
+                            replaceExpressionNodeById(
+                                component,
+                                nodeId,
+                                replacement
+                            )
+                    )
+
+            };
 
         case "group":
 
@@ -394,7 +411,9 @@ function getChildren(
 
             ];
 
+        case "vector":
 
+            return expression.components;
         case "factorial":
 
             return [
@@ -422,11 +441,9 @@ function getChildren(
                 ...expression.parameters,
                 expression.body
             ];
-        case "function-definition":
+        case "vector":
 
-            return [
-                expression.body
-            ];
+    return expression.components;
         case "function-call":
 
             return expression.arguments;
@@ -445,7 +462,48 @@ function getChildren(
                 expression.upperBound,
                 expression.body
              ];
+case "equality":
 
+    return [
+        expression.left,
+        expression.right
+    ];
+
+
+case "function-definition":
+
+    return [
+        expression.name,
+        ...expression.parameters,
+        expression.body
+    ];
+
+
+case "function-call":
+
+    return expression.arguments;
+
+
+case "vector":
+
+    return expression.components;
+
+
+case "group":
+
+    return [
+        expression.expression
+    ];
+
+
+case "summation":
+
+    return [
+        expression.index,
+        expression.lowerBound,
+        expression.upperBound,
+        expression.body
+    ];
     }
 
 }

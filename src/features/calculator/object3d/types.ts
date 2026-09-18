@@ -15,7 +15,8 @@ export type Object3DKind =
 export type CreatableObject3DKind =
     | "explicit-surface"
     | "implicit-surface"
-    | "implicit-torus";
+    | "implicit-torus"
+    | "parametric-surface";
 
 
 export type FormulaRepresentation =
@@ -40,15 +41,27 @@ export type FormulaRepresentation =
             number;
     }
     | {
-        readonly kind:
-            "parametric-surface";
+    readonly kind:
+        "parametric-surface";
 
-        readonly parameterU:
-            string;
+    readonly parameterU:
+        string;
 
-        readonly parameterV:
-            string;
-    }
+    readonly parameterV:
+        string;
+
+    readonly minimumU:
+        number;
+
+    readonly maximumU:
+        number;
+
+    readonly minimumV:
+        number;
+
+    readonly maximumV:
+        number;
+}
     | {
         readonly kind:
             "inequality-solid";

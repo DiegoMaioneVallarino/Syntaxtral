@@ -15,7 +15,8 @@ import type {
     PlaceholderNode,
     PowerNode,
     SummationNode,
-    SymbolNode
+    SymbolNode,
+    VectorNode
 } from "./types";
 
 
@@ -273,7 +274,24 @@ export function functionDefinitionNode(
     };
 
 }
+export function vectorNode(
+    components:
+        readonly ExpressionNode[]
+): VectorNode {
 
+    return {
+
+        id:
+            createExpressionNodeId(),
+
+        type:
+            "vector",
+
+        components
+
+    };
+
+}
 export function equalityNode(
     left: ExpressionNode,
     right: ExpressionNode

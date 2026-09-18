@@ -1,10 +1,13 @@
 import {
     additionNode,
     equalityNode,
+    functionCallNode,
+    functionDefinitionNode,
     multiplicationNode,
     numberNode,
     powerNode,
-    symbolNode
+    symbolNode,
+    vectorNode
 } from "../../../syntaxtral/expression";
 
 import type {
@@ -168,7 +171,125 @@ export function createObject3DFormulaPreset(
         }
 
     };
+case "parametric-surface":
 
+    return {
+
+        title:
+            "Toro paramétrico",
+
+        expression:
+            functionDefinitionNode(
+
+                symbolNode(
+                    "r"
+                ),
+
+                [
+                    symbolNode("u"),
+                    symbolNode("v")
+                ],
+
+                vectorNode([
+
+                    /*
+                     * x(u,v) =
+                     * (3 + cos(v)) cos(u)
+                     */
+                    multiplicationNode([
+
+                        additionNode([
+
+                            numberNode(3),
+
+                            functionCallNode(
+                                "cos",
+                                [
+                                    symbolNode("v")
+                                ]
+                            )
+
+                        ]),
+
+                        functionCallNode(
+                            "cos",
+                            [
+                                symbolNode("u")
+                            ]
+                        )
+
+                    ]),
+
+
+                    /*
+                     * y(u,v) =
+                     * (3 + cos(v)) sin(u)
+                     */
+                    multiplicationNode([
+
+                        additionNode([
+
+                            numberNode(3),
+
+                            functionCallNode(
+                                "cos",
+                                [
+                                    symbolNode("v")
+                                ]
+                            )
+
+                        ]),
+
+                        functionCallNode(
+                            "sin",
+                            [
+                                symbolNode("u")
+                            ]
+                        )
+
+                    ]),
+
+
+                    /*
+                     * z(u,v) = sin(v)
+                     */
+                    functionCallNode(
+                        "sin",
+                        [
+                            symbolNode("v")
+                        ]
+                    )
+
+                ])
+
+            ),
+
+        representation: {
+
+            kind:
+                "parametric-surface",
+
+            parameterU:
+                "u",
+
+            parameterV:
+                "v",
+
+            minimumU:
+                0,
+
+            maximumU:
+                Math.PI * 2,
+
+            minimumV:
+                0,
+
+            maximumV:
+                Math.PI * 2
+
+        }
+
+    };
     }
 
 }

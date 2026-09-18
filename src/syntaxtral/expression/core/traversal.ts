@@ -39,20 +39,16 @@ export function getExpressionChildren(
         case "fraction":
 
             return [
-
                 expression.numerator,
                 expression.denominator
-
             ];
 
 
         case "power":
 
             return [
-
                 expression.base,
                 expression.exponent
-
             ];
 
 
@@ -70,9 +66,31 @@ export function getExpressionChildren(
             ];
 
 
+        case "equality":
+
+            return [
+                expression.left,
+                expression.right
+            ];
+
+
         case "function-call":
 
             return expression.arguments;
+
+
+        case "function-definition":
+
+            return [
+                expression.name,
+                ...expression.parameters,
+                expression.body
+            ];
+
+
+        case "vector":
+
+            return expression.components;
 
 
         case "group":
@@ -80,6 +98,7 @@ export function getExpressionChildren(
             return [
                 expression.expression
             ];
+
 
         case "summation":
 
@@ -90,26 +109,6 @@ export function getExpressionChildren(
                 expression.body
             ];
 
-        case "function-definition":
-
-    return [
-        expression.body
-    ];
-        case "equality":
-
-            return [
-                expression.left,
-                expression.right
-            ];
-
-
-        case "function-definition":
-
-            return [
-                expression.name,
-                ...expression.parameters,
-                expression.body
-            ];
     }
 
 }

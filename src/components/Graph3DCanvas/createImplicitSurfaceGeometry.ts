@@ -86,14 +86,6 @@ export function createImplicitSurfaceGeometry(
         resolution - 1;
 
 
-    /*
-     * MarchingCubes usa los ejes normales de Three.js:
-     *
-     * Three X = Math X
-     * Three Y = Math Z
-     * Three Z = Math Y
-     */
-
     for (
         let threeZIndex = 0;
         threeZIndex < resolution;
@@ -139,10 +131,6 @@ export function createImplicitSurfaceGeometry(
                     IMPLICIT_DOMAIN_SIZE;
 
 
-                /*
-                 * Conversión de Three.js al sistema
-                 * matemático usado por Syntaxtral.
-                 */
                 const mathX =
                     threeX;
 
@@ -224,10 +212,6 @@ export function createImplicitSurfaceGeometry(
         marchingCubes.geometry.clone();
 
 
-    /*
-     * MarchingCubes crea sus vértices entre -1 y 1.
-     * Los escalamos al dominio matemático seleccionado.
-     */
     geometry.scale(
         halfSize,
         halfSize,

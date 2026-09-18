@@ -517,3 +517,104 @@
     font-style: normal;
 
 }
+
+/* -------------------------------- */
+/* VECTORES                         */
+/* -------------------------------- */
+
+.syntaxtralVector {
+
+    display: inline-grid;
+
+    grid-template-columns:
+        auto
+        auto
+        auto;
+
+    align-items: stretch;
+
+    margin:
+        0
+        0.18em;
+
+    vertical-align: middle;
+
+}
+
+
+.syntaxtralVectorComponents {
+
+    min-width: 1.5em;
+
+    display: grid;
+
+    grid-auto-flow: row;
+    grid-auto-rows: minmax(1em, auto);
+
+    align-content: center;
+    justify-items: center;
+
+    gap: 0.12em;
+
+    padding:
+        0.12em
+        0.18em;
+
+}
+
+
+.syntaxtralVectorComponent {
+
+    min-width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    line-height: 1.05;
+
+}
+
+
+.syntaxtralVectorBracket {
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: currentColor;
+
+    font-family:
+        "Cambria Math",
+        "Times New Roman",
+        serif;
+
+    font-size: 2.35em;
+    font-style: normal;
+    font-weight: 300;
+
+    line-height: 0.75;
+
+    transform:
+        scaleX(0.72)
+        scaleY(1.25);
+
+    transform-origin: center;
+
+    user-select: none;
+
+}
+
+
+.syntaxtralVectorBracketLeft {
+
+    margin-right: -0.08em;
+
+}
+
+
+.syntaxtralVectorBracketRight {
+
+    margin-left: -0.08em;
+
+}

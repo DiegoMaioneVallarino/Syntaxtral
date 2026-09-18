@@ -18,7 +18,9 @@ export type {
     PlaceholderNode,
     PowerNode,
     SummationNode,
-    SymbolNode
+    SymbolNode,
+        VectorNode
+
 } from "./types";
 
 
@@ -37,7 +39,8 @@ export {
     placeholderNode,
     powerNode,
     summationNode,
-    symbolNode
+    symbolNode,
+    vectorNode
 } from "./factories";
 
 

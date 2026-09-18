@@ -1,11 +1,13 @@
 import {
     useEffect,
     useMemo,
+    useRef,
     useState
 } from "react";
 
 import {
-    Canvas
+    Canvas,
+    useFrame
 } from "@react-three/fiber";
 
 import type {
@@ -24,6 +26,10 @@ import {
     Float32BufferAttribute
 } from "three";
 
+import type {
+    Group
+} from "three";
+
 import {
     compile
 } from "mathjs";
@@ -33,14 +39,22 @@ import type {
 } from "mathjs";
 
 import "./Graph3DCanvas.css";
-
+import {
+    useGeometryConstruction
+} from "./useGeometryConstruction";
 import type {
     GraphExpression
 } from "../../features/calculator/models/GraphExpression";
 import {
     createImplicitSurfaceGeometry
 } from "./createImplicitSurfaceGeometry";
+import {
+    createParametricSurfaceGeometry
+} from "./createParametricSurfaceGeometry";
 
+import type {
+    CompiledParametricExpression
+} from "./createParametricSurfaceGeometry";
 import type {
     CompiledImplicitExpression
 } from "./createImplicitSurfaceGeometry";
@@ -126,6 +140,13 @@ type SurfaceGuideCordProps = {
         number;
 
 };
+
+type AnimatedSurfaceGuidesProps = {
+
+    expression:
+        CompiledSurfaceExpression;
+
+};
 type FunctionSurfaceProps = {
 
     expression:
@@ -136,7 +157,16 @@ type FunctionSurfaceProps = {
     ) => void;
 
 };
+type ParametricSurfaceProps = {
 
+    expression:
+        CompiledParametricExpression;
+
+    onSelect: (
+        point: ActiveGraphPoint
+    ) => void;
+
+};
 type ImplicitSurfaceProps = {
 
     expression:
@@ -349,8 +379,8 @@ const flatExpressions =
 
                 !expression.is3D &&
 
-                expression.representation.kind !==
-                    "implicit-surface"
+                expression.representation.kind ===
+                    "curve"
         );
 
     }, [
@@ -366,14 +396,18 @@ const surfaceExpressions =
 
                 expression.is3D &&
 
-                expression.representation.kind !==
-                    "implicit-surface"
+                (
+                    expression.representation.kind ===
+                        "curve" ||
+
+                    expression.representation.kind ===
+                        "explicit-surface"
+                )
         );
 
     }, [
         compiledExpressions
     ]);
-
 
 const implicitSurfaceExpressions =
     useMemo(() => {
@@ -386,6 +420,25 @@ const implicitSurfaceExpressions =
 
                 expression.representation.kind ===
                     "implicit-surface"
+
+            )
+        );
+
+    }, [
+        compiledExpressions
+    ]);
+
+const parametricSurfaceExpressions =
+    useMemo(() => {
+
+        return compiledExpressions.filter(
+            (
+                expression
+            ): expression is
+                CompiledParametricExpression => (
+
+                expression.representation.kind ===
+                    "parametric-surface"
 
             )
         );
@@ -652,29 +705,36 @@ useEffect(() => {
 
     )
 )}
+{/* Superficies paramétricas */}
 
-{/* 33 slices guía para cada superficie */}
-{surfaceExpressions.flatMap(
+{parametricSurfaceExpressions.map(
     expression => (
 
-        SURFACE_GUIDE_POSITIONS.map((
-            frameY,
-            frameIndex
-        ) => (
+        <ParametricSurface
+            key={
+                `parametric-${expression.id}`
+            }
+            expression={
+                expression
+            }
+            onSelect={
+                setActivePoint
+            }
+        />
 
-            <SurfaceGuideCord
-                key={
-                    `guide-${expression.id}-${frameIndex}`
-                }
-                expression={
-                    expression
-                }
-                frameY={
-                    frameY
-                }
-            />
+    )
+)}
+{surfaceExpressions.map(
+    expression => (
 
-        ))
+        <AnimatedSurfaceGuides
+            key={
+                `guides-${expression.id}`
+            }
+            expression={
+                expression
+            }
+        />
 
     )
 )}
@@ -880,7 +940,143 @@ function FunctionCord({
     );
 
 }
+function AnimatedSurfaceGuides({
+    expression
+}: AnimatedSurfaceGuidesProps) {
 
+    const groupRef =
+        useRef<Group | null>(
+            null
+        );
+
+
+    const startedAtRef =
+        useRef<number | null>(
+            null
+        );
+
+
+    useEffect(() => {
+
+        startedAtRef.current =
+            null;
+
+
+        const group =
+            groupRef.current;
+
+
+        if (!group) {
+
+            return;
+
+        }
+
+
+        group.children.forEach(
+            child => {
+
+                child.visible =
+                    false;
+
+            }
+        );
+
+    }, [
+        expression.compiled,
+        expression.variables,
+        expression.coordinateSystem
+    ]);
+
+
+    useFrame(() => {
+
+        const group =
+            groupRef.current;
+
+
+        if (!group) {
+
+            return;
+
+        }
+
+
+        if (
+            startedAtRef.current === null
+        ) {
+
+            startedAtRef.current =
+                performance.now();
+
+        }
+
+
+        const elapsed =
+            performance.now() -
+            startedAtRef.current;
+
+
+       const progress =
+    Math.min(
+        1,
+        elapsed / 900
+    );
+
+
+const visibleSliceCount =
+    Math.floor(
+
+        SURFACE_GUIDE_COUNT *
+        progress
+
+    );
+
+
+        group.children.forEach((
+            child,
+            index
+        ) => {
+
+            child.visible =
+                index <
+                visibleSliceCount;
+
+        });
+
+    });
+
+
+    return (
+        <group
+            ref={
+                groupRef
+            }
+        >
+
+            {SURFACE_GUIDE_POSITIONS.map((
+                frameY,
+                frameIndex
+            ) => (
+
+                <SurfaceGuideCord
+                    key={
+                        `guide-${expression.id}-${frameIndex}`
+                    }
+                    expression={
+                        expression
+                    }
+                    frameY={
+                        frameY
+                    }
+                />
+
+            ))}
+
+        </group>
+    );
+
+}
 function SurfaceGuideCord({
     expression,
     frameY
@@ -1117,7 +1313,10 @@ function ImplicitSurface({
             expression.representation.isoValue
         ]);
 
-
+useGeometryConstruction(
+    geometry,
+    900
+);
     useEffect(() => {
 
         return () => {
@@ -1195,7 +1394,106 @@ function ImplicitSurface({
     );
 
 }
+function ParametricSurface({
+    expression,
+    onSelect
+}: ParametricSurfaceProps) {
 
+    const geometry =
+        useMemo(() => {
+
+            return createParametricSurfaceGeometry(
+                expression
+            );
+
+        }, [
+            expression.compiled,
+            expression.variables,
+            expression.representation.parameterU,
+            expression.representation.parameterV,
+            expression.representation.minimumU,
+            expression.representation.maximumU,
+            expression.representation.minimumV,
+            expression.representation.maximumV
+        ]);
+
+
+    useGeometryConstruction(
+        geometry,
+        1400
+    );
+
+
+    useEffect(() => {
+
+        return () => {
+
+            geometry.dispose();
+
+        };
+
+    }, [
+        geometry
+    ]);
+
+
+    function handleSurfaceClick(
+        event:
+            ThreeEvent<MouseEvent>
+    ): void {
+
+        event.stopPropagation();
+
+
+        onSelect({
+
+            expressionId:
+                expression.id,
+
+            color:
+                expression.color,
+
+            x:
+                event.point.x,
+
+            y:
+                event.point.z,
+
+            z:
+                event.point.y
+
+        });
+
+    }
+
+
+    return (
+        <mesh
+            geometry={
+                geometry
+            }
+            onClick={
+                handleSurfaceClick
+            }
+        >
+
+            <meshStandardMaterial
+                color={
+                    expression.color
+                }
+                side={
+                    DoubleSide
+                }
+                transparent
+                opacity={0.76}
+                roughness={0.34}
+                metalness={0.16}
+            />
+
+        </mesh>
+    );
+
+}
 function FunctionSurface({
     expression,
     onHover,
@@ -1213,7 +1511,10 @@ function FunctionSurface({
         expression.coordinateSystem,
         expression.variables
     ]);
-
+useGeometryConstruction(
+    geometry,
+    1200
+);
 
     useEffect(() => {
 

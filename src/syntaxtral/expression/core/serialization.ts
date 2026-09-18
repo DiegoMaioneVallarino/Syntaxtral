@@ -188,7 +188,17 @@ export function expressionToPlainText(
                     expression.body
                 )
             );
+case "vector":
 
+    return (
+        "⟨" +
+        expression.components
+            .map(
+                expressionToPlainText
+            )
+            .join(", ") +
+        "⟩"
+    );
 
         case "summation":
 
@@ -313,7 +323,7 @@ export function expressionToMathJs(
                     .join(", ") +
                 ")"
             );
-
+            
 
         case "function-definition": {
 
@@ -361,7 +371,17 @@ export function expressionToMathJs(
 
         }
 
+        case "vector":
 
+    return (
+        "[" +
+        expression.components
+            .map(
+                expressionToMathJs
+            )
+            .join(", ") +
+        "]"
+    );
         case "summation": {
 
             const indexName =

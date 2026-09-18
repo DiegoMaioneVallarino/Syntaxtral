@@ -114,21 +114,21 @@ const objectItems:
         true
 },
         {
-            kind:
-                "parametric-surface",
+    kind:
+        "parametric-surface",
 
-            symbol:
-                "◎",
+    symbol:
+        "◎",
 
-            name:
-                "Superficie paramétrica",
+    name:
+        "Superficie paramétrica",
 
-            description:
-                "Define x, y y z mediante dos parámetros.",
+    description:
+        "Define x, y y z mediante dos parámetros.",
 
-            available:
-                false
-        },
+    available:
+        true
+},
 
         {
             kind:
