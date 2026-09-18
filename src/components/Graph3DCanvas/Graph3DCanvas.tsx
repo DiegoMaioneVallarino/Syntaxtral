@@ -37,7 +37,13 @@ import {
 import type {
     EvalFunction
 } from "mathjs";
+import {
+    createInequalitySolidGeometry
+} from "./createInequalitySolidGeometry";
 
+import type {
+    CompiledInequalityExpression
+} from "./createInequalitySolidGeometry";
 import "./Graph3DCanvas.css";
 import {
     useGeometryConstruction
@@ -85,7 +91,73 @@ type HoveredCord = {
     frameIndex: number;
 };
 
+type InequalitySolidProps = {
+    expression: CompiledInequalityExpression;
 
+    onSelect: (
+        point: ActiveGraphPoint
+    ) => void;
+};
+
+function InequalitySolid({
+    expression,
+    onSelect
+}: InequalitySolidProps) {
+    const {
+        compiled,
+        variables,
+        representation
+    } = expression;
+
+    const geometry = useMemo(() => {
+        return createInequalitySolidGeometry(expression);
+    }, [
+        compiled,
+        variables,
+        representation
+    ]);
+
+    useGeometryConstruction(
+        geometry,
+        900
+    );
+
+    useEffect(() => {
+        return () => {
+            geometry.dispose();
+        };
+    }, [
+        geometry
+    ]);
+
+    function handleClick(
+        event: ThreeEvent<MouseEvent>
+    ): void {
+        event.stopPropagation();
+
+        onSelect({
+            expressionId: expression.id,
+            color: expression.color,
+            x: event.point.x,
+            y: event.point.z,
+            z: event.point.y
+        });
+    }
+
+    return (
+        <mesh
+            geometry={geometry}
+            onClick={handleClick}
+        >
+            <meshStandardMaterial
+                color={expression.color}
+                side={DoubleSide}
+                roughness={0.65}
+                metalness={0.05}
+            />
+        </mesh>
+    );
+}
 type ActiveGraphPoint = {
   
    
@@ -342,21 +414,17 @@ function Graph3DCanvas({
                             {
                                 ...expression,
 
-                                compiled:
-    compile(
-
-        expression.representation.kind ===
-            "implicit-surface"
-
+                  compiled: compile(
+    expression.representation.kind === "inequality-solid"
+        ? expression.expression
+        : expression.representation.kind === "implicit-surface"
             ? normalizeImplicitExpression(
                 expression.expression
             )
-
             : normalizeExpression(
                 expression.expression
             )
-
-    )
+)
                             }
                         ];
 
@@ -446,6 +514,18 @@ const parametricSurfaceExpressions =
     }, [
         compiledExpressions
     ]);
+
+const inequalitySolidExpressions = useMemo(() => {
+    return compiledExpressions.filter(
+        (
+            expression
+        ): expression is CompiledInequalityExpression =>
+            expression.representation.kind ===
+            "inequality-solid"
+    );
+}, [
+    compiledExpressions
+]);
 
 
 const selectedContinuousExpression =
@@ -724,6 +804,13 @@ useEffect(() => {
 
     )
 )}
+{inequalitySolidExpressions.map(expression => (
+    <InequalitySolid
+        key={`inequality-${expression.id}`}
+        expression={expression}
+        onSelect={setActivePoint}
+    />
+))}
 {surfaceExpressions.map(
     expression => (
 

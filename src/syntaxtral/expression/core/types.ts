@@ -10,6 +10,7 @@ export type ExpressionNode =
     | SummationNode
     | NegationNode
     | EqualityNode
+    | ComparisonNode
     | FunctionCallNode
     | FunctionDefinitionNode
     | VectorNode
@@ -153,7 +154,26 @@ export type EqualityNode =
             ExpressionNode;
 
     };
+export type ComparisonRelation =
+    | "less"
+    | "less-or-equal"
+    | "greater"
+    | "greater-or-equal";
 
+
+export type ComparisonNode =
+    BaseExpressionNode<"comparison"> & {
+
+        readonly left:
+            ExpressionNode;
+
+        readonly relation:
+            ComparisonRelation;
+
+        readonly right:
+            ExpressionNode;
+
+    };
 export type FunctionCallNode =
     BaseExpressionNode<"function-call"> & {
 

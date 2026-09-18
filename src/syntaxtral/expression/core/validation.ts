@@ -432,7 +432,17 @@ export function validateExpression(
 
                 break;
 
+case "comparison":
 
+    validateNode(
+        node.left
+    );
+
+    validateNode(
+        node.right
+    );
+
+    break;
             case "group":
 
                 validateNode(

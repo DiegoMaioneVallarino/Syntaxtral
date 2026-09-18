@@ -92,7 +92,12 @@ export function getExpressionChildren(
 
             return expression.components;
 
+case "comparison":
 
+    return [
+        expression.left,
+        expression.right
+    ];
         case "group":
 
             return [

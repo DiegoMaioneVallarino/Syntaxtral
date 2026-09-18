@@ -501,6 +501,44 @@ case "equality":
 
         </span>
     );
+    case "comparison": {
+
+    const relationSymbol = {
+
+        less:
+            "<",
+
+        "less-or-equal":
+            "≤",
+
+        greater:
+            ">",
+
+        "greater-or-equal":
+            "≥"
+
+    }[node.relation];
+
+
+    return (
+        <span className="syntaxtralComparison">
+
+            {renderChild(
+                node.left
+            )}
+
+            <span className="syntaxtralComparisonOperator">
+                {relationSymbol}
+            </span>
+
+            {renderChild(
+                node.right
+            )}
+
+        </span>
+    );
+
+}
     case "vector":
 
     return (

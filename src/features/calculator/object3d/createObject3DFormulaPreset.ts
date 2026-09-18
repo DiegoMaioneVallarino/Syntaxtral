@@ -7,7 +7,8 @@ import {
     numberNode,
     powerNode,
     symbolNode,
-    vectorNode
+    vectorNode,
+    comparisonNode
 } from "../../../syntaxtral/expression";
 
 import type {
@@ -170,6 +171,40 @@ export function createObject3DFormulaPreset(
 
         }
 
+    };
+    case "inequality-solid":
+
+    return {
+        title: "Sólido por desigualdad",
+
+        expression: comparisonNode(
+            additionNode([
+                powerNode(
+                    symbolNode("x"),
+                    numberNode(2)
+                ),
+
+                powerNode(
+                    symbolNode("y"),
+                    numberNode(2)
+                ),
+
+                powerNode(
+                    symbolNode("z"),
+                    numberNode(2)
+                )
+            ]),
+
+            "less-or-equal",
+
+            numberNode(4)
+        ),
+
+        representation: {
+            kind: "inequality-solid",
+            relation: "less-or-equal",
+            threshold: 0
+        }
     };
 case "parametric-surface":
 

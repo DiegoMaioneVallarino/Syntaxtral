@@ -239,7 +239,27 @@ case "equality":
             )
 
     };
+case "comparison":
 
+    return {
+
+        ...expression,
+
+        left:
+            replaceExpressionNodeById(
+                expression.left,
+                nodeId,
+                replacement
+            ),
+
+        right:
+            replaceExpressionNodeById(
+                expression.right,
+                nodeId,
+                replacement
+            )
+
+    };
 
 case "function-definition":
 
@@ -432,7 +452,12 @@ function getChildren(
                 expression.left,
                 expression.right
             ];
+case "comparison":
 
+    return [
+        expression.left,
+        expression.right
+    ];
 
         case "function-definition":
 

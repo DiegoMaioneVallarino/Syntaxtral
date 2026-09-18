@@ -618,3 +618,30 @@
     margin-left: -0.08em;
 
 }
+
+/* -------------------------------- */
+/* COMPARACIONES                    */
+/* -------------------------------- */
+
+.syntaxtralComparison {
+
+    display: inline-flex;
+    align-items: baseline;
+
+}
+
+
+.syntaxtralComparisonOperator {
+
+    display: inline-block;
+
+    margin:
+        0
+        0.35em;
+
+    color: #b894f6;
+
+    font-style: normal;
+    font-weight: 500;
+
+}

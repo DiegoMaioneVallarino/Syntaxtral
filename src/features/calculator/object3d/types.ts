@@ -16,7 +16,8 @@ export type CreatableObject3DKind =
     | "explicit-surface"
     | "implicit-surface"
     | "implicit-torus"
-    | "parametric-surface";
+    | "parametric-surface"
+    | "inequality-solid";
 
 
 export type FormulaRepresentation =

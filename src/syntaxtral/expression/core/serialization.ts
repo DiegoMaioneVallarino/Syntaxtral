@@ -53,7 +53,58 @@ function constantToPlainText(
 
 }
 
+function comparisonRelationToSymbol(
+    relation:
+        "less" |
+        "less-or-equal" |
+        "greater" |
+        "greater-or-equal"
+): string {
 
+    switch (relation) {
+
+        case "less":
+            return "<";
+
+        case "less-or-equal":
+            return "≤";
+
+        case "greater":
+            return ">";
+
+        case "greater-or-equal":
+            return "≥";
+
+    }
+
+}
+
+
+function comparisonRelationToMathJs(
+    relation:
+        "less" |
+        "less-or-equal" |
+        "greater" |
+        "greater-or-equal"
+): string {
+
+    switch (relation) {
+
+        case "less":
+            return "<";
+
+        case "less-or-equal":
+            return "<=";
+
+        case "greater":
+            return ">";
+
+        case "greater-or-equal":
+            return ">=";
+
+    }
+
+}
 function constantToMathJs(
     constant: MathematicalConstant
 ): string {
@@ -172,7 +223,15 @@ export function expressionToPlainText(
                 ")"
             );
 
+case "comparison":
 
+    return (
+        `${expressionToPlainText(expression.left)} ` +
+        `${comparisonRelationToSymbol(expression.relation)} ` +
+        expressionToPlainText(
+            expression.right
+        )
+    );
         case "function-definition":
 
             return (
@@ -324,7 +383,13 @@ export function expressionToMathJs(
                 ")"
             );
             
+case "comparison":
 
+    return (
+        `(${expressionToMathJs(expression.left)}) ` +
+        `${comparisonRelationToMathJs(expression.relation)} ` +
+        `(${expressionToMathJs(expression.right)})`
+    );
         case "function-definition": {
 
             if (

@@ -16,7 +16,9 @@ import type {
     PowerNode,
     SummationNode,
     SymbolNode,
-    VectorNode
+    VectorNode,
+    ComparisonNode,
+ComparisonRelation,
 } from "./types";
 
 
@@ -84,7 +86,29 @@ export function constantNode(
 
 }
 
+export function comparisonNode(
+    left: ExpressionNode,
+    relation: ComparisonRelation,
+    right: ExpressionNode
+): ComparisonNode {
 
+    return {
+
+        id:
+            createExpressionNodeId(),
+
+        type:
+            "comparison",
+
+        left,
+
+        relation,
+
+        right
+
+    };
+
+}
 export function additionNode(
     terms:
         readonly ExpressionNode[]

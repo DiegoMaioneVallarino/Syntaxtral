@@ -19,7 +19,9 @@ export type {
     PowerNode,
     SummationNode,
     SymbolNode,
-        VectorNode
+        VectorNode,
+        ComparisonNode,
+ComparisonRelation,
 
 } from "./types";
 
@@ -40,7 +42,8 @@ export {
     powerNode,
     summationNode,
     symbolNode,
-    vectorNode
+    vectorNode,
+    comparisonNode,
 } from "./factories";
 
 

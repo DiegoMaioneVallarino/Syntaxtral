@@ -538,151 +538,102 @@ const graphEvaluationScope =
     ]);
 
 
-const canvasExpressions =
-    useMemo<GraphExpression[]>(() => {
+const canvasExpressions = useMemo<GraphExpression[]>(() => {
+    return blocks.flatMap((block): GraphExpression[] => {
+        if (block.type !== "formula") {
+            return [];
+        }
 
-        return blocks.flatMap(
-            block => {
+        if (
+            block.representation.kind ===
+            "projection-intersection"
+        ) {
+            return [];
+        }
 
-                if (
-                    block.type !== "formula"
-                ) {
+        let serialized: string | null;
 
-                    return [];
+        let representation = block.representation;
 
-                }
-
-
-                /*
-                 * Estos objetos ya se pueden crear y editar
-                 * como fórmulas, pero todavía necesitan sus
-                 * propios generadores de geometría 3D.
-                 */
-            if (
-    block.representation.kind ===
-        "inequality-solid" ||
-
-    block.representation.kind ===
-        "projection-intersection"
-) {
-
-    return [];
-
-}
-
-
-               let serialized:
-    string | null;
-
-
-if (
-    block.representation.kind ===
-        "parametric-surface"
-) {
-
-    /*
-     * Una superficie paramétrica guarda:
-     *
-     * r(u,v) = vector
-     *
-     * Para construir la geometría compilamos
-     * directamente el cuerpo vectorial.
-     */
-    if (
-        block.expression.type !==
-            "function-definition"
-    ) {
-
-        return [];
-
-    }
-
-
-    serialized =
-        trySerializeExpression(
-            block.expression.body
-        );
-
-} else if (
-    block.expression.type ===
-        "function-definition"
-) {
-
-    if (
-        block.expression.name.type !==
-            "symbol"
-    ) {
-
-        return [];
-
-    }
-
-
-    const independentVariable =
-
-        block.coordinateSystem === "polar"
-
-            ? "theta"
-
-            : "x";
-
-
-    serialized =
-        `${block.expression.name.name}` +
-        `(${independentVariable})`;
-
-} else {
-
-    serialized =
-        trySerializeExpression(
-            block.expression
-        );
-
-}
-
-
-                if (!serialized) {
-
-                    return [];
-
-                }
-
-
-                return [
-                    {
-
-                        id:
-                            block.id,
-
-                        expression:
-                            serialized,
-
-                        color:
-                            block.color,
-
-                        visible:
-                            block.visible,
-
-                        is3D:
-                            block.is3D,
-
-                        coordinateSystem:
-                            block.coordinateSystem,
-
-                        variables:
-                            graphEvaluationScope,
-                    representation:
-                        block.representation,
-                    }
-                ];
-
+        if (representation.kind === "inequality-solid") {
+            if (block.expression.type !== "comparison") {
+                return [];
             }
-        );
 
-    }, [
-        blocks,
-        graphEvaluationScope
-    ]);
+            const left = trySerializeExpression(
+                block.expression.left
+            );
+
+            const right = trySerializeExpression(
+                block.expression.right
+            );
+
+            if (!left || !right) {
+                return [];
+            }
+
+            // Enviamos un campo numérico, no un booleano.
+            serialized = `(${left}) - (${right})`;
+
+            // La fórmula editada determina la relación.
+            representation = {
+                ...representation,
+                relation: block.expression.relation,
+                threshold: 0
+            };
+        } else if (
+            representation.kind === "parametric-surface"
+        ) {
+            if (
+                block.expression.type !==
+                "function-definition"
+            ) {
+                return [];
+            }
+
+            serialized = trySerializeExpression(
+                block.expression.body
+            );
+        } else if (
+            block.expression.type === "function-definition"
+        ) {
+            if (block.expression.name.type !== "symbol") {
+                return [];
+            }
+
+            const independentVariable =
+                block.coordinateSystem === "polar"
+                    ? "theta"
+                    : "x";
+
+            serialized =
+                `${block.expression.name.name}` +
+                `(${independentVariable})`;
+        } else {
+            serialized = trySerializeExpression(
+                block.expression
+            );
+        }
+
+        if (!serialized) {
+            return [];
+        }
+
+        return [{
+            id: block.id,
+            expression: serialized,
+            color: block.color,
+            visible: block.visible,
+            is3D: block.is3D,
+            coordinateSystem: block.coordinateSystem,
+            variables: graphEvaluationScope,
+            representation
+        }];
+    });
+}, [
+    blocks,
+    graphEvaluationScope
+]);
 
 
     function replaceSelectedNode(

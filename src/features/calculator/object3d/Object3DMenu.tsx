@@ -131,22 +131,17 @@ const objectItems:
 },
 
         {
-            kind:
-                "inequality-solid",
+    kind: "inequality-solid",
 
-            symbol:
-                "⬢",
+    symbol: "⬢",
 
-            name:
-                "Sólido por desigualdad",
+    name: "Sólido por desigualdad",
 
-            description:
-                "Construye un volumen mediante F(x,y,z) ≤ c.",
+    description:
+        "Define una región del espacio mediante una desigualdad.",
 
-            available:
-                false
-        },
-
+    available: true
+},
         {
             kind:
                 "projection-intersection",
