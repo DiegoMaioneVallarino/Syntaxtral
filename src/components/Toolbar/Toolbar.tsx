@@ -249,6 +249,15 @@ function Toolbar() {
     }
 >
     Preguntas
+</NavLink><NavLink
+    to="/news"
+    className={({ isActive }) =>
+        isActive
+            ? "navigationButton navigationButtonActive"
+            : "navigationButton"
+    }
+>
+    Noticias
 </NavLink>
             </nav>
 

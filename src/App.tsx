@@ -15,6 +15,9 @@ import Profile from "./pages/Profile/Profile";
 import Calculator
     from "./features/calculator/Calculator";
 import Questions from "./pages/Questions/Questions";
+import News from "./pages/News/News";
+
+
 function App() {
     return (
         <div className="app">
@@ -50,6 +53,9 @@ function App() {
                       <Route
     path="/questions"
     element={<Questions />}
+/><Route
+    path="/news"
+    element={<News />}
 />
                       <Route
                       
