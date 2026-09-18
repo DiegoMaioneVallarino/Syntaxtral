@@ -240,7 +240,16 @@ function Toolbar() {
                 >
                     Calculator
                 </NavLink>
-
+<NavLink
+    to="/questions"
+    className={({ isActive }) =>
+        isActive
+            ? "navigationButton navigationButtonActive"
+            : "navigationButton"
+    }
+>
+    Preguntas
+</NavLink>
             </nav>
 
 

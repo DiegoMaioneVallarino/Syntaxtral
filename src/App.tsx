@@ -14,7 +14,7 @@ import Community from "./pages/Community/Community";
 import Profile from "./pages/Profile/Profile";
 import Calculator
     from "./features/calculator/Calculator";
-
+import Questions from "./pages/Questions/Questions";
 function App() {
     return (
         <div className="app">
@@ -48,6 +48,12 @@ function App() {
                           element={<Calculator />}
                       />
                       <Route
+    path="/questions"
+    element={<Questions />}
+/>
+                      <Route
+                      
+                      
     path="/profile"
     element={<Profile />}
 />

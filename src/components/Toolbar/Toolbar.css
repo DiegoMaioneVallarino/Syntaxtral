@@ -878,3 +878,91 @@ overflow: visible;
     color: #ef8299;
 
 }
+
+/* Espacio para la sección Preguntas */
+
+.toolbar {
+    grid-template-columns:
+        250px
+        minmax(0, 1fr)
+        minmax(140px, 340px);
+}
+
+.toolbar .titleArea {
+    width: 100%;
+}
+
+.toolbar .logo {
+    width: 220px;
+    max-width: 90%;
+}
+
+.toolbarNavigation {
+    min-width: 0;
+    gap: 2px;
+}
+
+.toolbarNavigation .navigationButton {
+    flex-shrink: 0;
+    padding-inline: 12px;
+    white-space: nowrap;
+}
+
+.toolbarActions {
+    min-width: 0;
+}
+
+.toolbarActions .searchArea {
+    width: auto;
+    min-width: 0;
+    flex: 1;
+}
+
+.toolbarNavigation .navigationButton:focus-visible {
+    outline: 2px solid #ae7df5;
+    outline-offset: -5px;
+}
+
+@media (max-width: 1200px) {
+    .toolbar {
+        grid-template-columns: 220px minmax(0, 1fr) 110px;
+    }
+
+    .toolbarActions {
+        gap: 8px;
+        padding-right: 16px;
+    }
+
+    .toolbarActions .searchArea {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .toolbar {
+        height: auto;
+
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-rows: 70px 48px;
+    }
+
+    .toolbar .titleArea {
+        grid-column: 1;
+        grid-row: 1;
+        justify-content: flex-start;
+        padding-left: 18px;
+    }
+
+    .toolbarActions {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .toolbarNavigation {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: flex-start;
+        overflow-x: auto;
+        border-top: 1px solid #ffffff0d;
+    }
+}
