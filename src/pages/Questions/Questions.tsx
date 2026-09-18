@@ -8,12 +8,12 @@ import type {
 
 import {
     mockQuestions
-} from "./questions.ts";
+} from "./questions.mock";
 
 import type {
     Question,
     QuestionAnswer
-} from "./questions.ts";
+} from "./questions.mock";
 
 import "./Questions.css";
 
