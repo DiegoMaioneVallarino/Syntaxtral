@@ -17,7 +17,8 @@ import Calculator
 import Questions from "./pages/Questions/Questions";
 import News from "./pages/News/News";
 
-
+import Shaders from "./pages/Shaders/Shaders";
+import ShaderEditor from "./pages/Shaders/ShaderEditor";
 function App() {
     return (
         <div className="app">
@@ -62,6 +63,20 @@ function App() {
                       
     path="/profile"
     element={<Profile />}
+/>
+<Route
+    path="/shaders"
+    element={<Shaders />}
+/>
+
+<Route
+    path="/shaders/new"
+    element={<ShaderEditor />}
+/>
+
+<Route
+    path="/shaders/:shaderId"
+    element={<ShaderEditor />}
 />
                 </Routes>
 

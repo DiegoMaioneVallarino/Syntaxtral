@@ -259,6 +259,16 @@ function Toolbar() {
 >
     Noticias
 </NavLink>
+<NavLink
+    to="/shaders"
+    className={({ isActive }) =>
+        isActive
+            ? "navigationButton navigationButtonActive"
+            : "navigationButton"
+    }
+>
+    Shaders
+</NavLink>
             </nav>
 
 

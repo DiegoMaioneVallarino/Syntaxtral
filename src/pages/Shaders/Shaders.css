@@ -1,0 +1,357 @@
+.shadersPage,
+.shaderEditorPage {
+    width: 100%;
+    min-width: 0;
+    background: #0b0b0e;
+    color: #eee8f6;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.shadersPage,
+.shadersPage *,
+.shaderEditorPage,
+.shaderEditorPage * {
+    box-sizing: border-box;
+}
+
+.shadersPage {
+    min-height: 100%;
+    padding: 40px clamp(18px, 4vw, 65px) 65px;
+}
+
+.shadersPage a,
+.shaderEditorPage a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.shadersPage :focus-visible,
+.shaderEditorPage :focus-visible {
+    outline: 2px solid #c299ff;
+    outline-offset: 3px;
+}
+
+.shadersHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #ffffff14;
+}
+
+.shadersEyebrow {
+    color: #b388ef;
+    font-size: 10px;
+    letter-spacing: 2px;
+}
+
+.shadersHeader h1 {
+    margin: 15px 0;
+    font-family: Georgia, serif;
+    font-size: clamp(30px, 3.5vw, 46px);
+    font-weight: 400;
+}
+
+.shadersHeader p {
+    color: #ac9fba;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.shadersPage .shaderPrimaryButton,
+.shaderEditorPage .shaderPrimaryButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 10px 17px;
+    border: 1px solid #ad7bec;
+    border-radius: 7px;
+    background: #743abe;
+    color: white;
+    font-size: 13px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.shaderPrimaryButton:hover {
+    filter: brightness(1.15);
+}
+
+.shadersGalleryHeading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 28px 0 20px;
+}
+
+.shadersGalleryHeading h2 {
+    margin: 0;
+    font-family: Georgia, serif;
+    font-size: 25px;
+    font-weight: 400;
+}
+
+.shadersGalleryHeading > span {
+    color: #ac9fba;
+    font-size: 12px;
+}
+
+.shadersGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.shaderCard {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #ffffff18;
+    border-radius: 10px;
+    background: #131017;
+}
+
+.shaderCard:hover {
+    border-color: #ad7bec;
+}
+
+.shaderThumbnail {
+    height: 235px;
+    overflow: hidden;
+    background: #050507;
+}
+
+.shaderCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.shaderCardInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px;
+}
+
+.shaderCardInfo small {
+    color: #b49acb;
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+.shaderCardInfo h3 {
+    margin: 8px 0 0;
+    font-family: Georgia, serif;
+    font-size: 23px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+}
+
+.shaderCardInfo > span {
+    color: #c69bff;
+    font-size: 24px;
+}
+
+.shaderEditorPage {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - 100px);
+    min-height: 520px;
+}
+
+.shaderEditorHeader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 22px;
+    border-bottom: 1px solid #ffffff17;
+}
+
+.shaderBackLink {
+    flex-shrink: 0;
+    font-size: 13px;
+}
+
+.shaderTitleInput {
+    flex: 1;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    background: transparent;
+    color: #f1e7fb;
+    font-family: Georgia, serif;
+    font-size: 22px;
+}
+
+.shaderTitleInput:hover {
+    border-color: #ffffff20;
+}
+
+.shaderEditorColumns {
+    display: grid;
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.shaderCodePanel,
+.shaderPreviewPanel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.shaderCodePanel {
+    border-right: 1px solid #ffffff17;
+}
+
+.shaderPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 49px;
+    padding: 9px 16px;
+    border-bottom: 1px solid #ffffff12;
+    background: #141118;
+    color: #bca8cf;
+    font-size: 12px;
+}
+
+.shaderPanelActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.shaderPanelActions label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.shaderPanelHeader button {
+    padding: 6px 10px;
+    border: 1px solid #a875df55;
+    border-radius: 5px;
+    background: #261932;
+    color: #e1c7fb;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.shaderCodeInput {
+    display: block;
+    flex: 1;
+    width: 100%;
+    min-height: 0;
+    padding: 22px;
+    resize: none;
+    border: none;
+    border-radius: 0;
+    background: #0f0d13;
+    color: #ddc8f0;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 14px;
+    line-height: 1.75;
+    tab-size: 4;
+}
+
+.shaderCodeInput:focus-visible {
+    outline-offset: -2px;
+}
+
+.shaderCompilerStatus {
+    max-height: 145px;
+    overflow: auto;
+    padding: 12px 18px;
+    border-top: 1px solid #ffffff14;
+    color: #8ed6b6;
+    font-size: 11px;
+}
+
+.shaderCompilerError {
+    color: #ff9ba8;
+    background: #231219;
+}
+
+.shaderCompilerStatus pre {
+    margin: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-family: Consolas, monospace;
+}
+
+.shaderPreviewViewport {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    background: #050507;
+}
+
+.shaderEditorFooter {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 20px;
+    border-top: 1px solid #ffffff14;
+    color: #ac9aba;
+    font-size: 10px;
+}
+
+@media (max-width: 1050px) {
+    .shadersGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .shaderEditorPage {
+        height: calc(100dvh - 118px);
+    }
+}
+
+@media (max-width: 700px) {
+    .shadersHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .shadersGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .shaderEditorPage {
+        height: auto;
+    }
+
+    .shaderEditorColumns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .shaderCodePanel {
+        height: 480px;
+        border-right: none;
+    }
+
+    .shaderPreviewPanel {
+        height: 400px;
+    }
+
+    .shaderEditorHeader {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 14px;
+    }
+
+    .shaderTitleInput {
+        font-size: 18px;
+    }
+}
