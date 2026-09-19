@@ -13,7 +13,9 @@ import type {
     ArticleStatus,
     ArticleStatusFilter
 } from "../../models/Article";
-
+import {
+    useSearchParams
+} from "react-router-dom";
 
 type StatusOption = {
 
@@ -79,12 +81,23 @@ function Articles() {
     ] = useState<ArticleStatusFilter>("all");
 
 
-    const [
-        selectedArticleId,
-        setSelectedArticleId
-    ] = useState(
-        articles[0].id
-    );
+   const [searchParams, setSearchParams] = useSearchParams();
+
+const selectedArticleId =
+    articles.find(
+        article =>
+            String(article.id) === searchParams.get("article")
+    )?.id ?? articles[0]?.id;
+
+function setSelectedArticleId(
+    id: (typeof articles)[number]["id"]
+): void {
+    setSearchParams(previous => {
+        const next = new URLSearchParams(previous);
+        next.set("article", String(id));
+        return next;
+    });
+}
 
 
     const filteredArticles = useMemo(() => {

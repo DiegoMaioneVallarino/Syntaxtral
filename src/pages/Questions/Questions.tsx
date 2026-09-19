@@ -302,11 +302,20 @@ export default function Questions() {
                                             </span>
                                         )}
                                     </header>
-
+<section
+    key={answer.id}
+    id={`answer-${answer.id}`}
+    className={`questionsAnswer ${
+        answer.accepted
+            ? "questionsAnswerAccepted"
+            : ""
+    }`}
+></section>
                                     <p className="questionsBody">
                                         {answer.body}
                                     </p>
                                 </section>
+                                
                             ))}
                         </article>
                     ) : (
@@ -489,6 +498,7 @@ export default function Questions() {
                         </p>
                     </section>
                 </aside>
+                
             </div>
         </div>
     );

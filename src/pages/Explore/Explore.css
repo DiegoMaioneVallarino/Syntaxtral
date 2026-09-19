@@ -347,3 +347,211 @@
     }
 
 }
+
+.exploreGrid {
+    align-items: start;
+}
+
+.explorePage :focus-visible {
+    outline: 2px solid #bd8aff;
+    outline-offset: 4px;
+}
+
+.exploreSecondaryFilters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 16px;
+}
+
+.exploreSecondaryFilters label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #afa0bc;
+    font-size: 12px;
+}
+
+.exploreSecondaryFilters select {
+    min-width: 0;
+    max-width: 240px;
+    padding: 8px 10px;
+    border: 1px solid #ffffff20;
+    border-radius: 6px;
+    background: #141019;
+    color: #e1d4ed;
+    font: inherit;
+}
+
+.explorePostCard {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #ffffff17;
+    border-radius: 10px;
+    background: #111015;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 160ms ease;
+}
+
+.explorePostCard:hover {
+    border-color: #a879e979;
+}
+
+.explorePostContent {
+    padding: 23px;
+}
+
+.explorePostType {
+    display: inline-block;
+    color: #bc91ee;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.explorePostContent h2 {
+    margin: 13px 0;
+    color: #eee5f6;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.explorePostExcerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    margin: 0 0 18px;
+    color: #ad9fb9;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.exploreArticleImage {
+    display: block;
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    background: #1b1425;
+}
+
+.explorePostTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.explorePostTags span {
+    padding: 5px 8px;
+    border: 1px solid #9c66cf26;
+    border-radius: 5px;
+    background: #201629;
+    color: #c5a7de;
+    font-size: 10px;
+}
+
+.explorePostFooter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 22px;
+    padding-top: 15px;
+    border-top: 1px solid #ffffff0e;
+    color: #a995b8;
+    font-size: 11px;
+}
+
+.exploreProjectPost {
+    min-width: 0;
+}
+
+.exploreProjectPost > .explorePostType {
+    margin: 0 0 9px 4px;
+}
+
+.exploreShaderPreview {
+    height: 230px;
+    overflow: hidden;
+    background: #100b19;
+}
+
+.exploreShaderPreview .shaderCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.exploreShaderPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 100%;
+    background:
+        radial-gradient(
+            ellipse at center,
+            #492561,
+            #151020 70%
+        );
+}
+
+.exploreShaderPlaceholder > span {
+    color: #cfa6ff;
+    font-size: 80px;
+    line-height: 1;
+}
+
+.exploreShaderPlaceholder small {
+    color: #c0a9d2;
+    font-size: 11px;
+}
+
+.exploreQuestionPost {
+    background:
+        linear-gradient(135deg, #1d1528, #101015 75%);
+}
+
+.exploreQuestionHeading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.exploreQuestionSolved {
+    color: #82d4ae;
+    font-size: 11px;
+}
+
+.exploreQuestionSymbol {
+    display: block;
+    margin: 20px 0 8px;
+    color: #a276d1;
+    font-family: Georgia, serif;
+    font-size: 56px;
+    line-height: 1;
+}
+
+.exploreQuestionStats {
+    display: flex;
+    gap: 20px;
+    margin-top: 22px;
+    color: #c0a4d5;
+    font-size: 12px;
+}
+
+.exploreEmpty > button {
+    margin-top: 20px;
+}

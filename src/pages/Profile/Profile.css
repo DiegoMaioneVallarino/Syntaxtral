@@ -578,4 +578,369 @@
 
     }
 
+}.profilePage,
+.profilePage * {
+    box-sizing: border-box;
+}
+
+.profilePage :focus-visible {
+    outline: 2px solid #bc8df2;
+    outline-offset: 3px;
+}
+
+.profileHeader {
+    padding-block: 25px;
+}
+
+.profileHeaderRight {
+    min-width: 0;
+}
+
+.profileIdentity p {
+    font-size: 13px;
+}
+
+.profileMetadata {
+    color: #a193af;
+    font-size: 11px;
+}
+
+.profileActionGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.profileSecondaryButton {
+    min-height: 35px;
+    padding: 8px 13px;
+    border: 1px solid #9365c755;
+    border-radius: 6px;
+    background: #1c1525;
+    color: #ddc9f1;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.profilePage button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.profileStatus {
+    padding: 10px 34px;
+    color: #b7a0cb;
+    font-size: 12px;
+}
+
+.profileStatus:empty {
+    padding: 0;
+}
+
+.profileWorkspace {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 25px;
+    padding: 25px 34px 40px;
+}
+
+.profileSidebar,
+.profileMainColumn {
+    min-width: 0;
+}
+
+.profileSidebarCard {
+    padding: 20px;
+    margin-bottom: 18px;
+    border: 1px solid #ffffff15;
+    border-radius: 9px;
+    background: #101016;
+}
+
+.profileSidebarCard h2,
+.profileEditPanel h2,
+.profileMessageBox h2 {
+    margin-top: 0;
+    font-family: Georgia, serif;
+    font-size: 23px;
+    font-weight: 400;
+}
+
+.profileCredential {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #9b69d43d;
+    border-radius: 7px;
+    background: #20162b;
+}
+
+.profileCredential-award {
+    border-color: #d6b26a55;
+    background: #251f15;
+}
+
+.profileCredential-outreach {
+    border-color: #68c4c64d;
+    background: #132326;
+}
+
+.profileCredential summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.profileCredential summary > span:first-child {
+    font-size: 25px;
+    color: #d3b3f1;
+}
+
+.profileCredential strong,
+.profileCredential small {
+    display: block;
+}
+
+.profileCredential strong {
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.profileCredential small {
+    margin-top: 5px;
+    color: #b8a6c9;
+    font-size: 9px;
+}
+
+.profileCredential p {
+    color: #c5b3d3;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.profileSocialLink {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #ffffff0c;
+    color: #ceb0ed;
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.profileMainColumn .profileTabs {
+    overflow-x: auto;
+    padding-inline: 8px;
+}
+
+.profileTabs button {
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+.profileMainColumn .profileContent {
+    padding: 20px 0 0;
+}
+
+.profileProjectGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profileHelp {
+    color: #ab9ab9;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.profileFeedCard,
+.profileComposer {
+    display: block;
+    margin-bottom: 18px;
+    padding: 22px;
+    border: 1px solid #ffffff15;
+    border-radius: 9px;
+    background: #111017;
+    color: #e1d4eb;
+    text-decoration: none;
+}
+
+.profileFeedCard header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+}
+
+.profileFeedCard time,
+.profileFeedCard small {
+    color: #b59acb;
+    font-size: 11px;
+}
+
+.profileFeedCard h2 {
+    font-family: Georgia, serif;
+    font-size: 23px;
+    font-weight: 400;
+}
+
+.profileFeedCard p {
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.profilePostBody {
+    white-space: pre-wrap;
+}
+
+.profileComposer {
+    display: grid;
+    gap: 14px;
+}
+
+.profileComposer > button {
+    justify-self: end;
+}
+
+.profileComposer textarea,
+.profileEditPanel input,
+.profileEditPanel textarea,
+.profileEditPanel select,
+.profileMessageBox textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 11px;
+    border: 1px solid #ffffff20;
+    border-radius: 6px;
+    background: #0d0b11;
+    color: #ebddf7;
+    font: inherit;
+    font-size: 13px;
+}
+
+.profilePage textarea {
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.profileEditPanel,
+.profileMessageBox {
+    margin: 22px 34px;
+    padding: 24px;
+    border: 1px solid #9d69d451;
+    border-radius: 10px;
+    background: #141019;
+}
+
+.profileEditPanel h3 {
+    margin-top: 28px;
+    font-size: 15px;
+}
+
+.profileEditFields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.profileEditFields label {
+    display: grid;
+    gap: 8px;
+    color: #bca5ce;
+    font-size: 12px;
+}
+
+.profileFullWidth {
+    grid-column: 1 / -1;
+}
+
+.profileEditableItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+    padding: 10px;
+    background: #ffffff04;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.profileEditableItem button {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: #ed9cb2;
+    cursor: pointer;
+    font-size: 19px;
+}
+
+.profileMessageBox p {
+    color: #b29cbd;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.profileMessageBox > button {
+    margin-top: 12px;
+}
+
+.profileTextLink {
+    display: inline-block;
+    margin-top: 20px;
+    color: #c497f3;
+    text-decoration: none;
+}
+
+.profileEmptySection {
+    min-height: 180px;
+    padding: 20px;
+}
+
+.profileEmptySection p {
+    color: #ad9bbd;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+@media (max-width: 1000px) {
+    .profileWorkspace {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .profileSidebar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .profileWorkspace {
+        padding: 20px 16px;
+    }
+
+    .profileSidebar,
+    .profileEditFields,
+    .profileProjectGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .profileMainInformation {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .profileEditPanel,
+    .profileMessageBox {
+        margin-inline: 16px;
+        padding: 18px;
+    }
+
+    .profileStatistics > div {
+        min-width: 65px;
+    }
 }
