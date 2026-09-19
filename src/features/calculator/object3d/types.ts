@@ -9,7 +9,8 @@ export type Object3DKind =
     | "implicit-torus"
     | "parametric-surface"
     | "inequality-solid"
-    | "projection-intersection";
+    | "projection-intersection"
+    | "projection-intersection"
 
 
 export type CreatableObject3DKind =
@@ -17,7 +18,8 @@ export type CreatableObject3DKind =
     | "implicit-surface"
     | "implicit-torus"
     | "parametric-surface"
-    | "inequality-solid";
+    | "inequality-solid"
+    | "projection-intersection";
 
 
 export type FormulaRepresentation =

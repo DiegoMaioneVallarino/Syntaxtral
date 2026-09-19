@@ -260,7 +260,55 @@ case "comparison":
             )
 
     };
+case "projection-region":
+    return {
+        ...expression,
 
+        constraints: expression.constraints.map(
+            constraint =>
+                replaceExpressionNodeById(
+                    constraint,
+                    nodeId,
+                    replacement
+                )
+        )
+    };
+
+case "projection-intersection": {
+    const [xy, yz, xz] = expression.regions;
+
+    const nextXY = replaceExpressionNodeById(
+        xy,
+        nodeId,
+        replacement
+    );
+
+    const nextYZ = replaceExpressionNodeById(
+        yz,
+        nodeId,
+        replacement
+    );
+
+    const nextXZ = replaceExpressionNodeById(
+        xz,
+        nodeId,
+        replacement
+    );
+
+    // Cada fila debe seguir siendo una región.
+    if (
+        nextXY.type !== "projection-region" ||
+        nextYZ.type !== "projection-region" ||
+        nextXZ.type !== "projection-region"
+    ) {
+        return expression;
+    }
+
+    return {
+        ...expression,
+        regions: [nextXY, nextYZ, nextXZ]
+    };
+}
 case "function-definition":
 
     return {
@@ -502,7 +550,11 @@ case "function-definition":
         ...expression.parameters,
         expression.body
     ];
+case "projection-region":
+    return expression.constraints;
 
+case "projection-intersection":
+    return expression.regions;
 
 case "function-call":
 

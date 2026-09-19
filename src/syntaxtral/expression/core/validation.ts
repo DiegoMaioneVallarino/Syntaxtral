@@ -379,7 +379,47 @@ export function validateExpression(
                 break;
 
             }
+case "projection-region": {
+    if (node.constraints.length === 0) {
+        addError(
+            node.id,
+            "La vista necesita al menos una restricción"
+        );
+    }
 
+    node.constraints.forEach(constraint => {
+        if (
+            constraint.type !== "comparison" &&
+            constraint.type !== "placeholder"
+        ) {
+            addError(
+                constraint.id,
+                "Usa una desigualdad para definir la región"
+            );
+        }
+
+        validateNode(constraint);
+    });
+
+    break;
+}
+
+case "projection-intersection": {
+    const expectedPlanes = ["xy", "yz", "xz"] as const;
+
+    node.regions.forEach((region, index) => {
+        if (region.plane !== expectedPlanes[index]) {
+            addError(
+                region.id,
+                "Las vistas deben estar ordenadas como XY, YZ y XZ"
+            );
+        }
+
+        validateNode(region);
+    });
+
+    break;
+}
             case "vector":
 
                 if (

@@ -247,6 +247,22 @@ case "comparison":
                     expression.body
                 )
             );
+
+
+case "projection-region":
+    return (
+        `${expression.plane.toUpperCase()}` +
+        ` [${expression.coordinateSystem}]: ` +
+        expression.constraints
+            .map(expressionToPlainText)
+            .join(" ∧ ")
+    );
+
+case "projection-intersection":
+    return expression.regions
+        .map(expressionToPlainText)
+        .join("\n");
+
 case "vector":
 
     return (
@@ -382,7 +398,17 @@ export function expressionToMathJs(
                     .join(", ") +
                 ")"
             );
-            
+
+
+
+
+case "projection-region":
+case "projection-intersection":
+    throw new ExpressionSerializationError(
+        expression.id,
+        "La intersección de vistas requiere compilar cada región por separado"
+    );
+
 case "comparison":
 
     return (

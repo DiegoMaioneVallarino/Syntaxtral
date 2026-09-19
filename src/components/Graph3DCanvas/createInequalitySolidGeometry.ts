@@ -1,7 +1,12 @@
 import {
     BufferGeometry,
-    Float32BufferAttribute
+    Float32BufferAttribute,
+    MeshBasicMaterial
 } from "three";
+
+import {
+    MarchingCubes
+} from "three/examples/jsm/objects/MarchingCubes.js";
 
 import type {
     EvalFunction
@@ -25,221 +30,188 @@ export type CompiledInequalityExpression =
         >;
     };
 
-type Point3 = readonly [number, number, number];
+// Resolución de muestreo, no tamaño de cubos visibles.
+const RESOLUTION = 48;
 
-type CellFace = {
-    direction: Point3;
-    corners: readonly [
-        Point3,
-        Point3,
-        Point3,
-        Point3
-    ];
-};
+// La región representada sigue siendo [-6, 6]³.
+const DOMAIN_HALF_SIZE = 6;
 
-const RESOLUTION = 40;
-const DOMAIN_SIZE = 12;
-
-const FACES: readonly CellFace[] = [
-    {
-        direction: [1, 0, 0],
-        corners: [
-            [1, 0, 0],
-            [1, 1, 0],
-            [1, 1, 1],
-            [1, 0, 1]
-        ]
-    },
-    {
-        direction: [-1, 0, 0],
-        corners: [
-            [0, 0, 1],
-            [0, 1, 1],
-            [0, 1, 0],
-            [0, 0, 0]
-        ]
-    },
-    {
-        direction: [0, 1, 0],
-        corners: [
-            [0, 1, 1],
-            [1, 1, 1],
-            [1, 1, 0],
-            [0, 1, 0]
-        ]
-    },
-    {
-        direction: [0, -1, 0],
-        corners: [
-            [0, 0, 0],
-            [1, 0, 0],
-            [1, 0, 1],
-            [0, 0, 1]
-        ]
-    },
-    {
-        direction: [0, 0, 1],
-        corners: [
-            [1, 0, 1],
-            [1, 1, 1],
-            [0, 1, 1],
-            [0, 0, 1]
-        ]
-    },
-    {
-        direction: [0, 0, -1],
-        corners: [
-            [0, 0, 0],
-            [0, 1, 0],
-            [1, 1, 0],
-            [1, 0, 0]
-        ]
-    }
-];
+// Espacio adicional para cerrar la malla en los límites.
+const SAMPLING_HALF_SIZE = 7.5;
 
 export function createInequalitySolidGeometry(
     expression: CompiledInequalityExpression
 ): BufferGeometry {
-    const resolution = RESOLUTION;
-    const halfSize = DOMAIN_SIZE / 2;
-    const cellSize = DOMAIN_SIZE / resolution;
+    const material = new MeshBasicMaterial();
 
-    const occupied = new Uint8Array(
-        resolution * resolution * resolution
+    // Hasta cinco triángulos por celda de Marching Cubes.
+    const maximumTriangles =
+        5 * Math.pow(RESOLUTION - 1, 3);
+
+    const marching = new MarchingCubes(
+        RESOLUTION,
+        material,
+        false,
+        false,
+        maximumTriangles
     );
 
-    const { relation, threshold } =
-        expression.representation;
+    try {
+        const { relation, threshold } =
+            expression.representation;
 
-    function getIndex(
-        x: number,
-        y: number,
-        z: number
-    ): number {
-        return (
-            x +
-            y * resolution +
-            z * resolution * resolution
-        );
-    }
+        const reverse =
+            relation === "greater" ||
+            relation === "greater-or-equal";
 
-    function satisfies(value: number): boolean {
-        switch (relation) {
-            case "less":
-                return value < threshold;
+        for (let iz = 0; iz < RESOLUTION; iz += 1) {
+            for (let iy = 0; iy < RESOLUTION; iy += 1) {
+                for (let ix = 0; ix < RESOLUTION; ix += 1) {
+                    /*
+                     * MarchingCubes sitúa sus muestras utilizando
+                     * índice / resolución, no índice / (resolución - 1).
+                     */
+                    const threeX =
+                        (2 * ix / RESOLUTION - 1) *
+                        SAMPLING_HALF_SIZE;
 
-            case "less-or-equal":
-                return value <= threshold;
+                    const threeY =
+                        (2 * iy / RESOLUTION - 1) *
+                        SAMPLING_HALF_SIZE;
 
-            case "greater":
-                return value > threshold;
+                    const threeZ =
+                        (2 * iz / RESOLUTION - 1) *
+                        SAMPLING_HALF_SIZE;
 
-            case "greater-or-equal":
-                return value >= threshold;
-        }
-    }
+                    const index =
+                        ix +
+                        iy * RESOLUTION +
+                        iz * RESOLUTION * RESOLUTION;
 
-    function isOccupied(
-        x: number,
-        y: number,
-        z: number
-    ): boolean {
-        if (
-            x < 0 || x >= resolution ||
-            y < 0 || y >= resolution ||
-            z < 0 || z >= resolution
-        ) {
-            return false;
-        }
+                    /*
+                     * Distancia con signo al límite del dominio:
+                     * negativa dentro del cubo y positiva fuera.
+                     */
+                    const domainField = Math.max(
+                        Math.abs(threeX) - DOMAIN_HALF_SIZE,
+                        Math.abs(threeY) - DOMAIN_HALF_SIZE,
+                        Math.abs(threeZ) - DOMAIN_HALF_SIZE
+                    );
 
-        return occupied[getIndex(x, y, z)] === 1;
-    }
+                    // Una evaluación inválida se trata como exterior.
+                    let signedField = 1;
 
-    // Estos índices siguen los ejes de Three.js.
-    for (let z = 0; z < resolution; z += 1) {
-        for (let y = 0; y < resolution; y += 1) {
-            for (let x = 0; x < resolution; x += 1) {
-                const threeX =
-                    -halfSize + (x + 0.5) * cellSize;
-
-                const threeY =
-                    -halfSize + (y + 0.5) * cellSize;
-
-                const threeZ =
-                    -halfSize + (z + 0.5) * cellSize;
-
-                try {
-                    const result =
-                        expression.compiled.evaluate(
+                    try {
+                        const value = expression.compiled.evaluate(
                             createEvaluationScope({
                                 ...expression.variables,
 
-                                // Math(x,y,z) → Three(x,z,y)
                                 x: threeX,
                                 y: threeZ,
                                 z: threeY
                             })
                         );
 
-                    // Evitamos convertir booleanos en 0 o 1.
-                    if (
-                        typeof result === "number" &&
-                        Number.isFinite(result) &&
-                        satisfies(result)
-                    ) {
-                        occupied[getIndex(x, y, z)] = 1;
+                        if (
+                            typeof value === "number" &&
+                            Number.isFinite(value)
+                        ) {
+                            const residual = reverse
+                                ? threshold - value
+                                : value - threshold;
+
+                            if (Number.isFinite(residual)) {
+                                /*
+                                 * Intersección con el cubo de dominio.
+                                 * El interior satisface signedField <= 0.
+                                 */
+                                signedField = Math.max(
+                                    residual,
+                                    domainField
+                                );
+                            }
+                        }
+                    } catch {
+                        // Conservamos el valor exterior.
                     }
-                } catch {
-                    // Una evaluación inválida deja la celda vacía.
+
+                    /*
+                     * MarchingCubes utiliza valores positivos dentro.
+                     * Limitamos solo valores extremos para Float32.
+                     */
+                    marching.field[index] = -Math.max(
+                        -1e20,
+                        Math.min(1e20, signedField)
+                    );
                 }
             }
         }
-    }
 
-    const positions: number[] = [];
+        marching.isolation = 0;
+        marching.update();
 
-    for (let z = 0; z < resolution; z += 1) {
-        for (let y = 0; y < resolution; y += 1) {
-            for (let x = 0; x < resolution; x += 1) {
-                if (!isOccupied(x, y, z)) {
-                    continue;
-                }
+        const source = marching.geometry;
 
-                for (const face of FACES) {
-                    const [dx, dy, dz] = face.direction;
+        const positions = source.getAttribute("position");
+        const normals = source.getAttribute("normal");
 
-                    if (isOccupied(x + dx, y + dy, z + dz)) {
-                        continue;
-                    }
+        const count = Math.min(
+            positions.count,
+            Math.max(0, source.drawRange.count)
+        );
 
-                    const [a, b, c, d] = face.corners;
+        const vertexCount = Math.floor(count / 3) * 3;
 
-                    // Dos triángulos por cara.
-                    for (const corner of [a, b, c, a, c, d]) {
-                        positions.push(
-                            -halfSize + (x + corner[0]) * cellSize,
-                            -halfSize + (y + corner[1]) * cellSize,
-                            -halfSize + (z + corner[2]) * cellSize
-                        );
-                    }
-                }
-            }
+        const outputPositions =
+            new Float32Array(vertexCount * 3);
+
+        const outputNormals =
+            new Float32Array(vertexCount * 3);
+
+        for (let index = 0; index < vertexCount; index += 1) {
+            const offset = index * 3;
+
+            outputPositions[offset] =
+                positions.getX(index) * SAMPLING_HALF_SIZE;
+
+            outputPositions[offset + 1] =
+                positions.getY(index) * SAMPLING_HALF_SIZE;
+
+            outputPositions[offset + 2] =
+                positions.getZ(index) * SAMPLING_HALF_SIZE;
+
+            /*
+             * Conservamos las normales interpoladas del campo.
+             * Recalcularlas sobre triángulos sin índices produciría
+             * una apariencia facetada.
+             */
+            outputNormals[offset] = normals.getX(index);
+            outputNormals[offset + 1] = normals.getY(index);
+            outputNormals[offset + 2] = normals.getZ(index);
         }
+
+        const geometry = new BufferGeometry();
+
+        geometry.setAttribute(
+            "position",
+            new Float32BufferAttribute(outputPositions, 3)
+        );
+
+        geometry.setAttribute(
+            "normal",
+            new Float32BufferAttribute(outputNormals, 3)
+        );
+
+        geometry.setDrawRange(0, vertexCount);
+
+        if (vertexCount > 0) {
+            geometry.computeBoundingBox();
+            geometry.computeBoundingSphere();
+        }
+
+        return geometry;
+    } finally {
+        marching.geometry.dispose();
+        material.dispose();
     }
-
-    const geometry = new BufferGeometry();
-
-    geometry.setAttribute(
-        "position",
-        new Float32BufferAttribute(positions, 3)
-    );
-
-    geometry.setDrawRange(0, positions.length / 3);
-
-    if (positions.length > 0) {
-        geometry.computeVertexNormals();
-        geometry.computeBoundingSphere();
-    }
-
-    return geometry;
 }

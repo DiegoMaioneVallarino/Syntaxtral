@@ -501,6 +501,58 @@ case "equality":
 
         </span>
     );
+
+    case "projection-intersection":
+    return (
+        <span className="syntaxtralProjectionIntersection">
+            <span
+                className="syntaxtralProjectionBrace"
+                aria-hidden="true"
+            >
+                {"{"}
+            </span>
+
+            <span className="syntaxtralProjectionRegions">
+                {node.regions.map(region => (
+                    <Fragment key={region.id}>
+                        {renderChild(region)}
+                    </Fragment>
+                ))}
+            </span>
+        </span>
+    );
+
+case "projection-region":
+    return (
+        <span className="syntaxtralProjectionRegion">
+            <span className="syntaxtralProjectionLabel">
+                {node.plane.toUpperCase()}
+
+                <small>
+                    {node.coordinateSystem === "polar"
+                        ? "Polar"
+                        : "Cartesiana"}
+                </small>
+            </span>
+
+            <span className="syntaxtralProjectionConstraints">
+                {node.constraints.map((constraint, index) => (
+                    <span
+                        key={constraint.id}
+                        className="syntaxtralProjectionConstraint"
+                    >
+                        {index > 0 && (
+                            <span className="syntaxtralOperator">
+                                ∧
+                            </span>
+                        )}
+
+                        {renderChild(constraint)}
+                    </span>
+                ))}
+            </span>
+        </span>
+    );
     case "comparison": {
 
     const relationSymbol = {

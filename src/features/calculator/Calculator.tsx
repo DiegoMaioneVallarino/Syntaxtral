@@ -25,8 +25,13 @@ import {
     replaceExpressionNodeById,
     summationNode,
     symbolNode,
+    comparisonNode,
     functionDefinitionNode,
     equalityNode,
+} from "../../syntaxtral/expression";
+
+import type {
+    ProjectionRegionNode
 } from "../../syntaxtral/expression";
 
 import type {
@@ -56,6 +61,12 @@ import type {
     CreatableObject3DKind,
     FormulaRepresentation
 } from "./object3d";
+
+import {
+    createProjectionGraphData
+} from "./math/createProjectionGraphData";
+
+
 
 type GraphMode =
     | "2d"
@@ -545,11 +556,35 @@ const canvasExpressions = useMemo<GraphExpression[]>(() => {
         }
 
         if (
-            block.representation.kind ===
-            "projection-intersection"
-        ) {
-            return [];
-        }
+    block.representation.kind ===
+    "projection-intersection"
+) {
+    if (
+        block.expression.type !==
+        "projection-intersection"
+    ) {
+        return [];
+    }
+
+    try {
+        const graphData = createProjectionGraphData(
+            block.expression,
+            graphEvaluationScope
+        );
+
+        return [{
+            id: block.id,
+            color: block.color,
+            visible: block.visible,
+            is3D: true,
+            coordinateSystem: "cartesian",
+            ...graphData
+        }];
+    } catch {
+        // Una expresión incompleta no genera geometría.
+        return [];
+    }
+}
 
         let serialized: string | null;
 
@@ -1165,9 +1200,16 @@ case "summation": {
         block.id
     );
 
-    setSelectedExpressionNodeId(
-        preset.expression.id
-    );
+   const initialExpression =
+    preset.expression.type === "projection-intersection"
+        ? preset.expression.regions[0].constraints[0]
+        : preset.expression;
+
+setSelectedExpressionNodeId(
+    initialExpression?.type === "comparison"
+        ? initialExpression.left.id
+        : initialExpression?.id ?? null
+);
 
     setGraphMode(
         "3d"
@@ -1586,7 +1628,44 @@ function toggleFormulaCoordinateSystem(
     );
 
 }
+function updateProjectionRegion(
+    blockId: string,
+    regionId: string,
+    update: (
+        region: ProjectionRegionNode
+    ) => ProjectionRegionNode
+): void {
+    setBlocks(previous =>
+        previous.map(block => {
+            if (
+                block.id !== blockId ||
+                block.type !== "formula" ||
+                block.expression.type !==
+                    "projection-intersection"
+            ) {
+                return block;
+            }
 
+            const region = block.expression.regions.find(
+                candidate => candidate.id === regionId
+            );
+
+            if (!region) {
+                return block;
+            }
+
+            return {
+                ...block,
+
+                expression: replaceExpressionNodeById(
+                    block.expression,
+                    regionId,
+                    update(region)
+                )
+            };
+        })
+    );
+}
 
     return (
         <section className="calculatorPage">
@@ -2104,7 +2183,12 @@ if (
                                                 : null
                                         }
                                         onNodeSelect={node => {
-
+                                                if (
+                                                    node.type === "projection-region" ||
+                                                    node.type === "projection-intersection"
+                                                ) {
+                                                    return;
+                                                }
                                             setActiveFormulaBlockId(
                                                 block.id
                                             );
@@ -2122,7 +2206,194 @@ if (
 
                                 </div>
 
+{block.expression.type === "projection-intersection" && (
+    <div
+        className="calculatorProjectionControls"
+        onClick={event => event.stopPropagation()}
+    >
+        {block.expression.regions.map(region => (
+            <div
+                key={region.id}
+                className="calculatorProjectionControlRow"
+            >
+                <label>
+                    {region.plane.toUpperCase()}
 
+                    <select
+                        value={region.coordinateSystem}
+                        onChange={event => {
+                            const mode =
+                                event.target.value === "polar"
+                                    ? "polar"
+                                    : "cartesian";
+
+                            updateProjectionRegion(
+                                block.id,
+                                region.id,
+                                current => ({
+                                    ...current,
+                                    coordinateSystem: mode
+                                })
+                            );
+                        }}
+                    >
+                        <option value="cartesian">
+                            Cartesiana
+                        </option>
+
+                        <option value="polar">
+                            Polar
+                        </option>
+                    </select>
+                </label>
+
+                {region.constraints.map((constraint, index) => (
+                    <span
+                        key={constraint.id}
+                        className="calculatorProjectionCondition"
+                    >
+                        <small>{index + 1}</small>
+
+                        {constraint.type === "comparison" && (
+                            <select
+                                aria-label={
+                                    `Relación ${index + 1} de ` +
+                                    region.plane.toUpperCase()
+                                }
+                                value={constraint.relation}
+                                onChange={event => {
+                                    const relation = event.target.value;
+
+                                    if (
+                                        relation !== "less" &&
+                                        relation !== "less-or-equal" &&
+                                        relation !== "greater" &&
+                                        relation !== "greater-or-equal"
+                                    ) {
+                                        return;
+                                    }
+
+                                    updateProjectionRegion(
+                                        block.id,
+                                        region.id,
+                                        current => ({
+                                            ...current,
+
+                                            constraints:
+                                                current.constraints.map(item =>
+                                                    item.id === constraint.id &&
+                                                    item.type === "comparison"
+                                                        ? { ...item, relation }
+                                                        : item
+                                                )
+                                        })
+                                    );
+                                }}
+                            >
+                                <option value="less">{"<"}</option>
+                                <option value="less-or-equal">≤</option>
+                                <option value="greater">{">"}</option>
+                                <option value="greater-or-equal">≥</option>
+                            </select>
+                        )}
+
+                        <button
+                            type="button"
+                            disabled={region.constraints.length <= 1}
+                            aria-label={
+                                `Eliminar condición ${index + 1} de ` +
+                                region.plane.toUpperCase()
+                            }
+                            onClick={() => {
+                                updateProjectionRegion(
+                                    block.id,
+                                    region.id,
+                                    current => ({
+                                        ...current,
+
+                                        constraints:
+                                            current.constraints.filter(
+                                                item =>
+                                                    item.id !== constraint.id
+                                            )
+                                    })
+                                );
+
+                                setSelectedExpressionNodeId(null);
+                            }}
+                        >
+                            ×
+                        </button>
+                    </span>
+                ))}
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        const left = placeholderNode();
+
+                        const constraint = comparisonNode(
+                            left,
+                            "less-or-equal",
+                            placeholderNode()
+                        );
+
+                        updateProjectionRegion(
+                            block.id,
+                            region.id,
+                            current => ({
+                                ...current,
+                                constraints: [
+                                    ...current.constraints,
+                                    constraint
+                                ]
+                            })
+                        );
+
+                        setActiveFormulaBlockId(block.id);
+                        setSelectedExpressionNodeId(left.id);
+                        setDrawerMode("keyboard");
+                    }}
+                >
+                    + Condición
+                </button>
+            </div>
+        ))}
+
+        <div className="calculatorProjectionSymbols">
+            <span>Insertar en la selección:</span>
+
+            {[
+                { name: "rho", label: "ρ" },
+                { name: "theta", label: "θ" }
+            ].map(symbol => (
+                <button
+                    key={symbol.name}
+                    type="button"
+                    disabled={!active || !selectedExpressionNodeId}
+                    onClick={() => {
+                        const selected = getSelectedNode();
+
+                        if (
+                            !selected ||
+                            selected.type === "projection-region" ||
+                            selected.type === "projection-intersection" ||
+                            selected.type === "comparison"
+                        ) {
+                            return;
+                        }
+
+                        replaceSelectedNode(
+                            symbolNode(symbol.name)
+                        );
+                    }}
+                >
+                    {symbol.label}
+                </button>
+            ))}
+        </div>
+    </div>
+)}
                                 <footer className="calculatorFormulaFooter">
 
     <div className="calculatorFormulaControls">

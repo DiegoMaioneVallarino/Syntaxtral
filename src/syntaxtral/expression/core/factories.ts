@@ -19,6 +19,10 @@ import type {
     VectorNode,
     ComparisonNode,
 ComparisonRelation,
+ProjectionPlane,
+ProjectionCoordinateSystem,
+ProjectionRegionNode,
+ProjectionIntersectionNode
 } from "./types";
 
 
@@ -375,4 +379,30 @@ export function placeholderNode(
 
     };
 
+}
+
+export function projectionRegionNode(
+    plane: ProjectionPlane,
+    coordinateSystem: ProjectionCoordinateSystem,
+    constraints: readonly ExpressionNode[]
+): ProjectionRegionNode {
+    return {
+        id: createExpressionNodeId(),
+        type: "projection-region",
+        plane,
+        coordinateSystem,
+        constraints
+    };
+}
+
+export function projectionIntersectionNode(
+    xy: ProjectionRegionNode,
+    yz: ProjectionRegionNode,
+    xz: ProjectionRegionNode
+): ProjectionIntersectionNode {
+    return {
+        id: createExpressionNodeId(),
+        type: "projection-intersection",
+        regions: [xy, yz, xz]
+    };
 }

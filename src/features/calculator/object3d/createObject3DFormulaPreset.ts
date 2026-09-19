@@ -8,7 +8,9 @@ import {
     powerNode,
     symbolNode,
     vectorNode,
-    comparisonNode
+    comparisonNode,
+    projectionIntersectionNode,
+    projectionRegionNode
 } from "../../../syntaxtral/expression";
 
 import type {
@@ -172,6 +174,9 @@ export function createObject3DFormulaPreset(
         }
 
     };
+
+
+
     case "inequality-solid":
 
     return {
@@ -206,6 +211,53 @@ export function createObject3DFormulaPreset(
             threshold: 0
         }
     };
+        case "projection-intersection": {
+    function disk(
+        firstAxis: string,
+        secondAxis: string
+    ) {
+        return comparisonNode(
+            additionNode([
+                powerNode(
+                    symbolNode(firstAxis),
+                    numberNode(2)
+                ),
+                powerNode(
+                    symbolNode(secondAxis),
+                    numberNode(2)
+                )
+            ]),
+            "less-or-equal",
+            numberNode(4)
+        );
+    }
+
+    return {
+        title: "Intersección de vistas",
+
+        expression: projectionIntersectionNode(
+            projectionRegionNode(
+                "xy",
+                "cartesian",
+                [disk("x", "y")]
+            ),
+            projectionRegionNode(
+                "yz",
+                "cartesian",
+                [disk("y", "z")]
+            ),
+            projectionRegionNode(
+                "xz",
+                "cartesian",
+                [disk("x", "z")]
+            )
+        ),
+
+        representation: {
+            kind: "projection-intersection"
+        }
+    };
+}
 case "parametric-surface":
 
     return {

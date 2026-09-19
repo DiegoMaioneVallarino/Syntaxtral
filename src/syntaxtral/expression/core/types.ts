@@ -15,6 +15,8 @@ export type ExpressionNode =
     | FunctionDefinitionNode
     | VectorNode
     | GroupNode
+    | ProjectionRegionNode
+    | ProjectionIntersectionNode
     | PlaceholderNode;
 
 export type ExpressionNodeType =
@@ -220,4 +222,33 @@ export type PlaceholderNode =
         readonly label?:
             string;
 
+    };
+
+    export type ProjectionPlane =
+    | "xy"
+    | "yz"
+    | "xz";
+
+export type ProjectionCoordinateSystem =
+    | "cartesian"
+    | "polar";
+
+export type ProjectionRegionNode =
+    BaseExpressionNode<"projection-region"> & {
+        readonly plane: ProjectionPlane;
+
+        readonly coordinateSystem:
+            ProjectionCoordinateSystem;
+
+        readonly constraints:
+            readonly ExpressionNode[];
+    };
+
+export type ProjectionIntersectionNode =
+    BaseExpressionNode<"projection-intersection"> & {
+        readonly regions: readonly [
+            ProjectionRegionNode,
+            ProjectionRegionNode,
+            ProjectionRegionNode
+        ];
     };

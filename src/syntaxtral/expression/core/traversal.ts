@@ -58,6 +58,12 @@ export function getExpressionChildren(
                 expression.operand
             ];
 
+        case "projection-region":
+            return expression.constraints;
+
+        case "projection-intersection":
+            return expression.regions;
+
 
         case "negation":
 

@@ -19,9 +19,13 @@ export type {
     PowerNode,
     SummationNode,
     SymbolNode,
-        VectorNode,
-        ComparisonNode,
-ComparisonRelation,
+    VectorNode,
+    ComparisonNode,
+    ComparisonRelation,
+    ProjectionPlane,
+    ProjectionCoordinateSystem,
+    ProjectionRegionNode,
+    ProjectionIntersectionNode
 
 } from "./types";
 
@@ -44,6 +48,9 @@ export {
     symbolNode,
     vectorNode,
     comparisonNode,
+    projectionRegionNode,
+    projectionIntersectionNode
+    
 } from "./factories";
 
 

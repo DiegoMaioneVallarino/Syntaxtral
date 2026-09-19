@@ -130,35 +130,22 @@ const objectItems:
         true
 },
 
-        {
+      {
     kind: "inequality-solid",
-
     symbol: "⬢",
-
     name: "Sólido por desigualdad",
-
     description:
         "Define una región del espacio mediante una desigualdad.",
-
     available: true
 },
-        {
-            kind:
-                "projection-intersection",
-
-            symbol:
-                "▣",
-
-            name:
-                "Intersección de vistas",
-
-            description:
-                "Combina restricciones vistas desde X, Y y Z.",
-
-            available:
-                false
-        }
-
+{
+    kind: "projection-intersection",
+    symbol: "▣",
+    name: "Intersección de vistas",
+    description:
+        "Combina regiones cartesianas o polares desde XY, YZ y XZ.",
+    available: true
+},
     ];
 
 
