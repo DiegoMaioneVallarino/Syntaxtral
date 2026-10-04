@@ -1,7 +1,12 @@
 import {
-    useState
+    useState, 
+    useEffect,
 } from "react";
 
+import {
+    useLocation,
+    useSearchParams
+} from "react-router-dom";
 import type {
     FormEvent
 } from "react";
@@ -65,7 +70,32 @@ export default function Questions() {
     const selectedQuestion = questions.find(
         question => question.id === selectedId
     );
+const location = useLocation();
 
+useEffect(() => {
+    if (!location.hash || !selectedQuestion) {
+        return;
+    }
+
+    let targetId: string;
+
+    try {
+        targetId = decodeURIComponent(location.hash.slice(1));
+    } catch {
+        return;
+    }
+
+    const frame = requestAnimationFrame(() => {
+        document.getElementById(targetId)?.scrollIntoView({
+            block: "start"
+        });
+    });
+
+    return () => cancelAnimationFrame(frame);
+}, [
+    location.hash,
+    selectedQuestion
+]);
     const tags = Array.from(
         new Set(questions.flatMap(question => question.tags))
     ).sort();
@@ -284,39 +314,31 @@ export default function Questions() {
                                 </p>
                             )}
 
-                            {selectedQuestion.answers.map(answer => (
-                                <section
-                                    key={answer.id}
-                                    className={`questionsAnswer ${
-                                        answer.accepted
-                                            ? "questionsAnswerAccepted"
-                                            : ""
-                                    }`}
-                                >
-                                    <header>
-                                        <strong>{answer.author}</strong>
+                          {selectedQuestion.answers.map(answer => (
+    <section
+        key={answer.id}
+        id={`answer-${answer.id}`}
+        className={`questionsAnswer ${
+            answer.accepted
+                ? "questionsAnswerAccepted"
+                : ""
+        }`}
+    >
+        <header>
+            <strong>{answer.author}</strong>
 
-                                        {answer.accepted && (
-                                            <span className="questionsSolved">
-                                                ✓ Respuesta aceptada
-                                            </span>
-                                        )}
-                                    </header>
-<section
-    key={answer.id}
-    id={`answer-${answer.id}`}
-    className={`questionsAnswer ${
-        answer.accepted
-            ? "questionsAnswerAccepted"
-            : ""
-    }`}
-></section>
-                                    <p className="questionsBody">
-                                        {answer.body}
-                                    </p>
-                                </section>
-                                
-                            ))}
+            {answer.accepted && (
+                <span className="questionsSolved">
+                    ✓ Respuesta aceptada
+                </span>
+            )}
+        </header>
+
+        <p className="questionsBody">
+            {answer.body}
+        </p>
+    </section>
+))}
                         </article>
                     ) : (
                         <>

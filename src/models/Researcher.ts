@@ -6,7 +6,24 @@ export type ResearchField =
     | "dynamics"
     | "algebra";
 
+export type ResearcherCredentialKind =
+    | "degree"
+    | "outreach"
+    | "award";
 
+export type ResearcherCredential = {
+    id: string;
+
+    kind: ResearcherCredentialKind;
+
+    title: string;
+
+    institution?: string;
+
+    year?: string;
+
+    status: "declared" | "verified" | "demo";
+};
 export type Researcher = {
 
     id: string;
@@ -27,5 +44,7 @@ export type Researcher = {
     followers: number;
 
     featured: boolean;
+
+    credentials?: readonly ResearcherCredential[];
 
 };

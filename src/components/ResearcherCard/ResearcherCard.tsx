@@ -4,6 +4,8 @@ import type {
     Researcher
 } from "../../models/Researcher";
 
+import ResearcherBadges
+    from "../ResearcherBadges/ResearcherBadges";
 
 type ResearcherCardProps = {
 
@@ -125,7 +127,13 @@ function ResearcherCard({
                 {researcher.biography}
 
             </p>
-
+{Boolean(researcher.credentials?.length) && (
+    <div className="researcherCardCredentials">
+        <ResearcherBadges
+            credentials={researcher.credentials}
+        />
+    </div>
+)}
 
             <div className="researcherSpecialties">
 

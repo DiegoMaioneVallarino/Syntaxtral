@@ -8,7 +8,17 @@ export type ArticleStatusFilter =
     | "all"
     | ArticleStatus;
 
+export type ArticleSection = {
+    title: string;
 
+    paragraphs: readonly string[];
+};
+
+export type ArticleReference = {
+    title: string;
+
+    url?: string;
+};
 export type Article = {
 
     id: string;
@@ -26,5 +36,7 @@ export type Article = {
     abstract: string;
 
     imagePath?: string;
+sections?: readonly ArticleSection[];
 
+references?: readonly ArticleReference[];
 };

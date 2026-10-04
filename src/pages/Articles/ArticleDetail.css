@@ -1,0 +1,373 @@
+.articleDetailPage {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    overflow-y: auto;
+
+    padding: 35px clamp(18px, 4vw, 65px) 70px;
+
+    background:
+        radial-gradient(
+            ellipse at 50% 0%,
+            #59278e12,
+            transparent 45%
+        ),
+        #090a0e;
+
+    color: #e9e3ef;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.articleDetailPage,
+.articleDetailPage *,
+.articleDetailPage *::before,
+.articleDetailPage *::after {
+    box-sizing: border-box;
+}
+
+.articleDetailContainer {
+    max-width: 1180px;
+    margin: auto;
+}
+
+.articleDetailPage a:focus-visible {
+    outline: 2px solid #bd8aff;
+    outline-offset: 5px;
+}
+
+.articleDetailBack {
+    display: inline-block;
+    margin-bottom: 35px;
+
+    color: #b28adf;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.articleDetailBack:hover {
+    color: #e2c5ff;
+}
+
+.articleDetailHeader {
+    max-width: 950px;
+}
+
+.articleDetailLabels,
+.articleDetailMetadata,
+.articleDetailCategories {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.articleDetailEyebrow {
+    color: #a975ea;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+}
+
+.articleDetailStatus {
+    padding: 5px 9px;
+    border: 1px solid #81d2ad30;
+    border-radius: 5px;
+
+    background: #15261f;
+    color: #99d9b8;
+    font-size: 10px;
+}
+
+.articleDetailStatus--preprint {
+    border-color: #e0bd6630;
+    background: #292315;
+    color: #dbc184;
+}
+
+.articleDetailStatus--draft {
+    border-color: #ad86e030;
+    background: #241a30;
+    color: #c0a1e7;
+}
+
+.articleDetailHeader h1 {
+    margin: 22px 0;
+
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(32px, 4.2vw, 58px);
+    font-weight: 400;
+    line-height: 1.15;
+
+    overflow-wrap: anywhere;
+}
+
+.articleDetailMetadata {
+    color: #918798;
+    font-size: 12px;
+}
+
+.articleDetailAuthor {
+    color: #e3c8ff;
+    font-weight: 600;
+}
+
+.articleDetailCategories {
+    gap: 7px;
+    margin-top: 20px;
+}
+
+.articleDetailCategories span {
+    padding: 6px 9px;
+    border: 1px solid #a870e527;
+    border-radius: 5px;
+
+    background: #1a1423;
+    color: #bca0d4;
+    font-size: 10px;
+}
+
+.articleDetailNotice {
+    margin-top: 24px;
+    padding: 12px 15px;
+
+    border-left: 2px solid #a575df;
+
+    background: #22182b;
+    color: #c6aedc;
+    font-size: 12px;
+}
+
+.articleDetailCover {
+    margin: 32px 0 0;
+}
+
+.articleDetailCover img {
+    display: block;
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+
+    border: 1px solid #ffffff12;
+    border-radius: 10px;
+}
+
+.articleDetailCover img[hidden] {
+    display: none;
+}
+
+.articleDetailLayout {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(30px, 5vw, 75px);
+
+    margin-top: 45px;
+}
+
+.articleDetailSidebar {
+    position: sticky;
+    top: 24px;
+}
+
+.articleDetailSidebar nav {
+    display: grid;
+    gap: 15px;
+
+    padding-bottom: 25px;
+    border-bottom: 1px solid #ffffff12;
+}
+
+.articleDetailSidebar nav a {
+    display: flex;
+    gap: 8px;
+
+    color: #a99ab7;
+    font-size: 12px;
+    line-height: 1.5;
+    text-decoration: none;
+}
+
+.articleDetailSidebar nav a:hover {
+    color: #dfb9ff;
+}
+
+.articleDetailSidebar nav a span {
+    color: #8056aa;
+}
+
+.articleDetailAuthorPanel {
+    display: grid;
+    gap: 12px;
+
+    margin-top: 25px;
+}
+
+.articleDetailAuthorPanel strong {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    font-weight: 400;
+}
+
+.articleDetailAuthorPanel p {
+    margin: 0;
+    color: #86798f;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.articleDetailBody {
+    min-width: 0;
+    max-width: 780px;
+}
+
+.articleDetailBody h2 {
+    margin: 0 0 18px;
+
+    color: #efe6f7;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 27px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.articleDetailBody p {
+    margin: 0 0 20px;
+
+    color: #b8aebf;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.95;
+
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.articleDetailAbstract {
+    padding: 25px;
+    border: 1px solid #a575df20;
+    border-radius: 9px;
+    background: #16111e;
+}
+
+.articleDetailAbstract p {
+    margin-bottom: 0;
+    color: #d0bddf;
+}
+
+.articleDetailSection {
+    margin-top: 45px;
+}
+
+.articleDetailSection h2 span {
+    margin-right: 10px;
+    color: #8f5cc3;
+}
+
+.articleDetailBody section {
+    scroll-margin-top: 25px;
+}
+
+.articleDetailPending {
+    margin-top: 35px;
+    padding: 25px;
+    border: 1px dashed #ffffff20;
+    border-radius: 8px;
+}
+
+.articleDetailPending p {
+    margin-bottom: 0;
+    font-size: 15px;
+}
+
+.articleDetailReferences {
+    padding-left: 22px;
+    color: #b4a7bf;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.articleDetailReferences li {
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+}
+
+.articleDetailReferences a,
+.articleDetailFooter a {
+    color: #cba3f4;
+    text-decoration: none;
+}
+
+.articleDetailReferences a:hover,
+.articleDetailFooter a:hover {
+    text-decoration: underline;
+}
+
+.articleDetailFooter {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #ffffff14;
+
+    color: #887a94;
+    font-size: 11px;
+}
+
+.articleDetailNotFound {
+    min-height: 400px;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+}
+
+.articleDetailNotFound > span {
+    color: #a36ce3;
+    font-size: 50px;
+}
+
+.articleDetailNotFound h1 {
+    font-family: Georgia, serif;
+    font-weight: 400;
+}
+
+.articleDetailNotFound p {
+    color: #a497ad;
+}
+
+.articleDetailNotFound a {
+    margin-top: 15px;
+    color: #cfadf3;
+}
+
+@media (max-width: 800px) {
+    .articleDetailLayout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 30px;
+    }
+
+    .articleDetailSidebar {
+        position: static;
+    }
+
+    .articleDetailAuthorPanel {
+        display: none;
+    }
+
+    .articleDetailSidebar nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 18px;
+    }
+
+    .articleDetailSidebar nav > span {
+        width: 100%;
+    }
+
+    .articleDetailBody {
+        max-width: none;
+    }
+}

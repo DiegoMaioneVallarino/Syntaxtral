@@ -32,7 +32,30 @@ export const researchers: Researcher[] = [
         publications: 17,
         followers: 2300,
 
-        featured: true
+        featured: true,
+        credentials: [
+    {
+        id: "demo-degree",
+        kind: "degree",
+        title: "Doctorado en Matemáticas",
+        institution: "Universidad de ejemplo",
+        year: "2020",
+        status: "demo"
+    },
+    {
+        id: "demo-outreach",
+        kind: "outreach",
+        title: "Divulgador científico",
+        status: "demo"
+    },
+    {
+        id: "demo-award",
+        kind: "award",
+        title: "Reconocimiento de ejemplo",
+        year: "2024",
+        status: "demo"
+    }
+]
     },
 
     {

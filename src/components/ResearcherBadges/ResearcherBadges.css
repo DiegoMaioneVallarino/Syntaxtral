@@ -1,0 +1,80 @@
+.researcherBadges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 7px;
+}
+
+.researcherBadge {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+
+    border: 1px solid #a77ae838;
+    border-radius: 7px;
+
+    background: #20162d;
+    color: #d0b5f3;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+.researcherBadge summary {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 10px;
+
+    list-style: none;
+    cursor: pointer;
+}
+
+.researcherBadge summary::-webkit-details-marker {
+    display: none;
+}
+
+.researcherBadge summary:focus-visible {
+    outline: 2px solid #c49aff;
+    outline-offset: -2px;
+    border-radius: 6px;
+}
+
+.researcherBadge summary > small {
+    padding: 2px 4px;
+    border: 1px solid currentColor;
+    border-radius: 3px;
+
+    font-size: 9px;
+}
+
+.researcherBadge--outreach {
+    border-color: #54caba38;
+    background: #102723;
+    color: #9ce1d5;
+}
+
+.researcherBadge--award {
+    border-color: #dbb95d45;
+    background: #2a2313;
+    color: #ead18a;
+}
+
+.researcherBadgeDetails {
+    display: grid;
+    gap: 6px;
+
+    padding: 10px;
+
+    border-top: 1px solid #ffffff12;
+
+    line-height: 1.5;
+}
+
+.researcherBadgeDetails strong {
+    font-weight: 500;
+}
+
+.researcherBadgeDetails small {
+    opacity: 0.8;
+}

@@ -3,7 +3,7 @@ import {
     useRef,
     useState
 } from "react";
-
+import NotificationsPopover from "./NotificationsPopover";
 import {
     Link,
     NavLink
@@ -290,15 +290,7 @@ function Toolbar() {
                 </label>
 
 
-                <button
-                    type="button"
-                    className="notificationButton"
-                    aria-label="Notificaciones"
-                >
-                    <BellIcon />
-
-                    <span className="notificationDot" />
-                </button>
+                <NotificationsPopover />
 
 
                 <div

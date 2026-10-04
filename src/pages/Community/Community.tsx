@@ -15,7 +15,8 @@ import type {
     ResearchField
 } from "../../models/Researcher";
 
-
+import ResearcherBadges
+    from "../../components/ResearcherBadges/ResearcherBadges";
 type FieldFilter =
     | "all"
     | ResearchField;
@@ -108,19 +109,21 @@ function Community() {
                 researcher.primaryField === selectedField;
 
 
-            const searchableText = `
+            const searchableText = [
+    researcher.name,
+    researcher.username,
+    researcher.location,
+    researcher.fieldLabel,
+    ...researcher.specialties,
 
-                ${researcher.name}
-
-                ${researcher.username}
-
-                ${researcher.location}
-
-                ${researcher.fieldLabel}
-
-                ${researcher.specialties.join(" ")}
-
-            `.toLowerCase();
+    ...(researcher.credentials ?? []).flatMap(
+        credential => [
+            credential.title,
+            credential.institution ?? "",
+            credential.year ?? ""
+        ]
+    )
+].join(" ").toLowerCase();
 
 
             const matchesSearch =
@@ -276,7 +279,9 @@ function Community() {
                         <p>
                             {featuredResearcher.biography}
                         </p>
-
+<ResearcherBadges
+    credentials={featuredResearcher.credentials}
+/>
 
                         <div className="featuredSpecialties">
 

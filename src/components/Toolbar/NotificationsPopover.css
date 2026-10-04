@@ -1,0 +1,191 @@
+.notificationsArea {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.notificationsArea .notificationButtonActive {
+    color: #f5eaff;
+    border-color: #9456eb66;
+    background: #23172d;
+}
+
+.notificationCount {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    display: grid;
+    place-items: center;
+    padding: 0 4px;
+    border: 2px solid #0b0b0b;
+    border-radius: 20px;
+    box-sizing: content-box;
+    background: #9252f0;
+    color: white;
+    font: 700 10px Arial, sans-serif;
+}
+
+.notificationsPanel {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    z-index: 210;
+    width: min(390px, calc(100vw - 24px));
+    max-height: min(590px, calc(100vh - 115px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #ffffff1c;
+    border-radius: 11px;
+    background: #111116;
+    box-shadow: 0 22px 55px #000000b0;
+    color: #eeeaf5;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.notificationsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 19px 19px 13px;
+}
+
+.notificationsHeader small {
+    color: #ab78ee;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.notificationsHeader h2 {
+    margin: 5px 0 0;
+    font: 400 23px Georgia, serif;
+}
+
+.notificationsUnread {
+    flex-shrink: 0;
+    padding: 6px 8px;
+    border-radius: 5px;
+    background: #2c1c3b;
+    color: #d5b3ff;
+    font-size: 10px;
+}
+
+.notificationsControls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 15px 12px;
+    border-bottom: 1px solid #ffffff13;
+}
+
+.notificationsFilters { display: flex; gap: 3px; }
+
+.notificationsControls button {
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: #a59cae;
+    font: 11px Arial, sans-serif;
+    cursor: pointer;
+}
+
+.notificationsFilters button { padding: 8px; }
+
+.notificationsFilters button[aria-pressed="true"] {
+    background: #281933;
+    color: #dfc0ff;
+}
+
+.notificationsControls .notificationsMarkAll {
+    padding: 7px;
+    color: #c09beb;
+    text-align: right;
+}
+
+.notificationsControls button:disabled {
+    opacity: .4;
+    cursor: default;
+}
+
+.notificationsList { overflow-y: auto; }
+
+.notificationsItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 14px 16px;
+    border-bottom: 1px solid #ffffff0b;
+    color: #d8d1df;
+    text-decoration: none;
+}
+
+.notificationsItem:hover,
+.notificationsItem:focus-visible { background: #251b2e; }
+
+.notificationsItemUnread { background: #1a1520; }
+
+.notificationsItemIcon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #332046;
+    color: #d7aaff;
+    font: 20px Georgia, serif;
+}
+
+.notificationsItemIcon-follow { background: #173027; color: #8ce0b5; }
+.notificationsItemIcon-article { background: #1b2937; color: #91caff; }
+.notificationsItemIcon-project { background: #352617; color: #edca88; }
+
+.notificationsItemText {
+    min-width: 0;
+    flex: 1;
+    display: grid;
+    gap: 5px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.notificationsItemText strong { color: #fff; }
+.notificationsSubject { color: #a99fba; }
+.notificationsItemText time { color: #9877bf; font-size: 10px; }
+
+.notificationsNewDot {
+    width: 7px;
+    height: 7px;
+    flex-shrink: 0;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: #a664fc;
+}
+
+.notificationsEmpty {
+    padding: 35px 12px;
+    color: #a89caf;
+    text-align: center;
+    font-size: 12px;
+}
+
+.notificationsEmpty span { color: #ae71ee; font-size: 29px; }
+
+.notificationsFooter {
+    padding: 12px;
+    border-top: 1px solid #ffffff12;
+    color: #786e84;
+    text-align: center;
+    font-size: 10px;
+}
+
+@media (max-width: 900px) {
+    .notificationsPanel {
+        right: -55px;
+        max-height: min(590px, calc(100vh - 90px));
+    }
+}
