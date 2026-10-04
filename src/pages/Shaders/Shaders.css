@@ -355,3 +355,240 @@
         font-size: 18px;
     }
 }
+
+/* Editor con conversación debajo */
+
+.shaderEditorPage {
+    height: 100%;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.shaderEditorHeader,
+.shaderEditorFooter {
+    flex-shrink: 0;
+}
+
+.shaderEditorColumns {
+    flex: none;
+    height: clamp(
+        460px,
+        calc(100dvh - 240px),
+        760px
+    );
+}
+
+.shaderComments {
+    width: 100%;
+    max-width: 1050px;
+
+    flex-shrink: 0;
+    align-self: center;
+
+    padding: 35px clamp(18px, 4vw, 45px) 55px;
+}
+
+.shaderCommentsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.shaderCommentsHeader h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin: 10px 0 0;
+
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+}
+
+.shaderCommentsHeader h2 span {
+    padding: 4px 8px;
+    border-radius: 5px;
+
+    background: #281b35;
+    color: #cda6f5;
+
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+}
+
+.shaderCommentsHeader > small {
+    color: #9988a7;
+    font-size: 11px;
+}
+
+.shaderCommentForm {
+    display: grid;
+    gap: 12px;
+
+    padding: 20px;
+
+    border: 1px solid #ffffff16;
+    border-radius: 9px;
+
+    background: #121015;
+}
+
+.shaderCommentForm label {
+    color: #c7b7d4;
+    font-size: 12px;
+}
+
+.shaderCommentForm textarea {
+    width: 100%;
+    min-height: 95px;
+
+    padding: 13px;
+    resize: vertical;
+
+    border: 1px solid #ffffff1c;
+    border-radius: 6px;
+
+    background: #0c0a10;
+    color: #eee3f8;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.shaderCommentForm textarea::placeholder {
+    color: #82738f;
+}
+
+.shaderCommentFormActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.shaderCommentFormActions small {
+    color: #887593;
+    font-size: 10px;
+}
+
+.shaderCommentForm .shaderPrimaryButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: none;
+}
+
+.shaderCommentMessage {
+    margin: 0;
+    color: #95d4b4;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.shaderCommentMessage.shaderCommentError {
+    color: #ffabb6;
+}
+
+.shaderCommentsList {
+    margin-top: 25px;
+}
+
+.shaderComment {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+
+    padding: 22px 0;
+    border-bottom: 1px solid #ffffff10;
+}
+
+.shaderCommentAvatar {
+    width: 38px;
+    height: 38px;
+
+    flex-shrink: 0;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid #a46bd34a;
+    border-radius: 50%;
+
+    background: #2d1b3f;
+    color: #d9b6ff;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.shaderCommentContent {
+    flex: 1;
+    min-width: 0;
+}
+
+.shaderCommentContent header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+}
+
+.shaderCommentContent strong {
+    color: #e8d8f4;
+    font-size: 13px;
+}
+
+.shaderCommentContent time {
+    color: #897895;
+    font-size: 10px;
+}
+
+.shaderCommentContent p {
+    margin: 10px 0 0;
+
+    color: #bdaec9;
+    font-size: 13px;
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.shaderCommentsEmpty {
+    padding: 35px 15px;
+    color: #96869f;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.shaderCommentsEmpty > span {
+    color: #ae78df;
+    font-size: 28px;
+}
+
+.shaderCommentsSaveNotice {
+    flex-shrink: 0;
+
+    padding: 30px 20px;
+
+    color: #a28eaf;
+    text-align: center;
+    font-size: 13px;
+}
+
+@media (max-width: 700px) {
+    .shaderEditorColumns {
+        height: auto;
+        grid-template-rows: 480px 400px;
+    }
+
+    .shaderCommentForm {
+        padding: 15px;
+    }
+}

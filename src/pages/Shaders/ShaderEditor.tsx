@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 
 import ShaderCanvas from "./ShaderCanvas";
-
+import ShaderComments from "./ShaderComments";
 import {
     exampleShaders,
     readSavedShaders,
@@ -271,6 +271,16 @@ function ShaderEditorSession({
                         "Guardado local. Guarda antes de salir."}
                 </span>
             </footer>
+            {initialProject ? (
+    <ShaderComments
+        key={initialProject.id}
+        shaderId={initialProject.id}
+    />
+) : (
+    <div className="shaderCommentsSaveNotice">
+        Guarda el shader para comenzar su conversación.
+    </div>
+)}
         </section>
     );
 }

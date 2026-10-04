@@ -16,7 +16,7 @@ import Calculator
     from "./features/calculator/Calculator";
 import Questions from "./pages/Questions/Questions";
 import News from "./pages/News/News";
-
+import ArticleDetail from "./pages/Articles/ArticleDetail";
 import Shaders from "./pages/Shaders/Shaders";
 import ShaderEditor from "./pages/Shaders/ShaderEditor";
 function App() {
@@ -57,6 +57,9 @@ function App() {
 /><Route
     path="/news"
     element={<News />}
+/><Route
+    path="/articles/:articleId"
+    element={<ArticleDetail />}
 />
                       <Route
                       
